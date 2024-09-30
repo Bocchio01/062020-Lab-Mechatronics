@@ -1,0 +1,56 @@
+\subsection{Parameters identification}
+\label{subsec:parameters_identification}
+
+Based on the MLS2EM datasheet/manual (pages 6-18), the procedure to identify the parameters of the system should be as follows.
+
+Launch \texttt{mls2em-usb2-main} script and open tools/identification window and then:
+
+\begin{enumerate}
+    \item Optical sensor calibration: it's the curve the mesured voltage from the optical sensor to the effective height of the ball. It's used internally by the \texttt{MLS-SIM-BLOCK}. Output: mls2em-usb2-Sensor.mat->SensorData.[Distance-mm, Sensor-V], $z = f(\Delta V)$.
+    \item Static characterization (coil): it's the curve of the current in the coil due to a given applied voltage. It's assumed to be linear $i = f(\Delta V) = k_i \Delta V  + c_i$, but with a deadzone at the beginning $i_{MIN} = f(\Delta V_{MIN})$. Output: $k_i [\frac{A}{V}]$, $c_i [A]$, $i_{MIN} [A]$, $V_{MIN} [V]$.
+    \item Minimal effort to move the ball: from this we can have a relation between the current in the coil and the force applied to the ball.
+    \item Dynamic characterization (coil): as we know, obkect moving in a magnetic field generate distorsion in the field itself/changes in the coil's current. All these effects are taken into account by $K_i$ and $f_i$. Basically, the plot on page 18, shows the solution for a classical RL circuit $i(t) = i_0 + i_{\infty} (1 - e^{-\frac{t}{\tau}})$, derived from the differential equation $\dot{i} = \frac{V - R i}{L}$. It's unclear what $K_i$ and $f_i$ really are.
+\end{enumerate}
+
+
+So, brief recap of the parameters that the manual uses in its mathematical model:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|l|c|c|}
+        \hline
+        Parameter  & Description                           & Unit            & Notes           \\
+        \hline
+        $m$        & Ball mass                             & $kg$            &                 \\
+        $g$        & Gravity acceleration                  & $\frac{m}{s^2}$ &                 \\
+        $F_{emP1}$ & Magnetic modelling related            & $H$             & To be clarified \\
+        $F_{emP2}$ & Magnetic modelling related            & $m$             & To be clarified \\
+        $f_{iP1}$  & Inductance modelling related          & $m \cdot s$     & To be clarified \\
+        $f_{iP2}$  & Inductance modelling related          & $m$             & To be clarified \\
+        $k_i$      & Basically it's the conductance $1/R$  & $\frac{A}{V}$   &                 \\
+        $c_i$      & Coil offset                           & $A$             &                 \\
+        $i_{MIN}$  & Minimum current (deadzone of control) & $A$             &                 \\
+        $V_{MIN}$  & Minimum voltage (deadzone of control) & $V$             &                 \\
+        $K_i$      & Current rise modelling in coil        &                 &                 \\
+        $f_i$      & Current rise modelling in coil        &                 &                 \\
+        \hline
+    \end{tabular}
+    \caption{Parameters of the MLS2EM system}
+    \label{tab:parameters}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|l|c|}
+        \hline
+        Function   & Description                                                                             & Unit \\
+        \hline
+        $F_g$      & Gravity force acting on the ball                                                        & $N$  \\
+        $F_{em1}$  & Electromagnetic force from upper coil                                                   & $N$  \\
+        $F_{em2}$  & Electromagnetic force from lower coil                                                   & $N$  \\
+        $f_i(x_1)$ & Function to model the variation of the inductance in the coils due to the ball position & $s$  \\
+        \hline
+    \end{tabular}
+    \caption{Functions of the MLS2EM system}
+    \label{tab:functions}
+\end{table}

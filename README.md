@@ -1,2 +1,8 @@
-# 062020-Mechatronics-Lab
- 062020 Mechatronics Lab, A.Y. 2024/25, @Politecnico_di_Milano
+# 062020 Lab - Mechatronics
+
+062020 Lab - Mechatronics, A.Y. 2024/25, @Politecnico_di_Milano
+
+## Authors
+- Tommaso Bocchietti
+- Daniele Cianca
+- Sara Orazzo

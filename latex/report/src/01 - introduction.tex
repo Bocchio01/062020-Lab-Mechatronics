@@ -1,0 +1,25 @@
+\section{Introduction}
+\label{sec:introduction}
+
+The aim of this laboratory experience is to precisely control the levitation of a ferromagnetic object immerse in a magnetic field.
+This kind of system is commonly referred to as a \acrfull{mls}.
+
+The work has been splitted into two main phases:
+
+\begin{itemize}
+    \item \textbf{Modelling and parameters identification}: in this phase, the system has been modelled by means of both differential equations and state space representation, and the parameters of the model have been identified through experimental data performed directly on the real system. Some preliminary consideration about stability and controllability have also been made.
+    \item \textbf{Control design}: in this phase, many different control techniques have been implemented and tested. The main goal was to compare the performances of different controllers in terms of stability, robustness and tracking capabilities.
+\end{itemize}
+
+\paragraph{Report structure}
+
+This report covers all the aspects of the laboratory experience, from the theoretical background to the practical implementation of the control algorithms.
+In particular, in Section \ref{sec:magnetic_levitation_system} the system is described in detail, a model is derived and the parameters are identified.
+In Section \ref{sec:single_coil_control} a set of \acrshort{siso} controllers are designed to work on a reduced model of the system, where only one coil is active.
+On the other hand, in Section \ref{sec:double_coil_control} a set of \acrshort{miso} controllers are designed to work on the full model of the system, where both coils are actively used to control the position of the magnet.
+In Section \ref{sec:control_techniques_comparison} the performances of the different controllers are compared, and finally in Section \ref{sec:conclusions} some conclusions are drawn.
+
+\paragraph{Tools}
+
+An extensive use of \texttt{MATLAB} and \texttt{Simulink} has been made to implement the controllers and to simulate the system.
+All the source code and simulations used for this report can be found on the GitHub repository at the following link: \url{https://github.com/Bocchio01/062020-Lab-Mechatronics}.
