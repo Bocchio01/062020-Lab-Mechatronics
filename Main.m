@@ -18,10 +18,12 @@ clc
 clear variables
 close all
 
-%% Plant parameters
+%% Simulation parameters
 
-run("parametersLoader.m")
+z0 = 0.01;
+v0 = 0;
+
 
 %% Simulation launcher
 
-sim("MagLev.slx")
+sim("System.slx")
