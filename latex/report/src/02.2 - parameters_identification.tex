@@ -1,6 +1,32 @@
 \subsection{Parameters identification}
 \label{subsec:parameters_identification}
 
+In order to control the system, we need to identify its parameters.
+
+The unknown parameters of the system are depicted in table \ref{tab:parameters}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|l|c|}
+        \hline
+        Parameter         & Description                                        & Unit          \\
+        \hline
+        $R_{1, 2}$        & Resistance of the coil                             & $\Omega$      \\
+        $L_{1, 2}$        & Inductance of the coil                             & $H$           \\
+        $\frac{d L}{d z}$ & Sensitivity of the inductance to the ball position & $\frac{H}{m}$ \\
+        \hline
+    \end{tabular}
+\end{table}
+
+In order to indentify the parameters of the system, we can use a \texttt{PICO} oscillometer to measure the current going trough the coil and the voltage applied to it.
+By doing so, we can fully identify the missig parameters of the system, such as the resistance of the coil $R [\Omega]$, inductance of the coil $L [H]$ and the sensitivity of the inductance to the ball position $\frac{d L}{d z} [\frac{H}{m}]$.
+
+
+
+
+
+
+
 Based on the MLS2EM datasheet/manual (pages 6-18), the procedure to identify the parameters of the system should be as follows.
 
 Launch \texttt{mls2em-usb2-main} script and open tools/identification window and then:

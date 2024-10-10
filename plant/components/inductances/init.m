@@ -1,8 +1,8 @@
 % Parameters for the inductors of MagLev
 
 % Static
-L10 = 1.7 * 1e-3; %[H]
-L20 = 1.7 * 1e-3; %[H]
+L10 = 0.125; %[H]
+L20 = 0.125; %[H]
 
 % Dynamic due to presence of object in magnetic field
 a = 1 / 0.0058231; %[1/m]

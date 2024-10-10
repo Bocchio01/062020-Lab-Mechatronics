@@ -14,12 +14,14 @@ D = 100 * 1e-3; %[m]
 
 % Ball/object
 m = 0.06157; %[kg]
-r = 30 * 1e-3; %[m]
+r = 61.25 * 1e-3; %[m]
 A = 0; %[m^2]
 
 % Approximated current model
-ki = 4.4;
-ci = -0.4;
+ki = 2.7352;
+ci = -0.1104;
 fiP1 = 1.4142 * 1e-4;
 fiP2 = 4.5626 *1e-3;
 
+% Minimun voltage in coil
+V0 = 0.01;

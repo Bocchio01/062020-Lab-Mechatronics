@@ -1,5 +1,5 @@
-**/.papers
-**/.internal
+resources/cache/*
+resources/code/*
 
 # Windows default autosave extension
 *.asv
