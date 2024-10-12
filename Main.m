@@ -10,7 +10,8 @@
 %
 % Requires:
 %   - Simulink
-%   - *Toolbox for MSL2EM connection*
+%   - Coder Toolbox
+%   - INTECO MSL2EM Toolbox (licensed from the producer)
 % 
 % Reference course: 062020 (Politecnico di Milano A.Y. 2024/2025)
 
