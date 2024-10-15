@@ -21,9 +21,7 @@ close all
 
 %% Simulation parameters
 
-z0 = 0.015;
-v0 = 0;
-
+run("initial_conditions.m")
 
 %% Simulation launcher
 
