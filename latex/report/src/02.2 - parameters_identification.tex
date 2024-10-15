@@ -3,80 +3,194 @@
 
 In order to control the system, we need to identify its parameters.
 
-The unknown parameters of the system are depicted in table \ref{tab:parameters}.
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{|c|l|c|}
-        \hline
-        Parameter         & Description                                        & Unit          \\
-        \hline
-        $R_{1, 2}$        & Resistance of the coil                             & $\Omega$      \\
-        $L_{1, 2}$        & Inductance of the coil                             & $H$           \\
-        $\frac{d L}{d z}$ & Sensitivity of the inductance to the ball position & $\frac{H}{m}$ \\
-        \hline
-    \end{tabular}
-\end{table}
-
-In order to indentify the parameters of the system, we can use a \texttt{PICO} oscillometer to measure the current going trough the coil and the voltage applied to it.
-By doing so, we can fully identify the missig parameters of the system, such as the resistance of the coil $R [\Omega]$, inductance of the coil $L [H]$ and the sensitivity of the inductance to the ball position $\frac{d L}{d z} [\frac{H}{m}]$.
-
-
-
-
-
-
-
-Based on the MLS2EM datasheet/manual (pages 6-18), the procedure to identify the parameters of the system should be as follows.
-
-Launch \texttt{mls2em-usb2-main} script and open tools/identification window and then:
+To do so, different tests type will be performed, such as:
 
 \begin{enumerate}
-    \item Optical sensor calibration: it's the curve the mesured voltage from the optical sensor to the effective height of the ball. It's used internally by the \texttt{MLS-SIM-BLOCK}. Output: mls2em-usb2-Sensor.mat->SensorData.[Distance-mm, Sensor-V], $z = f(\Delta V)$.
-    \item Static characterization (coil): it's the curve of the current in the coil due to a given applied voltage. It's assumed to be linear $i = f(\Delta V) = k_i \Delta V  + c_i$, but with a deadzone at the beginning $i_{MIN} = f(\Delta V_{MIN})$. Output: $k_i [\frac{A}{V}]$, $c_i [A]$, $i_{MIN} [A]$, $V_{MIN} [V]$.
-    \item Minimal effort to move the ball: from this we can have a relation between the current in the coil and the force applied to the ball.
-    \item Dynamic characterization (coil): as we know, obkect moving in a magnetic field generate distorsion in the field itself/changes in the coil's current. All these effects are taken into account by $K_i$ and $f_i$. Basically, the plot on page 18, shows the solution for a classical RL circuit $i(t) = i_0 + i_{\infty} (1 - e^{-\frac{t}{\tau}})$, derived from the differential equation $\dot{i} = \frac{V - R i}{L}$. It's unclear what $K_i$ and $f_i$ really are.
+    \item \textbf{Direct Measurement:} The first step is to measure all the quantity of the system that can be directly measured or retrived from well established literature.
+    \item \textbf{RL Circuit Identification:} The first step is to identify the parameters of the RL circuit. This will be done by applying a step input to the system and measuring the current;
+    \item \textbf{Characterization of ball influence:} The second step is to identify how the presence of the ball affects the coils and the magnetic field. This will be done by measuring the inductance of the coils with the ball positioned at different heights.
 \end{enumerate}
 
+All the above tests that involve any kind of measurement from the system will be performed leveraging the data acquisition system included in the \texttt{Inteco} control unit.
 
-So, brief recap of the parameters that the manual uses in its mathematical model:
+Based on the mathematical model developed in Section \ref{subsec:model_derivation} and the set of Equations \ref{eq:equations_of_motion} and Equations \ref{eq:equations_of_motion_simplified}, the following parameters need to be identified:
 
 \begin{table}[H]
+
     \centering
     \begin{tabular}{|c|l|c|c|}
         \hline
-        Parameter  & Description                           & Unit            & Notes           \\
+        \textbf{Name}     & \textbf{Description}               & \textbf{Unit} & \textbf{Test \#} \\
         \hline
-        $m$        & Ball mass                             & $kg$            &                 \\
-        $g$        & Gravity acceleration                  & $\frac{m}{s^2}$ &                 \\
-        $F_{emP1}$ & Magnetic modelling related            & $H$             & To be clarified \\
-        $F_{emP2}$ & Magnetic modelling related            & $m$             & To be clarified \\
-        $f_{iP1}$  & Inductance modelling related          & $m \cdot s$     & To be clarified \\
-        $f_{iP2}$  & Inductance modelling related          & $m$             & To be clarified \\
-        $k_i$      & Basically it's the conductance $1/R$  & $\frac{A}{V}$   &                 \\
-        $c_i$      & Coil offset                           & $A$             &                 \\
-        $i_{MIN}$  & Minimum current (deadzone of control) & $A$             &                 \\
-        $V_{MIN}$  & Minimum voltage (deadzone of control) & $V$             &                 \\
-        $K_i$      & Current rise modelling in coil        &                 &                 \\
-        $f_i$      & Current rise modelling in coil        &                 &                 \\
+        $m$               & Mass of the ball                   & $kg$          & 1                \\
+        $r$               & Radius of the ball                 & $m$           & 1                \\
+        $H$               & Distance between the two coils     & $m$           & 1                \\
+        $C_d$             & Drag coefficient                   & $N \cdot s/m$ & 1                \\
+        $\rho$            & Density of the air                 & $kg/m^3$      & 1                \\
+        $L_{*0}$          & Static inductance of the coils     & $H$           & 2                \\
+        $L_{*z}$ \& $a_*$ & Dynamic inductance characteristics & $H$ \& $1/m$  & 3                \\
+        $R_{*0}$          & Static resistance of the coils     & $\Omega$      & 2                \\
+        $f_{IP1}$         & Empirical parameters               & $m\cdot s$    & /                \\
+        $f_{IP2}$         & Empirical parameters               & $m$           & /                \\
+        $I_{*min}$        & Minimum current                    & $A$           & 2                \\
+        $I_{*max}$        & Maximum current                    & $A$           & 2                \\
+        $V_{*min}$        & Minimum voltage                    & $V$           & 2                \\
+        $V_{*max}$        & Maximum voltage                    & $V$           & 2                \\
         \hline
     \end{tabular}
-    \caption{Parameters of the MLS2EM system}
-    \label{tab:parameters}
+
+    \caption{Parameters to be identified}
+    \label{tab:parameters_to_be_identified}
+
 \end{table}
 
+Notice that column \textbf{Test \#} in Table \ref{tab:parameters_to_be_identified} refers to the test ID in the list above.
+
+\paragraph{Direct Measurement}
+
+The mass of the ball and its radius can be directly measured using a scale and a caliper, respectively.
+Also the distance between the two coils can be measured using a caliper.
+
+The drag coefficient can be obtained from well established literature.
+In the following, we will use the drag coefficient of a sphere in a fluid and we will assume it to be constant for all the range of velocities we are going to work with.
+This, for relatively low velocities, can be considered a good approximation.
+
+The density of the air can be obtained from well established literature.
+
+By doing so, we will have the following values:
+
 \begin{table}[H]
+
     \centering
-    \begin{tabular}{|c|l|c|}
+    \begin{tabular}{|c|c|}
         \hline
-        Function   & Description                                                                             & Unit \\
+        \textbf{Parameter} & \textbf{Value}        \\
         \hline
-        $F_g$      & Gravity force acting on the ball                                                        & $N$  \\
-        $F_{em1}$  & Electromagnetic force from upper coil                                                   & $N$  \\
-        $F_{em2}$  & Electromagnetic force from lower coil                                                   & $N$  \\
-        $f_i(x_1)$ & Function to model the variation of the inductance in the coils due to the ball position & $s$  \\
+        $m$                & $0.06157 \, kg$       \\
+        $r$                & $0.06125/2 \, m$      \\
+        $H$                & $0.098 \, m$          \\
+        $C_d$              & $0.45 \, N \cdot s/m$ \\
+        $\rho$             & $1.21 \, kg/m^3$      \\
         \hline
     \end{tabular}
-    \caption{Functions of the MLS2EM system}
-    \label{tab:functions}
+
+    \caption{Directly measured parameters}
+    \label{tab:directly_measured_parameters}
+
 \end{table}
+
+\paragraph{RL Circuit Identification}
+
+The RL circuit identification will be done by applying a step input to the system and measuring the current.
+The current will be measured using the data acquisition system included in the \texttt{Inteco} control unit.
+
+The identification will be done by fitting the measured current to the following model:
+
+\begin{equation}
+    i(t) = \frac{V_{*max}}{R_{*0}} \left(1 - e^{-\frac{R_{*0}}{L_{*0}}t}\right)
+\end{equation}
+
+Also the minimum and maximum current and voltage can be measured directly using the data acquisition system.
+
+In Figure \ref{fig:RL_circuit_identification} we can see 10 transient responses of the current in the RL circuit (black dashed lines) as well as the fitted model (red solid line).
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{img/RL_circuit_identification.png}
+    \caption{RL circuit identification}
+    \label{fig:RL_circuit_identification}
+\end{figure}
+
+By doing so, we will have the following values:
+
+\begin{table}[H]
+
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Parameter} & \textbf{Value} \\
+        \hline
+        $L_{*0}$           & $? \, H$       \\
+        $R_{*0}$           & $? \, \Omega$  \\
+        $I_{*min}$         & $? \, A$       \\
+        $I_{*max}$         & $? \, A$       \\
+        $V_{*min}$         & $? \, V$       \\
+        $V_{*max}$         & $? \, V$       \\
+        \hline
+    \end{tabular}
+
+    \caption{RL circuit identification parameters}
+    \label{tab:RL_circuit_identification_parameters}
+
+\end{table}
+
+\paragraph{Characterization of ball influence}
+
+The characterization of the ball influence will be done by measuring the inductance of the coils with the ball positioned at different heights.
+
+For convenience and time saving, we will adopt a different strategy that will allow us to measure directly the sensitivity of the inductance to the ball position.
+To do so, we recall Equation \ref{eq:equations_of_motion} and in particular the equation relative to $\dot{v}$:
+
+\begin{equation}
+    \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 - \frac{1}{2} C_d A \rho \dot{z}^2 + m g  \right)
+\end{equation}
+
+If we consider the system at rest, we can simplify the equation as follows:
+
+\begin{equation}
+    0 = \frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 + m g
+\end{equation}
+
+Supposing now that only the first coil is energized, we can further simplify the equation as follows:
+
+\begin{equation}
+    0 = \frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + m g
+\end{equation}
+
+Which leads to:
+
+\begin{equation}
+    \frac{\partial L_1}{\partial z} = -2 \frac{m g}{I_1^2}
+    \label{eq:sensitivity_of_inductance}
+\end{equation}
+
+This last equation basically tells us that in steady state conditions, when the ball is levitating (i.e. $\dot{z} = 0$ and not supported by any platform), the sensitivity of the inductance of the first coil has an analytical expression that can be directly measured by measuring the current in the first coil.
+
+In order to follow this appoarch, a linearly increasing voltage has been applied to the first coil and the current corresponding to the levitation of the ball has been measured.
+
+In Figure \ref{fig:levitation_current} we can see both the position of the ball and the current circulating in the first coil.
+By indentifying the current at which the ball starts to levitate (i.e. the ball starts to move upwards), we can than use Equation \ref{eq:sensitivity_of_inductance} to identify the dynamic inductance characteristics.
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{img/levitation_current.png}
+    \caption{Levitation current}
+    \label{fig:levitation_current}
+\end{figure}
+
+The test described above has been repeated for different heights of the ball, in order to fully characterize the dynamic inductance characteristics over the range of possible ball positions.
+The results are shown in Table \ref{tab:dynamic_inductance_characteristics} and in Figure \ref{fig:dynamic_inductance_characteristics}.
+
+\begin{table}[H]
+
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Position (z) [mm]} & \textbf{Current (I) [A]} & \textbf{Control Voltage (V) [V]} & \textbf{Sensitivity ($\partial L / \partial z$) [H/m]} \\
+        \hline
+        0.0                        & 0.0                      & 0.0                              & 0.0                                                    \\
+        0.0                        & 0.0                      & 0.0                              & 0.0                                                    \\
+        \hline
+    \end{tabular}
+
+    \caption{Dynamic inductance characteristics}
+    \label{tab:dynamic_inductance_characteristics}
+
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{img/dynamic_inductance_characteristics.png}
+    \caption{Dynamic inductance characteristics}
+    \label{fig:dynamic_inductance_characteristics}
+\end{figure}

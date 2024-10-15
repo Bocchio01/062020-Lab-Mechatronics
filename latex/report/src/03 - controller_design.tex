@@ -1,0 +1,58 @@
+\section{Controller Design}
+\label{sec:controller_design}
+
+Based on the MLS2EM datasheet/manual, some suggestions are (page 5):
+
+\begin{itemize}
+    \item SISO, MISO, BIBO controllers design
+    \item Intelligent/Adaptive Control
+    \item Frequency analysis
+    \item Nonlinear control
+    \item Hardware-in-the-Loop
+    \item Real-Time control
+    \item Closed Loop PID Control
+\end{itemize}
+
+From `Gruppo 1 MagLev', the following controllers are suggested:
+
+\begin{itemize}
+    \item prova\_2PID\_EKF.slx
+    \item prova\_3\_anelli\_stabilizzante.slx
+    \item prova\_3\_anelli\_stabilizzante\_v2.slx
+    \item prova\_backstepping.slx
+    \item prova\_cascata.slx
+    \item prova\_funzionante\_filtro.slx
+    \item prova\_funzionante\_finale\_PID2.slx
+    \item prova\_funzionante\_LQR.slx
+    \item prova\_funzionante\_LQR\_EKF.slx
+    \item prova\_funzionante\_LQR\_int.slx
+    \item prova\_funzionante\_LQR\_in\_PIDt.slx
+    \item prova\_funzionante\_LQR\_noint.slx
+    \item prova\_funzionante\_obs.slx
+    \item prova\_funzionante\_PP.slx
+    \item prova\_funzionante\_PP\_2EM.slx
+    \item prova\_funzionante\_PP\_EKF.slx
+    \item prova\_funzionante\_PP\_int.slx
+    \item prova\_funzionante\_PP\_int\_obs.slx
+    \item prova\_funzionante\_PP\_KF.slx
+    \item prova\_funzionante\_PP\_OBS.slx
+    \item prova\_funzionante\_PP\_OBS2.slx
+    \item prova\_funzionante\_sinusoidi.slx
+    \item prova\_pid\_variabile.slx
+\end{itemize}
+
+That should correspond to the following controllers:
+
+\begin{itemize}
+    \item Simple PID
+    \item Variable PID (coefficients computed on the fly)
+    \item Linear Quadratic Regulator (LQR)
+    \item Kalman Filter (KF)
+    \item Extended Kalman Filter (EKF)
+    \item Observers
+    \item Backstepping (?)
+    \item Cascaded controllers (outer: voltage, inner: current)
+\end{itemize}
+
+\input{src/03.1 - pd.tex}
+% \input{src/03.2 - pd_online_coefficients.tex}

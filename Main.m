@@ -21,7 +21,7 @@ close all
 
 %% Simulation parameters
 
-z0 = 0.01;
+z0 = 0.015;
 v0 = 0;
 
 
