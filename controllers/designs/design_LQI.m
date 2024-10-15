@@ -1,4 +1,4 @@
-% Linear Quadratic Regulator controller design
+% Linear Quadratic Integral controller design
 
 clc
 clear variables
@@ -25,15 +25,4 @@ Q = zeros(size(A, 1)) + diag([30 1e-3 1e+2 1e+2]);
 % u = [voltage1, voltage2]';
 R = zeros(size(D, 1)) + diag(5.5);
 
-[K, ~, poles] = lqr(A, B, Q, R);
-
-
-%% Closed loop system
-
-% sys = ss((A - B*K), B, C, D);
-% [y, t, x] = initial(sys, [z0, v0, ci, ci]);
-% 
-% step(-sys)
-
-% figure
-% plot(t, y);
+[K, ~, poles] = lqi(A, B, Q, R);

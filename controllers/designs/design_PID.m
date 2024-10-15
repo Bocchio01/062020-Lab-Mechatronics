@@ -1,3 +1,5 @@
+% Proportional Integral Derivative controller design
+
 clc
 clear variables
 close all
@@ -26,16 +28,16 @@ switch 2
     case 1
         % Reference cross over frequency (1 decade before a chosen Nyquist frequency)
         cross_over_frquency = 1/10 * (pi/1e-3);
-        [R, pidtune_info] = pidtune(G, 'pid', cross_over_frquency);
+        [K, pidtune_info] = pidtune(G, 'pid', cross_over_frquency);
     case 2
         % controlSystemDesigner result
-        R = pid(-188, -728, -12.1);
+        K = pid(-188, -728, -12.1);
     case 3
         % Rosinova parameters
-        R = pid(-125, -377.830, -5.65);
+        K = pid(-125, -377.830, -5.65);
 end
 
-L = R * G;
+L = K * G;
 
 % Discrete-time
 % SISOLinearizedMaglevDiscrete = c2d(ss(A, B, C, D), 0.005, 'tustin');
