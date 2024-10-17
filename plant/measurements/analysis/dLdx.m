@@ -5,7 +5,7 @@ close all
 %% Get number of files to be loaded
 
 files_data = struct( ...
-    'path', 'realtime\measurements\data\Induttanza', ...
+    'path', 'plant\measurements\data\dLdx', ...
     'dir_content', [], ...
     'N_files', 0);
 
@@ -49,9 +49,9 @@ for file_idx = 1:files_data.N_files
 
     measurements = data(file_idx);
 
-    position_jump_idx = find(diff(measurements.position) < -1.0e-3, 1, 'first');
+    position_jump_idx = floor(find(diff(measurements.position) < -1.0e-3, 1, 'first') * 0.98);
 
-    position(file_idx) = mean(measurements.position(1:floor(0.9 * position_jump_idx)));
+    position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx)));
     current(file_idx) = measurements.current(position_jump_idx);
     sensitivity(file_idx) = sensitivity_equation(current(file_idx));
 
@@ -68,22 +68,29 @@ fitted_model = fitnlm( ...
     @sensitivity_inductance_model, coefficients_guess, ...
     'Options', statset('TolFun', 1e-10));
 
-L1 = fitted_model.Coefficients.Estimate(1);
+L1z = fitted_model.Coefficients.Estimate(1);
 a = fitted_model.Coefficients.Estimate(2);
+
+fprintf([ ...
+    'Electromagnet EM1:\n' ...
+    '\tInductance sensitivity to z Lz:\t%d\n' ...
+    '\tInductance sensitivity parameter a:\t%d\n' ...
+    ], L1z, a);
+
 
 
 %% Dependence of the current over the voltage input
 
-p = zeros(2, files_data.N_files);
-
-for file_idx = 1:files_data.N_files
-
-    measurements = data(file_idx);
-    p(:, file_idx) = polyfit(measurements.voltage, measurements.current, 1);
-
-end
-
-p = mean(p);
+% p = zeros(2, files_data.N_files);
+% 
+% for file_idx = 1:files_data.N_files
+% 
+%     measurements = data(file_idx);
+%     p(:, file_idx) = polyfit(measurements.voltage, measurements.current, 1);
+% 
+% end
+% 
+% p = mean(p);
 
 
 %% Plots
@@ -91,12 +98,31 @@ reset(0)
 set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
 
+
+for file_idx = 1:files_data.N_files
+
+    figure
+    hold on
+    measurements = data(file_idx);
+
+    position_jump_idx = floor(find(diff(measurements.position) < -1.0e-3, 1, 'first') * 0.98);
+
+    plot(measurements.position)
+    plot(measurements.current)
+    
+    xline(position_jump_idx , 'r')
+
+end
+
+
 nexttile
 hold on
 grid on
 
-plot(position, sensitivity, 'ko');
-plot(position, sensitivity_inductance_model(position, [L1 a]), 'r');
+plot(position, -sensitivity, 'ko');
+plot(position, -sensitivity_inductance_model([L1z a], position), 'r');
+% plot(position, -sensitivity_inductance_model([L1, 1/0.0058231], position), 'r');
+
 
 title('Inductance sensitivity to object distance \frac{dL}{dx}')
 xlabel('Distance [m]')

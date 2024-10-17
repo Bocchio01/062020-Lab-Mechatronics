@@ -1,5 +1,5 @@
 % Parameters for the resistances of MagLev
 
 % Static
-R10 = 0.38; %[ohm]
-R20 = 0.38; %[ohm]
+R10 = 3.772320e-01; %[ohm]
+R20 = 3.622267e-01; %[ohm]

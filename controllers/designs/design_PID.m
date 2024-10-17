@@ -31,7 +31,7 @@ switch 2
         [K, pidtune_info] = pidtune(G, 'pid', cross_over_frquency);
     case 2
         % controlSystemDesigner result
-        K = pid(-188, -728, -12.1);
+        K = pid(-314, -1.81e+03, -13.6);
     case 3
         % Rosinova parameters
         K = pid(-125, -377.830, -5.65);

@@ -16,7 +16,7 @@ try
     data.time = measurements(1, :)';
     data.position = measurements(2, :)';
     data.velocity = measurements(3, :)';
-    data.current = measurements(2 + electromagnet_idx, :)';
+    data.current = measurements(3 + electromagnet_idx, :)';
     data.voltage = measurements(5 + electromagnet_idx, :)';
 catch
     MLS2EMExpData = load(file_path).MLS2EMExpData;

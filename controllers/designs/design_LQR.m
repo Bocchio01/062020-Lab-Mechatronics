@@ -19,11 +19,11 @@ run("initial_conditions.m")
 
 % Penalization matrix for the states
 % x = [position, velocity, current1, current2]';
-Q = zeros(size(A, 1)) + diag([30 1e-3 1e+2 1e+2]);
+Q = diag([30 1e-3 1e+2 1e+2]);
 
 % Penalization matrix for the inputs
 % u = [voltage1, voltage2]';
-R = zeros(size(D, 1)) + diag(5.5);
+R = diag(5.5);
 
 [K, ~, poles] = lqr(A, B, Q, R);
 

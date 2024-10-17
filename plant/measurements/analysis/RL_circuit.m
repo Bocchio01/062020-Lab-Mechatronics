@@ -4,8 +4,8 @@ close all
 
 %% Load measurements of RL current dynamic
 
-% file_path = 'realtime\measurements\data\RL_circuit\*.mat';
-file_path = 'realtime\measurements\data\Induttanza\Induttanza2.mat';
+file_path = 'plant\measurements\data\RL_circuit\RL1_circuit.mat';
+
 electromagnet_idx = 1;
 data = load_data(file_path, electromagnet_idx);
 
@@ -54,7 +54,7 @@ fprintf([ ...
     'Electromagnet EM%d:\n' ...
     '\tInductance L:\t%d\n' ...
     '\tResistance R:\t%d\n' ...
-    ], electromagnet_idx, R, L);
+    ], electromagnet_idx, L, R);
 
 clear R_guess L_guess coefficients_guess record_idx start_idx final_idx current voltage time fitted_model
 
