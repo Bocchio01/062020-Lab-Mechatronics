@@ -21,7 +21,8 @@ close all
 
 %% Simulation parameters
 
-run("initial_conditions.m")
+run("initial_conditions_init.m")
+run("maglev_init.m")
 
 %% Simulation launcher
 
