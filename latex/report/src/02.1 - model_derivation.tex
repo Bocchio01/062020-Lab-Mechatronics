@@ -222,44 +222,84 @@ For convenience, we can transform the second order differential equations into f
 The set of equations above represents the complete mathematical model of the \acrshort{mls} system.
 One can notice that the equations are both nonlinear and coupled, making the system hard to analyze and control.
 
-\paragraph{Literature simplifications}
+\paragraph{Neglecting velocity terms}
 
-Given the high complexity of the system due to the coupling between the electromagnetic and mechanical subsystems, it's common to simplify the model by supposing the ball velocity to be negligible in the equations of current dynamics.
-This assumption can be reasonable in some cases, in particular when targetting steady or quasi-steady positions of the ball.
-
-By doing so, the equations of motion can be simplified as:
-
-\begin{equation}
-    \begin{cases}
-        \dot{z} = v                                                                                                                                                                    \\
-        \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 - \frac{1}{2} C_d A \rho \dot{z}^2 + m g  \right) \\
-        \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + V_1 \right)                                                                                                                             \\
-        \dot{I_2} = L_2^{-1} \left(- R_2 I_2 + V_2 \right)
-    \end{cases}
-\end{equation}
-
-As we can see, the currents dynamics are now decoupled from the velocity of the ball (but still coupled to its position).
-This means that one can solve the equations of current dynamics independently from the equations of motion of the ball, making the system easier to analyze and control.
-
-Finally, we report here the most common and used formulation of the simplified model:
-
-\begin{equation}
-    \begin{cases}
-        \dot{z} = v                                                                                                                                                                    \\
-        \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 - \frac{1}{2} C_d A \rho \dot{z}^2 + m g  \right) \\
-        \dot{I_1} = f(z)^{-1} \left(K_{1I} V_1 + c_{1I} - I_1 \right)                                                                                                                  \\
-        \dot{I_2} = f(z)^{-1} \left(K_{2I} V_2 + c_{2I} - I_2 \right)
-    \end{cases}
-    \label{eq:equations_of_motion_simplified}
-\end{equation}
-
-Where:
+In the optics of simplifying the model and making it easier to analyze and control, we can neglect all the terms in Equation \ref{eq:equations_of_motion} that are linearly dependent on the velocity of the ball.
+This assumption is reasonable due to the fact that the velocity of the ball (as also reported in later section of the report) will never be grater that a few centimeters per second.
+This means that, considering $\dot{z} \approx 10 [mm/s]$, we can write the following inequality:
 
 \begin{equation}
     \begin{aligned}
-        f(z)   & = \frac{f_{IP1}}{f_{IP2}} e^{\left(-\frac{z}{f_{IP2}}\right)} \approx \frac{L_*(z)}{R_*} \\
-        K_{*I} & = \frac{1}{R_*}                                                                          \\
-        c_{*I} & = I_{*min}
+        \left| -\frac{1}{2} C_d A \rho \dot{z}^2 \right|            & << m g \\
+        \left| -\frac{\partial L_1}{\partial z} \dot{z} I_1 \right| & << V_1 \\
+        \left| -\frac{\partial L_2}{\partial z} \dot{z} I_2 \right| & << V_2
     \end{aligned}
-    \label{eq:equations_of_motion_simplified_additional}
+\end{equation}
+
+By doing so, we can simplify the equations of motion as:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} = v                                                                                                                                 \\
+        \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 + m g  \right) \\
+        \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + V_1 \right)                                                                                          \\
+        \dot{I_2} = L_2^{-1} \left(- R_2 I_2 + V_2 \right)
+    \end{cases}
+    \label{eq:equations_of_motion_no_velocity}
+\end{equation}
+
+
+\subsubsection{Literature model}
+\label{subsubsec:literature_model}
+
+In the literature, the model of the \acrshort{mls} system is often further simplified by considering empirical values associated with the inductances and resistances of the coils.
+In particular, starting from the just derived model in Equation \ref{eq:equations_of_motion_no_velocity}, one can rewrite currents dynamics as:
+
+\begin{equation}
+    \begin{aligned}
+        \dot{I_1} & = \frac{R_1}{L_1} \left(- I_1 + \frac{V_1}{R_1} \right) \\
+        \dot{I_2} & = \frac{R_2}{L_2} \left(- I_2 + \frac{V_2}{R_2} \right)
+    \end{aligned}
+\end{equation}
+
+Moreover, from experimental data performed on the system, one can derive the following empirical relations, valid at least in the region of interest:
+
+\begin{equation}
+    \begin{aligned}
+        \frac{L_1}{R_1} & \approx f_1(z) = \frac{f_{IP1}}{f_{IP2}} e^{\left(-\frac{z}{f_{IP2}}\right)}          \\
+        \frac{L_2}{R_2} & \approx f_2(z) = \frac{f_{IP1}}{f_{IP2}} e^{\left(-\frac{h - 2r - z}{f_{IP2}}\right)}
+    \end{aligned}
+    \label{eq:empirical_relations}
+\end{equation}
+
+
+\subsubsection{Black zone control}
+\label{subsubsec:black_zone_control}
+
+A final important remark has to be made about the so-called \textit{black zone} of the system, that are the regions where the current flowing through the coils is no more reachable.
+
+In particular, by simply connect the power supply to the coils, a minimum voltage will be applied and a certain amount of current will flow through the coils.
+In the following, we will refer to this current and voltage as $I_{*min}$ and $V_{*min}$ respectively.
+
+Because of this, the above derived model (Equation \ref{eq:equations_of_motion_no_velocity} and Equation \ref{eq:empirical_relations}) must be slightly modified to take into account the black zone of the system.
+
+In particular, Equation \ref{eq:equations_of_motion_no_velocity} can be rewritten as:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} = v                                                                                                                                 \\
+        \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 + m g  \right) \\
+        \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + V_1 + V_{1min} \right)                                                                               \\
+        \dot{I_2} = L_2^{-1} \left(- R_2 I_2 + V_2 + V_{2min} \right)
+    \end{cases}
+    \label{eq:equations_of_motion_no_velocity_final}
+\end{equation}
+
+While Equation \ref{eq:empirical_relations} can be rewritten as:
+
+\begin{equation}
+    \begin{aligned}
+        \dot{I_1} & = \frac{R_1}{L_1} \left(- I_1 + \frac{V_1}{R_1} + I_{1min} \right) \\
+        \dot{I_2} & = \frac{R_2}{L_2} \left(- I_2 + \frac{V_2}{R_2} + I_{2min} \right)
+    \end{aligned}
 \end{equation}

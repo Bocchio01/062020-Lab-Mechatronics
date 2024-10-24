@@ -1,0 +1,53 @@
+\subsection{State Space Representation}
+\label{subsec:state_space_representation}
+
+The linearization of the system is done by computing the Jacobian matrix of the system around the desired operating point.
+
+At the end of the process, we obtain the state space representation of the system:
+
+\begin{equation}
+    \begin{cases}
+        \dot{\mathbf{x}} = A \mathbf{x} + B \mathbf{u} \\
+        y = C \mathbf{x}
+    \end{cases}
+\end{equation}
+
+We can define the state vector $\mathbf{x}$ and the input vector $\mathbf{u}$ as:
+
+\begin{equation}
+    \mathbf{x} = \begin{bmatrix}
+        z   \\
+        v   \\
+        I_1 \\
+        I_2
+    \end{bmatrix}
+    \quad
+    \mathbf{u} = \begin{bmatrix}
+        0   \\
+        0   \\
+        V_1 \\
+        V_2
+    \end{bmatrix}
+\end{equation}
+
+The matrices $A$, $B$ and $C$ are then defined as:
+
+\begin{equation}
+    A = \begin{bmatrix}
+        ? & ? & ? & ? \\
+        ? & ? & ? & ? \\
+        ? & ? & ? & ? \\
+        ? & ? & ? & ?
+    \end{bmatrix}
+    \quad
+    B = \begin{bmatrix}
+        0 \\
+        0 \\
+        ? \\
+        ?
+    \end{bmatrix}
+    \quad
+    C = \begin{bmatrix}
+        1 & 0 & 0 & 0
+    \end{bmatrix}
+\end{equation}

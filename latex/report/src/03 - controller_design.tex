@@ -1,6 +1,46 @@
 \section{Controller Design}
 \label{sec:controller_design}
 
+\begin{ganttchart}[
+        y unit chart=5mm,
+        vgrid,
+        hgrid,
+        expand chart=\textwidth,
+        time slot format=little-endian,
+        progress=today,
+        today=\day-\month-\year,
+        progress label text="",
+        bar top shift=0.1,
+        bar height=0.8,
+    ]{19-09-2024}{05-12-2024}
+    \gantttitlecalendar{month=shortname} \\
+
+    % Modelling
+    \ganttgroup{Modelling}{19-09-2024}{17-10-2024} \\
+    \ganttbar{Literature}{19-09-2024}{03-10-2024} \\
+    \ganttbar{EoM}{25-09-2024}{03-10-2024} \\
+    \ganttbar{Parameters}{26-09-2024}{17-10-2024} \\
+
+    % Controllers
+    \ganttgroup{Controllers Design}{13-10-2024}{28-11-2024} \\
+    \ganttbar{PID}{13-10-2024}{17-10-2024} \\
+    \ganttbar{LQR}{13-10-2024}{17-10-2024} \\
+    \ganttmilestone{First levitation}{17-10-2024} \ganttnewline
+    \ganttbar{KF}{24-10-2024}{28-11-2024} \\
+    \ganttbar{EKF}{24-10-2024}{28-11-2024} \\
+    \ganttbar{Observers}{24-10-2024}{28-11-2024} \\
+    \ganttbar{Backstepping}{24-10-2024}{28-11-2024} \\
+    \ganttbar{Cascaded}{24-10-2024}{28-11-2024} \\
+    \ganttbar{Adaptive}{24-10-2024}{28-11-2024} \\
+    \ganttbar{Feedback Linearization}{24-10-2024}{28-11-2024} \\
+
+    % Documents
+    \ganttgroup{Documents Writing}{26-09-2024}{05-12-2024} \\
+    \ganttbar{Report}{26-09-2024}{05-12-2024} \\
+    \ganttbar{Presentation}{28-11-2024}{05-12-2024}
+\end{ganttchart}
+
+
 Based on the MLS2EM datasheet/manual, some suggestions are (page 5):
 
 \begin{itemize}
@@ -16,29 +56,29 @@ Based on the MLS2EM datasheet/manual, some suggestions are (page 5):
 From `Gruppo 1 MagLev', the following controllers are suggested:
 
 \begin{itemize}
-    \item prova\_2PID\_EKF.slx
-    \item prova\_3\_anelli\_stabilizzante.slx
-    \item prova\_3\_anelli\_stabilizzante\_v2.slx
-    \item prova\_backstepping.slx
-    \item prova\_cascata.slx
-    \item prova\_funzionante\_filtro.slx
-    \item prova\_funzionante\_finale\_PID2.slx
-    \item prova\_funzionante\_LQR.slx
-    \item prova\_funzionante\_LQR\_EKF.slx
-    \item prova\_funzionante\_LQR\_int.slx
-    \item prova\_funzionante\_LQR\_in\_PIDt.slx
-    \item prova\_funzionante\_LQR\_noint.slx
-    \item prova\_funzionante\_obs.slx
-    \item prova\_funzionante\_PP.slx
-    \item prova\_funzionante\_PP\_2EM.slx
-    \item prova\_funzionante\_PP\_EKF.slx
-    \item prova\_funzionante\_PP\_int.slx
-    \item prova\_funzionante\_PP\_int\_obs.slx
-    \item prova\_funzionante\_PP\_KF.slx
-    \item prova\_funzionante\_PP\_OBS.slx
-    \item prova\_funzionante\_PP\_OBS2.slx
-    \item prova\_funzionante\_sinusoidi.slx
-    \item prova\_pid\_variabile.slx
+    \item prova\_2PID\_EKF
+    \item prova\_3\_anelli\_stabilizzante
+    \item prova\_3\_anelli\_stabilizzante\_v2
+    \item prova\_backstepping
+    \item prova\_cascata
+    \item prova\_funzionante\_filtro
+    \item prova\_funzionante\_finale\_PID2
+    \item prova\_funzionante\_LQR
+    \item prova\_funzionante\_LQR\_EKF
+    \item prova\_funzionante\_LQR\_int
+    \item prova\_funzionante\_LQR\_in\_PIDt
+    \item prova\_funzionante\_LQR\_noint
+    \item prova\_funzionante\_obs
+    \item prova\_funzionante\_PP
+    \item prova\_funzionante\_PP\_2EM
+    \item prova\_funzionante\_PP\_EKF
+    \item prova\_funzionante\_PP\_int
+    \item prova\_funzionante\_PP\_int\_obs
+    \item prova\_funzionante\_PP\_KF
+    \item prova\_funzionante\_PP\_OBS
+    \item prova\_funzionante\_PP\_OBS2
+    \item prova\_funzionante\_sinusoidi
+    \item prova\_pid\_variabile
 \end{itemize}
 
 That should correspond to the following controllers:
@@ -51,7 +91,7 @@ That should correspond to the following controllers:
     \item Extended Kalman Filter (EKF)
     \item Observers
     \item Backstepping (?)
-    \item Cascaded controllers (outer: voltage, inner: current)
+    \item Cascaded controllers (outer: position, inner: current)
 \end{itemize}
 
 \input{src/03.1 - pd.tex}
