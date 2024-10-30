@@ -13,12 +13,21 @@ run("resistances_init.m")
 H = 98.00 * 1e-3; %[m]
 
 % Ball/object
-m = 60.54 * 1e-3;   %[kg]
+M = 60.54 * 1e-3;   %[kg]
 r = 61.25/2 * 1e-3; %[m]
 A = pi * r^2;       %[m^2]
 
-% Approximated current model
-ki   = 1 / R10; %[1/ohm]
-ci   = 2.383122e-02; %[A]
+% Theoretical current model
+I1min = 2.383122 * 1e-2; %[A]
+I2min = 2.591441 * 1e-2; %[A]
+U1min = 0.00498; %[MU]
+U2min = 0.00498; %[MU]
+m = 2.5165; %[A/MU]
+q = 0.0243; %[A]
+
+
+% Approximated current model (data from INTECO manual)
+ki   = 2.5165; %[1/ohm]
+ci   = 0.0243; %[A]
 fiP1 = 1.4142 * 1e-4;
 fiP2 = 4.5626 * 1e-3;

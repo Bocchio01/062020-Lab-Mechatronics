@@ -23,16 +23,21 @@
 
     % Controllers
     \ganttgroup{Controllers Design}{13-10-2024}{28-11-2024} \\
-    \ganttbar{PID}{13-10-2024}{17-10-2024} \\
-    \ganttbar{LQR}{13-10-2024}{17-10-2024} \\
+
+    % Sara
+    \ganttbar{PID}{13-10-2024}{28-11-2024} \\
+    \ganttbar{LQR}{13-10-2024}{28-11-2024} \\
     \ganttmilestone{First levitation}{17-10-2024} \ganttnewline
-    \ganttbar{KF}{24-10-2024}{28-11-2024} \\
-    \ganttbar{EKF}{24-10-2024}{28-11-2024} \\
-    \ganttbar{Observers}{24-10-2024}{28-11-2024} \\
+    \ganttbar{PP}{24-10-2024}{28-11-2024} \\
+
+    % Bocchio
     \ganttbar{Backstepping}{24-10-2024}{28-11-2024} \\
+    \ganttbar{Feedback Linearization}{24-10-2024}{28-11-2024} \\
+
+    % Daniele
+    \ganttbar{MPC}{24-10-2024}{28-11-2024} \\
     \ganttbar{Cascaded}{24-10-2024}{28-11-2024} \\
     \ganttbar{Adaptive}{24-10-2024}{28-11-2024} \\
-    \ganttbar{Feedback Linearization}{24-10-2024}{28-11-2024} \\
 
     % Documents
     \ganttgroup{Documents Writing}{26-09-2024}{05-12-2024} \\
@@ -41,58 +46,69 @@
 \end{ganttchart}
 
 
-Based on the MLS2EM datasheet/manual, some suggestions are (page 5):
+\begin{table}[H]
+
+    \centering
+
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Bocchio}       & \textbf{Daniele} & \textbf{Sara}  \\
+        \hline
+        Backstepping           & MPC              & PID            \\
+        Feedback Linearization & Cascaded         & LQR            \\
+        ~                      & Adaptive / Swarm & Pole Placement \\
+        \hline
+    \end{tabular}
+
+    \caption{Controllers assignment}
+    \label{tab:controllers_assignment}
+
+\end{table}
+
+\paragraph{Note 1:}
+
+When applicable, one should also design/implement/associate the following `logics':
 
 \begin{itemize}
-    \item SISO, MISO, BIBO controllers design
-    \item Intelligent/Adaptive Control
-    \item Frequency analysis
-    \item Nonlinear control
-    \item Hardware-in-the-Loop
-    \item Real-Time control
-    \item Closed Loop PID Control
+    \item Anti windup;
+    \item Gain scheduling \url{https://www.youtube.com/watch?v=g7R1USqJOUo};
+    \item Kalman Filter;
+    \item Other, search online.
 \end{itemize}
 
-From `Gruppo 1 MagLev', the following controllers are suggested:
+To see of one of the above logics is applicable, search for the theoretical assumptions \& hypothesis that the logic is based on. Of course, if the assumptions are not met the logic is not applicable.
 
-\begin{itemize}
-    \item prova\_2PID\_EKF
-    \item prova\_3\_anelli\_stabilizzante
-    \item prova\_3\_anelli\_stabilizzante\_v2
-    \item prova\_backstepping
-    \item prova\_cascata
-    \item prova\_funzionante\_filtro
-    \item prova\_funzionante\_finale\_PID2
-    \item prova\_funzionante\_LQR
-    \item prova\_funzionante\_LQR\_EKF
-    \item prova\_funzionante\_LQR\_int
-    \item prova\_funzionante\_LQR\_in\_PIDt
-    \item prova\_funzionante\_LQR\_noint
-    \item prova\_funzionante\_obs
-    \item prova\_funzionante\_PP
-    \item prova\_funzionante\_PP\_2EM
-    \item prova\_funzionante\_PP\_EKF
-    \item prova\_funzionante\_PP\_int
-    \item prova\_funzionante\_PP\_int\_obs
-    \item prova\_funzionante\_PP\_KF
-    \item prova\_funzionante\_PP\_OBS
-    \item prova\_funzionante\_PP\_OBS2
-    \item prova\_funzionante\_sinusoidi
-    \item prova\_pid\_variabile
-\end{itemize}
+\paragraph{Note 2:}
 
-That should correspond to the following controllers:
+Discretize whatever you design.
 
-\begin{itemize}
-    \item Simple PID
-    \item Variable PID (coefficients computed on the fly)
-    \item Linear Quadratic Regulator (LQR)
-    \item Kalman Filter (KF)
-    \item Extended Kalman Filter (EKF)
-    \item Observers
-    \item Backstepping (?)
-    \item Cascaded controllers (outer: position, inner: current)
-\end{itemize}
+Looks like Simulink and MagLev have been designed so to `automatically discretize' the controllers.
+However, I suspect that when we run a continuously designed controller on the MagLev, all the calculations are performed by Simulink and my poor PC and not the yellow power supply of the MagLev.
 
-\input{src/03.1 - pd.tex}
-% \input{src/03.2 - pd_online_coefficients.tex}
+Basically, if Marconi discovers that we haven't discretized anything, we are screwed.
+
+
+\clearpage
+\input{src/03.1 - pid.tex}
+
+\clearpage
+\input{src/03.2 - cascaded.tex}
+
+\clearpage
+\input{src/03.3 - pp.tex}
+
+\clearpage
+\input{src/03.4 - lqr.tex}
+
+\clearpage
+\input{src/03.5 - mpc.tex}
+
+\clearpage
+\input{src/03.6 - adaptive.tex}
+
+\clearpage
+\input{src/03.7 - backstepping.tex}
+
+\clearpage
+\input{src/03.8 - feedback_linearization.tex}
+

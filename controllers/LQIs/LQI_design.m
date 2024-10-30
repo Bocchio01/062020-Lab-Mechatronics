@@ -11,8 +11,8 @@ run("plant\init.m")
 % Load z0 and v0
 run("initial_conditions.m")
 
-[x_eq, u_eq] = compute_operating_point(z0);
-[A, B, C, D] = state_space_linearized(x_eq, u_eq);
+[x_eq, u_eq] = literature_operating_point(z0);
+[A, B, C, D] = literature_state_space_linearized(x_eq, u_eq);
 
 
 %% LQR controller design

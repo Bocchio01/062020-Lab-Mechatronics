@@ -116,7 +116,7 @@ Notice that with respect to traditional purely mechanical systems, we also have 
 By doing so, we can write the kinetic energy of the system as:
 
 \begin{equation}
-    \mathcal{T} = \frac{1}{2} m \dot{z}^2 + \frac{1}{2} L_1(z, T_1) \dot{q_1}^2 + \frac{1}{2} L_2(z, T_2) \dot{q_2}^2
+    \mathcal{T} = \frac{1}{2} m \dot{z}^2 + \frac{1}{2} L_1(z, \dot{q_1}, T_1) \dot{q_1}^2 + \frac{1}{2} L_2(z, \dot{q_2}, T_2) \dot{q_2}^2
     \label{eq:kinetic_energy}
 \end{equation}
 
@@ -126,7 +126,7 @@ It follows that $\dot{q_1}$ and $\dot{q_2}$ are the currents flowing through the
 The dissipated energy of the system can be written as:
 
 \begin{equation}
-    \mathcal{D} = \int_{\dot{z}(\cdot)} \frac{1}{2} C_d A \rho \dot{z}^2 d\dot{z} + \int_{\dot{q_1}(\cdot)} R_1(T_1) \dot{q_1} d\dot{q_1} + \int_{\dot{q_2}(\cdot)} R_2(T_2) \dot{q_2} d\dot{q_2}
+    \mathcal{D} = \int_{\dot{z}(\cdot)} \frac{1}{2} C_d A \rho \dot{z}^2 d\dot{z} + \int_{\dot{q_1}(\cdot)} R_1(\dot{q_1}, T_1) \dot{q_1} d\dot{q_1} + \int_{\dot{q_2}(\cdot)} R_2(\dot{q_2}, T_2) \dot{q_2} d\dot{q_2}
     \label{eq:dissipated_energy}
 \end{equation}
 
@@ -149,11 +149,14 @@ Finally, the generalized input to the system can be evaluated as:
 \end{equation}
 
 For convenience, we have chosen to consider both the external power supplied to the coils and the gravitational force as potential energy terms and not as generalized inputs.
-Notice also the minus sign in the potential energy term, which is due to the fact that the gravitational force increases the potential energy with respect to the chosen reference frame (positive downwards).
+Notice also the minus sign in the gravitational potential energy term, which is due to the fact that the gravitational force increases the potential energy with respect to the chosen reference frame (positive downwards).
 
-\paragraph{Temperature dependence components}
+\paragraph{Electrical components model}
 
-Before proceeding, it's necessary to explicitly the dependence of the inductance and resistance terms on the temperature of the coils.
+\hl{Complete also with the assumption of current independence for both the elements.}
+
+Before proceeding, it's necessary to explicitly the dependence of the inductance and resistance terms on both the currents inside the coils and the temperature of the coils.
+
 However, we can assume that in first approximation the sensitivity of both the electrical components to the temperature is negligible.
 This is strong and possibly incorrect assumption, but it allows us to simplify the model and focus on the main dynamics of the system.
 
@@ -161,10 +164,10 @@ For the assumption stated above, we can write the resistance terms as:
 
 \begin{equation}
     \begin{aligned}
-        R_1 & = R_1(T_1) = R_{10} \\
-        R_2 & = R_2(T_2) = R_{20}
+        R_1 & = R_1(\dot{q_1}, T_1) = R_{10} \\
+        R_2 & = R_2(\dot{q_2}, T_2) = R_{20}
     \end{aligned}
-    \label{eq:resistance}
+    \label{eq:model_for_resistance}
 \end{equation}
 
 Where $R_{*0}$ are the resistances of the coils at ambient temperature with negligible current flowing through them.
@@ -173,20 +176,20 @@ Instead, we can write the inductance terms as:
 
 \begin{equation}
     \begin{aligned}
-        L_1 & = L_1(z, T_1) = L_{10} + L_{1z} e^{-a_1 z}            \\
-        L_2 & = L_2(z, T_2) = L_{20} + L_{2z} e^{-a_2 (h - 2r - z)}
+        L_1 & = L_1(z, \dot{q_1}, T_1) = L_{10} + L_{1z} e^{-a_1 z}            \\
+        L_2 & = L_2(z, \dot{q_2}, T_2) = L_{20} + L_{2z} e^{-a_2 (h - 2r - z)}
     \end{aligned}
-    \label{eq:inductance}
+    \label{eq:model_for_inductance}
 \end{equation}
 
 Where $L_{*0}$ are the inductances when no objects are present in the magnetic field volume, while $L_{*z}$ and $a_*$ are coefficients that take into account the variation of the inductance due to the presence of the ball in the magnetic field.
 
 \paragraph{Equations of motion}
 
-To derive the equations of motion of the system, we can substitute the kinetic, potential, and dissipated energy terms into the Lagrange's equation \ref{eq:lagrange_equation}.
+To derive the equations of motion of the system, we can substitute the kinetic, dissipated, and potential energy terms into the Lagrange's equation \ref{eq:lagrange_equation}.
 Notice that by analyzing the system, we can see that the generalized coordinates are $z$, $q_1$, and $q_2$, and so the vector of generalized coordinates is $\mathbf{u} = [z, q_1, q_2]^T$.
 
-Once $\mathbf{u}$ has been identify, the procedure to derive the equations of motion is straightforward.
+Once $\mathbf{u}$ has been identified, the procedure to derive the equations of motion is straightforward.
 Following Equation \ref{eq:lagrange_equation}, we can write the following system of equations:
 
 \begin{equation}
@@ -216,7 +219,7 @@ For convenience, we can transform the second order differential equations into f
         \dot{I_1} = L_1^{-1} \left(- \frac{\partial L_1}{\partial z} \dot{z} I_1 - R_1 I_1 + V_1 \right)                                                                               \\
         \dot{I_2} = L_2^{-1} \left(- \frac{\partial L_2}{\partial z} \dot{z} I_2 - R_2 I_2 + V_2 \right)
     \end{cases}
-    \label{eq:equations_of_motion}
+    \label{eq:equations_of_motion_full}
 \end{equation}
 
 The set of equations above represents the complete mathematical model of the \acrshort{mls} system.
@@ -224,7 +227,7 @@ One can notice that the equations are both nonlinear and coupled, making the sys
 
 \paragraph{Neglecting velocity terms}
 
-In the optics of simplifying the model and making it easier to analyze and control, we can neglect all the terms in Equation \ref{eq:equations_of_motion} that are linearly dependent on the velocity of the ball.
+In the optics of simplifying the model and making it easier to analyze and control, we can neglect all the terms in Equation \ref{eq:equations_of_motion_full} that are linearly dependent on the velocity of the ball.
 This assumption is reasonable due to the fact that the velocity of the ball (as also reported in later section of the report) will never be grater that a few centimeters per second.
 This means that, considering $\dot{z} \approx 10 [mm/s]$, we can write the following inequality:
 
@@ -245,31 +248,7 @@ By doing so, we can simplify the equations of motion as:
         \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + V_1 \right)                                                                                          \\
         \dot{I_2} = L_2^{-1} \left(- R_2 I_2 + V_2 \right)
     \end{cases}
-    \label{eq:equations_of_motion_no_velocity}
-\end{equation}
-
-
-\subsubsection{Literature model}
-\label{subsubsec:literature_model}
-
-In the literature, the model of the \acrshort{mls} system is often further simplified by considering empirical values associated with the inductances and resistances of the coils.
-In particular, starting from the just derived model in Equation \ref{eq:equations_of_motion_no_velocity}, one can rewrite currents dynamics as:
-
-\begin{equation}
-    \begin{aligned}
-        \dot{I_1} & = \frac{R_1}{L_1} \left(- I_1 + \frac{V_1}{R_1} \right) \\
-        \dot{I_2} & = \frac{R_2}{L_2} \left(- I_2 + \frac{V_2}{R_2} \right)
-    \end{aligned}
-\end{equation}
-
-Moreover, from experimental data performed on the system, one can derive the following empirical relations, valid at least in the region of interest:
-
-\begin{equation}
-    \begin{aligned}
-        \frac{L_1}{R_1} & \approx f_1(z) = \frac{f_{IP1}}{f_{IP2}} e^{\left(-\frac{z}{f_{IP2}}\right)}          \\
-        \frac{L_2}{R_2} & \approx f_2(z) = \frac{f_{IP1}}{f_{IP2}} e^{\left(-\frac{h - 2r - z}{f_{IP2}}\right)}
-    \end{aligned}
-    \label{eq:empirical_relations}
+    \label{eq:reduced_equations_of_motion}
 \end{equation}
 
 
@@ -281,25 +260,44 @@ A final important remark has to be made about the so-called \textit{black zone} 
 In particular, by simply connect the power supply to the coils, a minimum voltage will be applied and a certain amount of current will flow through the coils.
 In the following, we will refer to this current and voltage as $I_{*min}$ and $V_{*min}$ respectively.
 
-Because of this, the above derived model (Equation \ref{eq:equations_of_motion_no_velocity} and Equation \ref{eq:empirical_relations}) must be slightly modified to take into account the black zone of the system.
+Because of this, the above derived model must be slightly modified to take into account the black zone of the system.
 
-In particular, Equation \ref{eq:equations_of_motion_no_velocity} can be rewritten as:
+In particular, the set of Equations \ref{eq:reduced_equations_of_motion} can be rewritten as:
 
 \begin{equation}
     \begin{cases}
         \dot{z} = v                                                                                                                                 \\
         \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 + m g  \right) \\
-        \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + V_1 + V_{1min} \right)                                                                               \\
-        \dot{I_2} = L_2^{-1} \left(- R_2 I_2 + V_2 + V_{2min} \right)
+        \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + V_1 + R_1 I_{1min} \right)                                                                           \\
+        \dot{I_2} = L_2^{-1} \left(- R_2 I_2 + V_2 + R_2 I_{2min} \right)
     \end{cases}
-    \label{eq:equations_of_motion_no_velocity_final}
+    \label{eq:reduced_equations_of_motion_final}
 \end{equation}
 
-While Equation \ref{eq:empirical_relations} can be rewritten as:
+
+\subsubsection{Literature model}
+\label{subsubsec:literature_model}
+
+\hl{To be fixed and adjusted.}
+
+In the literature, the model of the \acrshort{mls} system is often further simplified by considering empirical values associated with the inductances and resistances of the coils.
+In particular, from the \texttt{Inteco} manual, the following set of equations is reported:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} = v                                                                                                                                 \\
+        \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 + m g  \right) \\
+        \dot{I_1} = \frac{1}{f_1(z)} \left(- I_1 + ki U_1 + ci \right)                                                                              \\
+        \dot{I_2} = \frac{1}{f_2(z)} \left(- I_2 + ki U_2 + ci \right)
+    \end{cases}
+    \label{eq:simplified_equations_of_motion_final}
+\end{equation}
+
+Where $f_1(z)$ and $f_2(z)$ are empirical functions that take into account the variation of the inductances due to the presence of the ball in the magnetic field and have the following form:
 
 \begin{equation}
     \begin{aligned}
-        \dot{I_1} & = \frac{R_1}{L_1} \left(- I_1 + \frac{V_1}{R_1} + I_{1min} \right) \\
-        \dot{I_2} & = \frac{R_2}{L_2} \left(- I_2 + \frac{V_2}{R_2} + I_{2min} \right)
+        f_1(z) & = \frac{f_{IP1}}{f_{IP2}} e^{\left(-\frac{z}{f_{IP2}}\right)}          \\
+        f_2(z) & = \frac{f_{IP1}}{f_{IP2}} e^{\left(-\frac{h - 2r - z}{f_{IP2}}\right)}
     \end{aligned}
 \end{equation}

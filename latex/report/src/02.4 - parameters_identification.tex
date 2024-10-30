@@ -6,14 +6,14 @@ In order to control the system, we need to identify its parameters.
 To do so, different tests type will be performed, such as:
 
 \begin{enumerate}
-    \item \textbf{Direct Measurement:} The first step is to measure all the quantity of the system that can be directly measured or retrived from well established literature.
-    \item \textbf{RL Circuit Identification:} The first step is to identify the parameters of the RL circuit. This will be done by applying a step input to the system and measuring the current;
-    \item \textbf{Characterization of ball influence:} The second step is to identify how the presence of the ball affects the coils and the magnetic field. This will be done by measuring the inductance of the coils with the ball positioned at different heights.
+    \item \textbf{Direct Measurement:} The first step is to measure all the quantity of the system that can be directly measured or retrieved from well established literature.
+    \item \textbf{RL Circuit Identification:} The second step is to identify the parameters of the RL circuit. This will be done by applying a step input to the system and measuring the current;
+    \item \textbf{Characterization of ball influence:} The last step is to identify how the presence of the ball affects the coils and the magnetic field. This will be done by measuring the inductance of the coils with the ball positioned at different heights.
 \end{enumerate}
 
 All the above tests that involve any kind of measurement from the system will be performed leveraging the data acquisition system included in the \texttt{Inteco} control unit.
 
-Based on the mathematical model developed in Section \ref{subsec:model_derivation} and the set of Equations \ref{eq:equations_of_motion} and Equations \ref{eq:equations_of_motion_simplified}, the following parameters need to be identified:
+Based on the mathematical model developed in Section \ref{subsec:model_derivation} and the set of Equations \ref{eq:reduced_equations_of_motion_final} and Equations \ref{eq:simplified_equations_of_motion_final}, the following parameters need to be identified:
 
 \begin{table}[H]
 
@@ -30,8 +30,8 @@ Based on the mathematical model developed in Section \ref{subsec:model_derivatio
         $L_{*0}$          & Static inductance of the coils     & $H$           & 2                \\
         $L_{*z}$ \& $a_*$ & Dynamic inductance characteristics & $H$ \& $1/m$  & 3                \\
         $R_{*0}$          & Static resistance of the coils     & $\Omega$      & 2                \\
-        $f_{IP1}$         & Empirical parameters               & $m\cdot s$    & /                \\
-        $f_{IP2}$         & Empirical parameters               & $m$           & /                \\
+        $f_{IP1}$         & Empirical parameters               & $m\cdot s$    & 1                \\
+        $f_{IP2}$         & Empirical parameters               & $m$           & 1                \\
         $I_{*min}$        & Minimum current                    & $A$           & 2                \\
         $I_{*max}$        & Maximum current                    & $A$           & 2                \\
         $V_{*min}$        & Minimum voltage                    & $V$           & 2                \\

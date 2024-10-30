@@ -1,6 +1,6 @@
 % Linear Quadratic Regulator controller design
 
-clc
+% clc
 clear variables
 close all
 
@@ -9,9 +9,11 @@ run("initial_conditions_init.m")
 
 %% Linearized state space representation
 
-[x_eq, u_eq] = compute_operating_point(z0);
+[x_eq, u_eq] = operating_point(z0);
 [A, B, C, D] = state_space_linearized(x_eq, u_eq);
 
+[x_eq1, u_eq1] = literature_operating_point(z0);
+[A1, B1, C1, D1] = literature_state_space_linearized(x_eq1, u_eq1);
 
 %% LQR controller design
 
@@ -24,16 +26,19 @@ Q = diag([30 1e-3 1e+2 1e+2]);
 R = diag(5.5);
 
 [LQR, ~, poles] = lqr(A, B, Q, R);
+% [LQR, ~, poles] = lqr(A1, B1, Q, R);
+
+% [LQRd, ~, poles] = lqrd(A, B, Q, R, 0.003);
 
 save("controllers\LQRs\LQR", "LQR");
 
 
 %% Closed loop system
 
-% sys = ss((A - B*K), B, C, D);
-% [y, t, x] = initial(sys, [z0, v0, ci, ci]);
+% sys = ss((A - B*LQR), B, C, D);
+% [y, t, x] = initial(sys, [z0, v0, I1min, I2min]);
 % 
 % step(-sys)
-
+% 
 % figure
 % plot(t, y);

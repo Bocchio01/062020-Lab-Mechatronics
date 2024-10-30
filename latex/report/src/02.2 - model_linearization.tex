@@ -1,4 +1,35 @@
 \subsection{Model Linearization}
 \label{subsec:model_linearization}
 
-Linearization is made via Jacobian matrices.
+The model derived in the previous subsection is highly non-linear.
+In order to begin able to apply linear control techniques, it is necessary to linearize the model around a given operating point.
+
+From now on, we will suppose the operating point as:
+
+\begin{equation}
+    \mathbf{x}_{op} =
+    \begin{bmatrix}
+        x_{op}     \\
+        v_{op} = 0 \\
+        I_{1op}    \\
+        I_{2op}
+    \end{bmatrix}
+\end{equation}
+
+By doing so, the linearized model can be obtained by performing a Taylor expansion up to the first order terms of the non-linear model (Equations \ref{eq:reduced_equations_of_motion_final} or Equations \ref{eq:simplified_equations_of_motion_final}) around the operating point.
+
+Before performing the linearization, we briefly recall the general form of a Taylor expansion of a function $f(\mathbf{x})$ around a point $\mathbf{x}_{op}$:
+
+\begin{equation}
+    f(\mathbf{x}) \approx f(\mathbf{x}_{op}) + \nabla f(\mathbf{x}_{op}) \cdot (\mathbf{x} - \mathbf{x}_{op})
+\end{equation}
+
+Where $\nabla f(\mathbf{x}_{op})$ is the gradient of $f(\mathbf{x})$ evaluated at $\mathbf{x}_{op}$.
+
+By applying the Taylor expansion to the non-linear model, the linearized model can be obtained as:
+
+\begin{equation}
+    \dot{\mathbf{x}} \approx \mathbf{f}(\mathbf{x}_{op}) + \frac{\partial \mathbf{f}}{\partial \mathbf{x}} \Bigg|_{\mathbf{x}_{op}} \cdot (\mathbf{x} - \mathbf{x}_{op})
+\end{equation}
+
+Considering now the set of Equations \ref{eq:reduced_equations_of_motion_final}, the linearized model can be obtained as:

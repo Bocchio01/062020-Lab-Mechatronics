@@ -5,6 +5,7 @@ data = struct( ...
         'position', [], ...
         'velocity', [], ...
         'current', [], ...
+        'control', [], ...
         'voltage', []);
 
 if (nargin == 1)
@@ -17,14 +18,16 @@ try
     data.position = measurements(2, :)';
     data.velocity = measurements(3, :)';
     data.current = measurements(3 + electromagnet_idx, :)';
-    data.voltage = measurements(5 + electromagnet_idx, :)';
+    data.control = measurements(5 + electromagnet_idx, :)';
 catch
     MLS2EMExpData = load(file_path).MLS2EMExpData;
     data.time = MLS2EMExpData.time;
     data.position = MLS2EMExpData.signals(1).values;
     data.velocity = MLS2EMExpData.signals(2).values;
     data.current = MLS2EMExpData.signals(3).values(:, electromagnet_idx);
-    data.voltage = MLS2EMExpData.signals(4).values(:, electromagnet_idx);
+    data.control = MLS2EMExpData.signals(4).values(:, electromagnet_idx);
 end
+
+data.voltage = arrayfun(@(x) interp1(0:0.25:1, [0.0043, 2.55, 5.55, 8.6, 11.5], x), data.control);
 
 end

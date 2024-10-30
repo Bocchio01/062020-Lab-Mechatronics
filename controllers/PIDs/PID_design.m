@@ -9,8 +9,8 @@ run("initial_conditions_init.m")
 
 %% Linearized state space representation
 
-[x_eq, u_eq] = compute_operating_point(z0);
-[A, B, C, D] = state_space_linearized(x_eq, u_eq);
+[x_eq, u_eq] = literature_operating_point(z0);
+[A, B, C, D] = literature_state_space_linearized(x_eq, u_eq);
 
 
 %% Transfer function of the plant (linearized)
@@ -31,6 +31,7 @@ switch 2
     case 2
         % controlSystemDesigner result
         PID = pid(-314, -1.81e+03, -13.6);
+        % PID = pid(-1.17e+03, -3.42e+03, -99.4);
     case 3
         % Rosinova parameters
         PID = pid(-125, -377.830, -5.65);
@@ -48,10 +49,10 @@ save("controllers\PIDs\PID", "PID");
 
 %% Plots
 
-figure
-hold on
-grid on
-
-asymp(L);
-[Gain_margin, Phase_margin, Phase_crossover_frequency, Gain_crossover_frequency] = margin(L);
-rlocus(L);
+% figure
+% hold on
+% grid on
+% 
+% asymp(L);
+% [Gain_margin, Phase_margin, Phase_crossover_frequency, Gain_crossover_frequency] = margin(L);
+% rlocus(L);
