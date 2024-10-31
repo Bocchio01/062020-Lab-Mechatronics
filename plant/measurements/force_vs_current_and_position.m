@@ -107,7 +107,7 @@ grid on
 
 plot(position, -sensitivity, 'ko');
 plot(position, -sensitivity_inductance_model([L1z a], position), 'r');
-plot(position, -sensitivity_inductance_model([4.024294e-02 2.451996e+02], position), 'b');
+plot(position, -sensitivity_inductance_model([2.5*L1z 1.2*a], position), 'b');
 
 
 title('Inductance sensitivity to object distance dLdx')
@@ -123,10 +123,9 @@ z_range = position(:);
 I_range = current(:);
 [Z_grid, I_grid] = meshgrid(z_range, I_range);
 
-L_model = force_model([4.024294e-02 2.451996e+02], [Z_grid(:), I_grid(:)]); 
-L_model = reshape(L_model, size(Z_grid));
-
-mesh(Z_grid, I_grid, L_model, 'EdgeColor', 'k', 'FaceAlpha', 0.5);
+surf(Z_grid, I_grid, reshape(force_model([L1z a], [Z_grid(:), I_grid(:)]), size(Z_grid)), 'EdgeColor', 'k', 'FaceAlpha', 0.5);
+hold on
+plot3(position, flip(current), -1/2 * sensitivity_inductance_model([L1z a], position) .* flip(current.^2), 'ro', 'LineWidth', 5)
 
 colormap(jet);
 
@@ -136,16 +135,15 @@ zlabel('F [N]');
 title('3D Surface Plot of F(z, I)');
 
 
-
 %% Functions
 
 function sensitivity = sensitivity_inductance_model(b, x)
 
-position = x(:, 1);
-L1z = b(1);
-a = b(2);
+z = x(:, 1);
+Lz = b(1);
+az = b(2);
 
-sensitivity = -a*L1z*exp(-a*position);
+sensitivity = -az * Lz * exp(-az * z);
 
 % Sanity checks for fitnlm stability
 sensitivity(isinf(sensitivity)) = sign(x(isinf(sensitivity))) .* 1e100;
@@ -158,8 +156,8 @@ function F = force_model(b, x)
 z = x(:, 1);
 I = x(:, 2);
 
-az = b(2);
 Lz = b(1);
+az = b(2);
 
 F = abs(-1/2 * az * Lz * exp(-az * z) .* I.^2);
 

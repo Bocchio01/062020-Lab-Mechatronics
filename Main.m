@@ -15,9 +15,9 @@
 % 
 % Reference course =  062020 (Politecnico di Milano A.Y. 2024/2025)
 
-clc
-clear variables
-close all
+% clc
+% clear variables
+% close all
 
 %% Simulation parameters
 
@@ -34,26 +34,19 @@ nexttile
 hold on
 grid on
 
-L0 = 1.106699e-02;
-az = 2.451996e+02;
-Lz = 4.024294e-02;
-aI = 9.770851e-02;
-LI = 3.750493e-02;
+run("maglev_init.m")
+load("inductance_analysis.mat")
 
-R0 = 4.184700e+00;
-aIR = 1.872863e+00;
-RI = 1.762355e+00;
-
-I = 0.8552;
-I = @(x) exp(500*x) - 0.5;
 I = @(x) 0.8552;
+I = @(x) exp(10000 * x);
 
-L  = @(x, I) L0 + Lz * exp(-az * x) + LI * exp(-aI * I);
-R = @(I) R0 + RI * exp(-aIR * I);
-fi = @(x) fiP1 / fiP2 * exp(-x / fiP2);
+dLdI = @(x, I) -aI * LI * exp(-aI * I) .*  exp(-az * 1000 * x);
+L  = @(x, I) L0 + Lz * exp(-az * x) + LI * exp(-aI * I) .*  exp(-az * 1000 * x) + dLdI(x, I);
 
 
-fplot(@(x) L(x, I(x)) ./ R(I(x)), [0 2e-2]);
-fplot(@(x) fi(x), [0 2e-2]);
+L  = @(x, I) 0 + 2.5*L1z * exp(-1.2*a * x);
+
+fplot(@(x) L(x, I(x)), [0 2e-2]);
+fplot(@(x) R10 * fiP1 / fiP2 * exp(-x / fiP2), [0 2e-2]);
 
 legend('Theoretical', 'Approximated')

@@ -1,19 +1,19 @@
-% clc
+clc
 clear variables
-% close all
+close all
 
 %% Get number of files to be loaded
 
 electromagnet_idx = 1;
-% file_path = ['plant\measurements\data\inductance\' num2str(electromagnet_idx)];
-file_path = ['plant\measurements\data\Induttanza' num2str(electromagnet_idx)];
+file_path = 'plant\measurements\data\inductance\';
+% file_path = ['plant\measurements\data\Induttanza' num2str(electromagnet_idx)];
 
 files_data = struct( ...
     'path', file_path, ...
     'dir_content', [], ...
     'N_files', 0);
 
-files_data.dir_content = dir([files_data.path '\*.mat']);
+files_data.dir_content = flip(dir([files_data.path '\' num2str(electromagnet_idx) '*.mat']));
 files_data.N_files = length(files_data.dir_content);
 
 
@@ -36,14 +36,13 @@ end
 
 clear file_idx
 
-%% Fitting current transient to compute L, R, and annotate z, I
+%% Fitting current transient to compute L, and annotate z, I
 % Once z, I and L are know, we can fit out inductance model on these data
 
-N_transients = 8;
+N_transients = 10;
 
 z = zeros(files_data.N_files, N_transients);
 I = zeros(files_data.N_files, N_transients);
-R = zeros(files_data.N_files, N_transients);
 L = zeros(files_data.N_files, N_transients);
 
 for file_idx = 1:files_data.N_files
@@ -55,10 +54,9 @@ for file_idx = 1:files_data.N_files
     assert(length(transient_idxs) == N_transients, ['Not enough transients found in file #' num2str(file_idx)])
 
     % Fitting current dynamics to compute L and R
-    R_guess = 4.40; %[ohm]
     L_guess = 0.125; %[H]
 
-    coefficients_guess = [R_guess L_guess];
+    coefficients_guess = L_guess;
 
     for transient_idx = 1:2:N_transients-1
 
@@ -76,8 +74,7 @@ for file_idx = 1:files_data.N_files
 
         z(file_idx, transient_idx) = mean(measurements.position);
         I(file_idx, transient_idx) = mean(current(floor(1/2 * length(current)):end));
-        R(file_idx, transient_idx) = fitted_model.Coefficients.Estimate(1);
-        L(file_idx, transient_idx) = fitted_model.Coefficients.Estimate(2);
+        L(file_idx, transient_idx) = fitted_model.Coefficients.Estimate(1);
 
     end
 
@@ -85,11 +82,10 @@ end
 
 z = z(:, 1:2:N_transients-1);
 I = I(:, 1:2:N_transients-1);
-R = R(:, 1:2:N_transients-1);
 L = L(:, 1:2:N_transients-1);
 
 
-%% Fitting the previously computed L and R over our exponential models
+%% Fitting the previously computed L over our exponential models
 
 L0_guess = 0.125; %[H]
 az_guess  = 0.055; %[1/m]
@@ -111,24 +107,6 @@ aI = fitted_model.Coefficients.Estimate(4);
 LI = fitted_model.Coefficients.Estimate(5);
 
 
-%% Fitting the previously computed L and R over our exponential models
-
-R0_guess = 4.40; %[ohm]
-aI_guess  = 0.055; %[1/m]
-RI_guess = 0.125; %[H]
-
-coefficients_guess = [R0_guess aI_guess RI_guess];
-
-fitted_model = fitnlm( ...
-    reshape(I, 1, [])', reshape(R, 1, [])', ...
-    @resistance_model, coefficients_guess, ...
-    'Options', statset('TolFun', 1e-10));
-
-R0 = fitted_model.Coefficients.Estimate(1);
-aIR = fitted_model.Coefficients.Estimate(2);
-RI = fitted_model.Coefficients.Estimate(3);
-
-
 %% Results
 
 fprintf([ ...
@@ -140,12 +118,7 @@ fprintf([ ...
     '\tLI:\t%d\n' ...
     ], electromagnet_idx, L0, az, Lz, aI, LI);
 
-fprintf([ ...
-    'Electromagnet EM%d:\n' ...
-    '\tR0:\t%d\n' ...
-    '\taIR:\t%d\n' ...
-    '\tRI:\t%d\n' ...
-    ], electromagnet_idx, R0, aIR, RI);
+save("inductance_analysis", "LI", "aI", "Lz", "az", "L0");
 
 
 %% Plots
@@ -155,7 +128,7 @@ set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
 
 % Current dynamics fitting
-figure('Name', 'Current dynamics fitting')
+% figure('Name', 'Current dynamics fitting')
 nexttile
 hold on
 grid on
@@ -173,7 +146,7 @@ for transient_idx = 1:2:N_transients-1
     time = measurements.time(start_idx : final_idx) - measurements.time(start_idx);
 
     plot(time, current, '--k');
-    plot(time, current_model([R(file_idx, transient_idx/2+0.5), L(file_idx, transient_idx/2+0.5)], [time voltage]), 'r')
+    plot(time, current_model(L(file_idx, transient_idx/2+0.5), [time voltage]), 'r')
 
 end
 
@@ -182,21 +155,20 @@ xlabel('Time [s]')
 ylabel('Current [A]')
 legend('Measured', 'Fitted')
 
-% Plots
-figure('Name', 'Electrical components characterization (L(z, I) and R(z, I))')
+% Inductance modelling
+% figure('Name', 'Inductance modelling L(z, I))')
 nexttile
 
-surf(z, I, L);
+surf(z, I, L, 'FaceAlpha', 1);
 hold on
 
 z_range = linspace(min(z(:)), max(z(:)), 100);
 I_range = linspace(min(I(:)), max(I(:)), length(z_range));
 [Z_grid, I_grid] = meshgrid(z_range, I_range);
 
-L_model = inductance_model([L0, az, Lz, aI, LI], [Z_grid(:), I_grid(:)]); 
-L_model = reshape(L_model, size(Z_grid));
-
-mesh(Z_grid, I_grid, L_model, 'EdgeColor', 'k', 'FaceAlpha', 0.5);
+mesh(Z_grid, I_grid, reshape(inductance_model([L0, az, Lz, aI, LI], [Z_grid(:), I_grid(:)]), size(Z_grid)), ...
+    'EdgeColor', 'k', ...
+    'FaceAlpha', 0.5);
 
 colormap(jet);
 
@@ -205,28 +177,7 @@ ylabel('I [A]');
 zlabel('L [H]');
 title('3D Surface Plot of L(z, I)');
 
-
-
-nexttile
-
-surf(z, I, R);
-hold on
-
-z_range = linspace(min(z(:)), max(z(:)), 100);
-I_range = linspace(min(I(:)), max(I(:)), length(z_range));
-[Z_grid, I_grid] = meshgrid(z_range, I_range);
-
-L_model = resistance_model([R0, aIR, RI], [I_grid(:)]); 
-L_model = reshape(L_model, size(Z_grid));
-
-mesh(Z_grid, I_grid, L_model, 'EdgeColor', 'k', 'FaceAlpha', 0.5);
-
-colormap(jet);
-
-xlabel('z [mm]');
-ylabel('I [A]');
-zlabel('R [ohm]');
-title('3D Surface Plot of R(z, I)');
+axis tight
 
 
 
@@ -234,10 +185,13 @@ title('3D Surface Plot of R(z, I)');
 
 function I = current_model(b, x)
 
+run("resistances_init.m")
+electromagnet_idx = evalin("base", "electromagnet_idx");
+
 t = x(:, 1);
 V = x(:, 2);
-R = b(1);
-L = b(2);
+L = b(1);
+R = (electromagnet_idx == 1) * R10 + (electromagnet_idx == 2) * R20;
 
 I = V(end) / R - (V(end) - V(1)) / R * exp(-1 * R / L * t);
 
@@ -259,26 +213,10 @@ aI = b(4);
 LI = b(5);
 
 L = L0 + Lz * exp(-az * z) + LI * exp(-aI * I);
+% L = L0 + Lz * exp(-az * z);
 
 % Sanity checks for fitnlm stability
 L(isinf(L)) = sign(x(isinf(L))) .* 1e100;
 L(isnan(L)) = 1e100;
-
-end
-
-
-function R = resistance_model(b, x)
-
-I = x(:, 1);
-
-R0 = b(1);
-aI = b(2);
-RI = b(3);
-
-R = R0 + RI * exp(-aI * I);
-
-% Sanity checks for fitnlm stability
-R(isinf(R)) = sign(x(isinf(R))) .* 1e100;
-R(isnan(R)) = 1e100;
 
 end

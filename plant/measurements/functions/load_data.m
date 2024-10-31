@@ -28,6 +28,6 @@ catch
     data.control = MLS2EMExpData.signals(4).values(:, electromagnet_idx);
 end
 
-data.voltage = arrayfun(@(x) interp1(0:0.25:1, [0.0043, 2.55, 5.55, 8.6, 11.5], x), data.control);
+data.voltage = arrayfun(@(x) interp1(0:0.1:1, [0.043, 0.613, 1.768, 2.93, 4.10, 5.26, 6.43, 7.59, 8.80, 9.96, 11.06], x), data.control);
 
 end
