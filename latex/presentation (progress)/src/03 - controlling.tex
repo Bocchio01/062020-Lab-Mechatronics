@@ -1,2 +1,59 @@
 \section{Controlling}
 
+\begin{frame}{PID Controller}
+
+\label{subsec:pid}
+
+The Proportional-Integral-Derivative (PID) controller is a simple linear controller that uses the error signal, its history and its derivative to compute the control signal.
+
+\begin{equation}
+    u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau)dt + K_d \frac{de(t)}{dt} = K_p \left(e(t) + \frac{1}{T_i} \int_{0}^{t} e(\tau)dt + T_d \frac{de(t)}{dt}\right)
+\end{equation}
+
+Where $K_p$, $K_i$ and $K_d$ are the proportional, integral and derivative gains, respectively $K_p$ = -314 $K_i$ = -1810 $K_d$ = -13.6. $T_i$ and $T_d$ are the integral and derivative time constants respectively. Using PID we controlled the ball around the point where we linearized the system but the response was slower respect to LQR controller.
+
+\end{frame}
+
+\begin{frame}{PID anti-windup}
+The second controller we developed is the PID anti-windup.
+The phenomenon of windup occurs when the integral action grows excessively due to large errors or actuator saturation (for example, a motor with a maximum speed limit). When the PID controller's output reaches the actuator's limit (saturation), the integral component continues to accumulate error, even though the actuator can no longer respond proportionally due to the saturation constraint.
+\begin{table}[h!]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Aspect}           & \textbf{Classic PID}        & \textbf{PID Anti-Windup}      \\ \hline
+Integral Accumulation     & Unlimited                   & Limited                       \\ \hline
+Saturation Behavior       & Unstable or slow recovery   & Faster, stable recovery       \\ \hline
+Oscillation Risk          & Higher                      & Lower               
+\\ \hline
+\end{tabular}%
+}
+\caption{Comparison of Classic PID and PID Anti-Windup}
+\end{table}
+\end{frame}
+
+\begin{frame}{LQR Controller}
+The LQR (Linear Quadratic Regulator) is an optimal control technique for linear dynamic systems. It determines a control law that minimizes a cost function, balancing error reduction and energy use.
+
+The LQR controller minimizes a quadratic cost function:
+
+\[
+J = \int_0^{\infty} \left( x^T Q x + u^T R u \right) \, dt
+\]
+
+where:
+\( Q \) penalizes state errors,
+\( R \) penalizes control energy.
+
+The optimal control law is:
+\[
+u = -Kx
+\]
+
+where \( K \) is the gain matrix, computed to minimize \( J \) by solving the associated Riccati equation.
+
+\begin{itemize}
+\item \textbf{Advantage}: LQR is optimal for linear systems, providing stable, balanced performance in terms of accuracy and energy efficiency.
+\end{itemize}
+\end{frame}

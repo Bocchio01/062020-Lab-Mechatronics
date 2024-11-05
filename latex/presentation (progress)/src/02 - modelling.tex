@@ -7,14 +7,14 @@
     To this aim, we have started from the energy conservation principle and model the system via Lagrange's equations:
 
     \begin{equation}
-        \begin{cases}
-            \dot{z} = v                                                                                                                                 \\
-            \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 + m g  \right) \\
-            \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + V_1 + R_1 I_{1min} \right)                                                                           \\
-            \dot{I_2} = L_2^{-1} \left(- R_2 I_2 + V_2 + R_2 I_{2min} \right)
-        \end{cases}
-        \label{eq:reduced_equations_of_motion_final}
-    \end{equation}
+    \begin{cases}
+        \dot{z} = v \\
+        \dot{v} = m^{-1} \left( \frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 + m g \right) \\
+        \dot{I_1} = L_1^{-1} \left( -R_1 I_1 + V_1 + R_1 I_{1_{\text{min}}} \right) \\
+        \dot{I_2} = L_2^{-1} \left( -R_2 I_2 + V_2 + R_2 I_{2_{\text{min}}} \right)
+    \end{cases}
+    \label{eq:reduced_equations_of_motion_final}
+\end{equation}
 
 \end{frame}
 
