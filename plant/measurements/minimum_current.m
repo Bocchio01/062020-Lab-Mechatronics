@@ -4,7 +4,7 @@ close all
 
 %% Load measurements of RL current dynamic
 
-file_path = 'plant\measurements\data\minimum_current.mat';
+file_path = 'plant\measurements\data\control\minimum_current.mat';
 
 I_min = zeros(2, 1);
 

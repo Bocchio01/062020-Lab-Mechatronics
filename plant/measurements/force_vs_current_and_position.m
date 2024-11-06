@@ -10,21 +10,22 @@ files_data = struct( ...
     'N_files', 0);
 
 files_data.dir_content = dir([files_data.path '\*.mat']);
+files_data.dir_content = files_data.dir_content(1:end-1);
 files_data.N_files = length(files_data.dir_content);
 
 
 %% Load data
 
 data = repmat( ...
-        struct( ...
-            'time', [], ...
-            'position', [], ...
-            'velocity', [], ...
-            'current', [], ...
-            'control', [], ...
-            'voltage', []), ...
-        1, ...
-        files_data.N_files);
+    struct( ...
+    'time', [], ...
+    'position', [], ...
+    'velocity', [], ...
+    'current', [], ...
+    'control', [], ...
+    'voltage', []), ...
+    1, ...
+    files_data.N_files);
 
 for file_idx = 1:files_data.N_files
     data(file_idx) = load_data([files_data.path '\' files_data.dir_content(file_idx).name]);
@@ -40,8 +41,9 @@ clear file_idx
 
 g = 9.81; %[m/s^2]
 m = 61.57e-3; %[Kg]
-sensitivity_equation = @(current) -g * 2*m / current^2;
+sensitivity_equation = @(current) -g * 2*m ./ current.^2;
 
+position_jump_idx = zeros(files_data.N_files, 1);
 position = zeros(files_data.N_files, 1);
 current = zeros(files_data.N_files, 1);
 sensitivity = zeros(files_data.N_files, 1);
@@ -50,13 +52,16 @@ for file_idx = 1:files_data.N_files
 
     measurements = data(file_idx);
 
-    position_jump_idx = floor(find(diff(measurements.position) < -1.0e-3, 1, 'first') * 0.98);
+    position_jump_idx(file_idx) = floor(find(diff(measurements.position) < -1.0e-3, 1, 'first') * 0.98);
+    position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx(file_idx)))) -0.0012;
+    current(file_idx) = mean(measurements.current(position_jump_idx(file_idx) + (-1:1)));
 
-    position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx)));
-    current(file_idx) = measurements.current(position_jump_idx);
     sensitivity(file_idx) = sensitivity_equation(current(file_idx));
 
 end
+
+% load("plant\measurements\data\force\previous_group.mat");
+% sensitivity = sensitivity_equation(current);
 
 % Model fitting
 
@@ -83,57 +88,77 @@ fprintf([ ...
 reset(0)
 set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
+set(0, 'defaultaxesfontsize', 15);
 
-
-% for file_idx = 1:files_data.N_files
+% figure_measurements = figure('Name', 'Measurements');
 % 
-%     figure
-%     hold on
+% for file_idx = [1:5:17]
+% 
 %     measurements = data(file_idx);
 % 
-%     position_jump_idx = floor(find(diff(measurements.position) < -1.0e-3, 1, 'first') * 0.98);
+%     nexttile
+%     hold on
+%     grid on
+%     colororder({'r', 'k'})
 % 
-%     plot(measurements.position)
-%     plot(measurements.current)
+%     yyaxis left
+%     plot(measurements.position * 1000, 'r')
+%     set(gca, 'YDir', 'reverse')
+%     ylabel('Ball position [mm]')
 % 
-%     xline(position_jump_idx , 'r')
+%     yyaxis right
+%     plot(measurements.current, 'k')
+%     ylabel('Current [A]')
+% 
+%     xline(position_jump_idx(file_idx), 'k')
+%     xlabel('Time []')
+% 
+%     xlim(position_jump_idx(file_idx) + [-50 50]);
+% 
+%     title(['Initial position z=' num2str(mean(measurements.position(1:position_jump_idx(file_idx)-50)) * 1000, '%.2f')  '[mm]'])
 % 
 % end
 
-
+% Inductance sensitivity function of distance
+figure_dLdz = figure('Name', 'Inductance sensitivity and resulting force');
 nexttile
 hold on
 grid on
 
-plot(position, -sensitivity, 'ko');
-plot(position, -sensitivity_inductance_model([L1z a], position), 'r');
-plot(position, -sensitivity_inductance_model([2.5*L1z 1.2*a], position), 'b');
+plot(position * 1000, -sensitivity, 'ko');
+plot(position * 1000, -sensitivity_inductance_model([L1z a], position), 'r');
+plot(position * 1000, -sensitivity_inductance_model([4.271007e-02 2.155215e+02], position), 'b');
 
 
 title('Inductance sensitivity to object distance dLdx')
-xlabel('Distance [m]')
+xlabel('Distance [mm]')
 ylabel('dL/dx [H/m]')
 legend('Measured', 'Fitted model')
 
 
-
+% Inductance sensitivity function of distance and current
 nexttile
 
-z_range = position(:);
-I_range = current(:);
-[Z_grid, I_grid] = meshgrid(z_range, I_range);
+[Z_grid, I_grid] = meshgrid(position(:), current(:));
 
-surf(Z_grid, I_grid, reshape(force_model([L1z a], [Z_grid(:), I_grid(:)]), size(Z_grid)), 'EdgeColor', 'k', 'FaceAlpha', 0.5);
+plot3(position * 1000, flip(current), -1/2 * sensitivity_inductance_model([L1z a], position) .* flip(current.^2), 'k*', 'LineWidth', 3)
 hold on
-plot3(position, flip(current), -1/2 * sensitivity_inductance_model([L1z a], position) .* flip(current.^2), 'ro', 'LineWidth', 5)
+grid on
+surf(Z_grid * 1000, I_grid, reshape(force_model([L1z a], [Z_grid(:), I_grid(:)]), size(Z_grid)), 'EdgeColor', 'k', 'FaceAlpha', 0.8);
 
+view([-25 35])
 colormap(jet);
+colorbar
 
 xlabel('z [mm]');
 ylabel('I [A]');
 zlabel('F [N]');
-title('3D Surface Plot of F(z, I)');
+title('Electromagnetic force F(z, I)');
 
+try %#ok<TRYNC>
+    export_pdf_graphic(figure_measurements, '/measurements/currents_for_force');
+    export_pdf_graphic(figure_dLdz, '/measurements/force');
+end
 
 %% Functions
 

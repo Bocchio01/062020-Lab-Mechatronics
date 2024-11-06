@@ -1,6 +1,8 @@
 \subsection{Model Linearization}
 \label{subsec:model_linearization}
 
+\hl{We need to write how the operating point vector has been computed}
+
 The model derived in the previous subsection is highly non-linear.
 In order to begin able to apply linear control techniques, it is necessary to linearize the model around a given operating point.
 
@@ -9,14 +11,16 @@ From now on, we will suppose the operating point as:
 \begin{equation}
     \mathbf{x}_{op} =
     \begin{bmatrix}
-        x_{op}     \\
+        z_{op}     \\
         v_{op} = 0 \\
         I_{1op}    \\
-        I_{2op}
+        I_{2op}    \\
+        U_{1op}    \\
+        U_{2op}
     \end{bmatrix}
 \end{equation}
 
-By doing so, the linearized model can be obtained by performing a Taylor expansion up to the first order terms of the non-linear model (Equations \ref{eq:reduced_equations_of_motion_final} or Equations \ref{eq:simplified_equations_of_motion_final}) around the operating point.
+By doing so, the linearized model can be obtained by performing a Taylor expansion around the operating point up to the first order terms of Equations \ref{eq:reduced_equations_of_motion_final} or Equations \ref{eq:simplified_equations_of_motion_final}.
 
 Before performing the linearization, we briefly recall the general form of a Taylor expansion of a function $f(\mathbf{x})$ around a point $\mathbf{x}_{op}$:
 
@@ -29,7 +33,31 @@ Where $\nabla f(\mathbf{x}_{op})$ is the gradient of $f(\mathbf{x})$ evaluated a
 By applying the Taylor expansion to the non-linear model, the linearized model can be obtained as:
 
 \begin{equation}
-    \dot{\mathbf{x}} \approx \mathbf{f}(\mathbf{x}_{op}) + \frac{\partial \mathbf{f}}{\partial \mathbf{x}} \Bigg|_{\mathbf{x}_{op}} \cdot (\mathbf{x} - \mathbf{x}_{op})
+    \mathbf{f}(\mathbf{x}) - \mathbf{f}(\mathbf{x}_{op})\approx \frac{\partial \mathbf{f}}{\partial \mathbf{x}} \Bigg|_{\mathbf{x}_{op}} \cdot (\mathbf{x} - \mathbf{x}_{op})
 \end{equation}
 
 Considering now the set of Equations \ref{eq:reduced_equations_of_motion_final}, the linearized model can be obtained as:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} - \dot{z_{op}}    & \approx 1 (v - v_{op})                  \\
+        \dot{v} - \dot{v_{op}}    & \approx m^{-1} \left(
+        \frac{1}{2} \frac{\partial^2 L_1}{\partial z^2} \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) I_{1op}^2 +
+        \frac{1}{2} \frac{\partial^2 L_2}{\partial z^2} \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) I_{2op}^2 +
+        \frac{\partial L_1}{\partial z} \Bigg|_{\mathbf{x}_{op}} I_{1op} (I_1 - I_{1op}) +
+        \frac{\partial L_2}{\partial z} \Bigg|_{\mathbf{x}_{op}} I_{2op} (I_2 - I_{2op})
+        \right)                                                             \\
+        \dot{I_1} - \dot{I_{1op}} & \approx
+        \left(- L_1^{-2} \frac{\partial L_1}{\partial z} \left(- R_1 I_1 + k_1 U_1 + c_1 \right) \right) \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) +
+        \left(- L_1^{-1} R_1 \right) \Bigg|_{\mathbf{x}_{op}} (I_1 - I_{1op}) +
+        \left(L_1^{-1} k_1 \right) \Bigg|_{\mathbf{x}_{op}} (U_1 - U_{1op}) \\
+        \dot{I_2} - \dot{I_{2op}} & \approx
+        \left(- L_2^{-2} \frac{\partial L_2}{\partial z} \left(- R_2 I_2 + k_2 U_2 + c_2 \right) \right) \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) +
+        \left(- L_2^{-1} R_2 \right) \Bigg|_{\mathbf{x}_{op}} (I_2 - I_{2op}) +
+        \left(L_2^{-1} k_2 \right) \Bigg|_{\mathbf{x}_{op}} (U_2 - U_{2op})
+    \end{cases}
+    \label{eq:linearized_model}
+\end{equation}
+
+Notice that in the derivation of the linearized model, another model reduction has been performed based on the same assumptions made in the previous subsection with the set of Equations \ref{eq:model_reduction_conditions}.
+

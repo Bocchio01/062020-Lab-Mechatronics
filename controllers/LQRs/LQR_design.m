@@ -9,11 +9,11 @@ run("initial_conditions_init.m")
 
 %% Linearized state space representation
 
-[x_eq, u_eq] = operating_point(z0);
-[A, B, C, D] = state_space_linearized(x_eq, u_eq);
+% [x_eq, u_eq] = operating_point(z0);
+% [A, B, C, D] = state_space_linearized(x_eq, u_eq);
 
-[x_eq1, u_eq1] = literature_operating_point(z0);
-[A1, B1, C1, D1] = literature_state_space_linearized(x_eq1, u_eq1);
+[x_eq, u_eq] = literature_operating_point(z0);
+[A, B, C, D] = literature_state_space_linearized(x_eq, u_eq);
 
 %% LQR controller design
 
