@@ -19,38 +19,39 @@ ref = simout(8, :)';
 reset(0)
 set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
+set(0, 'defaultaxesfontsize', 15);
 
-figure('Name', 'Results analysis')
-t = tiledlayout(2, 3);
+figure_plots = figure('Name', 'Results analysis');
+t = tiledlayout(3, 1);
 
 
 % Position data
-position_tile = nexttile(t, 1, [1 3]);
+position_tile = nexttile(t);
 hold on
 grid on
 
-plot(time, z * 1000, 'r', 'LineWidth', 2)
-plot(time, ref * 1000, '--k', 'LineWidth', 1)
+plot(time, z * 1000, 'LineWidth', 1)
+plot(time, ref * 1000, 'k--', 'LineWidth', 1)
 
 set(gca, 'YDir', 'reverse')
 
 title('Position data')
 xlabel('Time [s]')
 ylabel('Position [mm]')
-legend('Reference position', 'Ball position')
+legend('Ball position', 'Reference position')
 
 
 % Velocity data
-velocity_tile = nexttile;
-hold on
-grid on
-
-plot(time, v * 1000)
-
-title('Velocity data')
-xlabel('Time [s]')
-ylabel('Velocity [mm/s]')
-legend('Ball velocity')
+% velocity_tile = nexttile;
+% hold on
+% grid on
+% 
+% plot(time, v * 1000)
+% 
+% title('Velocity data')
+% xlabel('Time [s]')
+% ylabel('Velocity [mm/s]')
+% legend('Ball velocity')
 
 
 % Coils data
@@ -87,3 +88,5 @@ legend('U1', 'U2')
 
 linkaxes([position_tile velocity_tile coils_tile controls_tile], 'x')
 xlim tight
+
+export_pdf_graphic(figure_plots, '/runs/tmp')
