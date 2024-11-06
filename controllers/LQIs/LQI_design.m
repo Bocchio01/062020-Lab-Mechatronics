@@ -17,12 +17,9 @@ run("initial_conditions.m")
 
 %% LQR controller design
 
-% Penalization matrix for the states
-% x = [position, velocity, current1, current2]';
-Q = zeros(size(A, 1)) + diag([30 1e-3 1e+2 1e+2]);
+% Discrete time (dlqr != dlqr -> ?)
+ssd = c2d(ss(A, B, C, D), 0.005, 'tustin');
 
-% Penalization matrix for the inputs
-% u = [voltage1, voltage2]';
-R = zeros(size(D, 1)) + diag(5.5);
-
-[K, ~, poles] = lqi(A, B, Q, R);
+Q_integrator = diag([30 1e-3 1e+2 1e+2 1.5e+3]);
+R_integrator = diag(5.5);
+dLQR_integrator = lqi(ssd.A, ssd.B, Q_integrator, R_integrator, 0);

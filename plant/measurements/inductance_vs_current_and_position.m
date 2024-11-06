@@ -77,7 +77,7 @@ for file_idx = 1:files_data.N_files
             @current_model, coefficients_guess, ...
             'Options', statset('TolFun', 1e-10));
 
-        z(file_idx, transient_idx) = mean(measurements.position) - 0.0012;
+        z(file_idx, transient_idx) = mean(measurements.position);
         I(file_idx, transient_idx) = mean(current{file_idx, transient_idx}(floor(1/2 * length(current)):end));
         L(file_idx, transient_idx) = fitted_model.Coefficients.Estimate(1);
 

@@ -24,9 +24,58 @@ close all
 run("initial_conditions_init.m")
 run("maglev_init.m")
 
+[x_eq, u_eq] = literature_operating_point(z0);
+
+
+%% Controllers tuning
+
+
+%% Controller labels
+
+controller_labels = [
+    % "LQR tracking"
+    % "MCP"
+    "PID"
+    % "PID and LQR"
+    "PID anti-windup"
+    % "PID cascade"
+    % "PID gain scheduling"
+];
+
+
 %% Simulation launcher
 
-% sim("System.slx")
+model_name = "System";
+timeout = 5;
+
+in = Simulink.SimulationInput("System");
+in = in.setModelParameter("SimulationMode", "normal");
+% in = in.setModelParameter("SimulationMode", "external"); % Not supported
+
+for controller_idx = 1:length(controller_labels)
+
+    in = in.setBlockParameter("System/Controller (K)", "LabelModeActiveChoice", controller_labels(controller_idx));
+    out = sim(in);
+    % in = in.setModelParameter("SimulationCommand", "start");
+
+    % tic;
+    % while(true)
+    %     if not(strcmpi(in.getModelParameter("SimulationStatus"), 'running'))
+    %         disp('simulation exited')
+    %         break;
+    %     end
+    %     if toc>=timeout
+    %         disp('timout reached')
+    %         in.setModelParameter("SimulationCommand", "stop");
+    %         break;
+    %     end
+    %     pause(1);
+    % end
+    
+    status = copyfile("runs\_simout.mat", ['runs\randomic\st_' char(controller_labels(controller_idx)) '.mat']);
+    assert(status == 1, 'Error while moving the _simout.mat file')
+
+end
 
 %%
 

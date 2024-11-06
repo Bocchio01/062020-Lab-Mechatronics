@@ -52,16 +52,16 @@ for file_idx = 1:files_data.N_files
 
     measurements = data(file_idx);
 
-    position_jump_idx(file_idx) = floor(find(diff(measurements.position) < -1.0e-3, 1, 'first') * 0.98);
-    position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx(file_idx)))) -0.0012;
+    position_jump_idx(file_idx) = floor(find(diff(measurements.position) < -0.5e-3, 1, 'first') * 0.98);
+    position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx(file_idx))));
     current(file_idx) = mean(measurements.current(position_jump_idx(file_idx) + (-1:1)));
 
     sensitivity(file_idx) = sensitivity_equation(current(file_idx));
 
 end
 
-% load("plant\measurements\data\force\previous_group.mat");
-% sensitivity = sensitivity_equation(current);
+load("plant\measurements\data\force\previous_group.mat");
+sensitivity = sensitivity_equation(current);
 
 % Model fitting
 
@@ -127,7 +127,7 @@ grid on
 
 plot(position * 1000, -sensitivity, 'ko');
 plot(position * 1000, -sensitivity_inductance_model([L1z a], position), 'r');
-plot(position * 1000, -sensitivity_inductance_model([4.271007e-02 2.155215e+02], position), 'b');
+plot(position * 1000, -sensitivity_inductance_model([4.330953e-02 2.158785e+02], position), 'b');
 
 
 title('Inductance sensitivity to object distance dLdx')
