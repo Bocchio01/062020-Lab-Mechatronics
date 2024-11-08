@@ -18,13 +18,12 @@ r = 61.25/2 * 1e-3; %[m]
 A = pi * r^2;       %[m^2]
 
 % Theoretical current model
-I1min = 2.383122 * 1e-2; %[A]
-I2min = 2.591441 * 1e-2; %[A]
-U1min = 0.00498; %[MU]
-U2min = 0.00498; %[MU]
-m = 2.5165; %[A/MU]
-q = 0.0243; %[A]
-
+V_1min = 4.300000e-02; %[V]
+V_2min = 4.300000e-02; %[V]
+k1 = 1.165800e+01; %[V/MU]
+k2 = 1.165800e+01; %[V/MU]
+c1 = -5.608000e-01; %[V]
+c2 = -5.608000e-01; %[V]
 
 % Approximated current model (data from INTECO manual)
 ki   = 2.5165; %[1/ohm]

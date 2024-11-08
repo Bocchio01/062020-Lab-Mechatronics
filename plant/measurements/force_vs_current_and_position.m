@@ -1,5 +1,5 @@
 % clc
-clear variables
+% clear variables
 % close all
 
 %% Get number of files to be loaded
@@ -41,7 +41,7 @@ clear file_idx
 
 g = 9.81; %[m/s^2]
 m = 61.57e-3; %[Kg]
-sensitivity_equation = @(current) -g * 2*m ./ current.^2;
+sensitivity_equation = @(current) -2*m*g ./ current.^2;
 
 position_jump_idx = zeros(files_data.N_files, 1);
 position = zeros(files_data.N_files, 1);
@@ -53,18 +53,17 @@ for file_idx = 1:files_data.N_files
     measurements = data(file_idx);
 
     position_jump_idx(file_idx) = floor(find(diff(measurements.position) < -0.5e-3, 1, 'first') * 0.98);
-    position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx(file_idx))));
+    position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx(file_idx)))) + 0.0012;
     current(file_idx) = mean(measurements.current(position_jump_idx(file_idx) + (-1:1)));
 
     sensitivity(file_idx) = sensitivity_equation(current(file_idx));
 
 end
 
-load("plant\measurements\data\force\previous_group.mat");
-sensitivity = sensitivity_equation(current);
+% load("plant\measurements\data\force\previous_group.mat");
+% sensitivity = sensitivity_equation(current);
 
 % Model fitting
-
 L1_guess = 0.017521; %[H]
 a_guess = 1 / 0.0058231; %[1/m]
 coefficients_guess = [L1_guess a_guess];
@@ -77,11 +76,14 @@ fitted_model = fitnlm( ...
 L1z = fitted_model.Coefficients.Estimate(1);
 a = fitted_model.Coefficients.Estimate(2);
 
+
+%% Results
+
 fprintf([ ...
-    'Electromagnet EM1:\n' ...
-    '\tInductance sensitivity to z Lz:\t%d\n' ...
-    '\tInductance sensitivity parameter a:\t%d\n' ...
-    ], L1z, a);
+    'F(z, I) characterization (EM1):\n' ...
+    '\taz:\t%d\n' ...
+    '\tLz:\t%d\n' ...
+    ], a, L1z);
 
 
 %% Plots
@@ -125,35 +127,40 @@ nexttile
 hold on
 grid on
 
-plot(position * 1000, -sensitivity, 'ko');
-plot(position * 1000, -sensitivity_inductance_model([L1z a], position), 'r');
-plot(position * 1000, -sensitivity_inductance_model([4.330953e-02 2.158785e+02], position), 'b');
-
+plot(position * 1000, -1/2*sensitivity, 'ko');
+plot(position * 1000, -1/2*sensitivity_inductance_model([L1z a], position), 'LineWidth', 1.5);
+plot(position * 1000, -2*sensitivity_inductance_model([0.017521 1/0.0058231], position), 'LineWidth', 1.5);
+plot(position * 1000, -sensitivity_inductance_model([Lz az], position), 'LineWidth', 1.5);
 
 title('Inductance sensitivity to object distance dLdx')
 xlabel('Distance [mm]')
 ylabel('dL/dx [H/m]')
-legend('Measured', 'Fitted model')
+legend('Measured data (halved)', ...
+    'Fitted model', ...
+    'Rosinova (doubled)', ...
+    'From L(z, I) characterization')
 
 
 % Inductance sensitivity function of distance and current
 nexttile
 
-[Z_grid, I_grid] = meshgrid(position(:), current(:));
+[Z_grid, I_grid] = meshgrid(linspace(0, 0.036, 20), linspace(0, 2.5, 20));
 
-plot3(position * 1000, flip(current), -1/2 * sensitivity_inductance_model([L1z a], position) .* flip(current.^2), 'k*', 'LineWidth', 3)
+plot3(position * 1000, flip(current), force_model([L1z a], [position flip(current)]), 'k*', 'LineWidth', 3, 'DisplayName', 'Object1')
 hold on
 grid on
 surf(Z_grid * 1000, I_grid, reshape(force_model([L1z a], [Z_grid(:), I_grid(:)]), size(Z_grid)), 'EdgeColor', 'k', 'FaceAlpha', 0.8);
 
-view([-25 35])
+axis tight
+view([65 35])
 colormap(jet);
 colorbar
 
+title('Electromagnetic force F(z, I)');
 xlabel('z [mm]');
 ylabel('I [A]');
 zlabel('F [N]');
-title('Electromagnetic force F(z, I)');
+legend('Experimental data', 'Fitted force model', 'Location', 'best')
 
 try %#ok<TRYNC>
     export_pdf_graphic(figure_measurements, '/measurements/currents_for_force');

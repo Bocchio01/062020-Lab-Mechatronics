@@ -79,24 +79,16 @@ end
 
 %%
 
-% nexttile
-% hold on
-% grid on
-% 
-% run("maglev_init.m")
-% load("inductance_analysis.mat")
-% 
-% I = @(x) 1;
-% % I = @(x) exp(10000 * x);
-% 
-% % dLdI = @(x, I) -aI * LI * exp(-aI * I) .*  exp(-az * 1000 * x);
-% % L = @(x, I) L0 + Lz * exp(-az * x) + LI * exp(-aI * I) .*  exp(-az * 1000 * x) + dLdI(x, I);
-% L = @(x, I) L0 + Lz * exp(-az * x) + LI * tanh(-aI * I);
-% 
-% 
-% % L  = @(x, I) 0 + 2.5*L1z * exp(-1.2*a * x);
-% 
-% fplot(@(x) L(x, I(x)), [0 2e-2]);
-% fplot(@(x) R10 * fiP1 / fiP2 * exp(-x / fiP2), [0 2e-2]);
-% 
-% legend('Theoretical', 'Approximated')
+nexttile
+hold on
+grid on
+
+run("maglev_init.m")
+
+I = @(z) -(0.4/0.02) * z + 0.4;
+L = @(z, I) L10 + L1z * exp(-a1z * z) + L1I * atan(a1I * I - b1I);
+
+fplot(@(x) L(x, I(x)), [0 2e-2]);
+fplot(@(x) R10 * fiP1 / fiP2 * exp(-x / fiP2), [0 2e-2]);
+
+legend('Theoretical', 'Approximated')

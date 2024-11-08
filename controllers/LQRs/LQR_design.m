@@ -30,4 +30,4 @@ ssd = c2d(ss(A, B, C, D), 0.005, 'tustin');
 [dLQR, ~, dpoles] = dlqr(ssd.A, ssd.B, Q, R); 
 % [dLQR, ~, dpoles] = lqrd(A, B, Q, R, 0.003);
 
-save("controllers\LQRs\LQR", "LQR");
+save('controllers\LQRs\LQR', 'LQR')

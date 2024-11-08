@@ -2,15 +2,20 @@ clc
 clear variables
 close all
 
+opts.Interpreter = 'none';
+opts.Default = 'No';
+answer = questdlg('You are going to modify test dataset. Do you want to proceed?', 'Irreversible action', opts);
+assert(strcmp(answer, 'Yes'), 'Script interrupted')
+
 %% Load data
 
 files_data = struct( ...
-    'path', 'plant\measurements\data\inductance', ...
+    'path', 'plant\measurements\data\force', ...
     'dir_content', [], ...
     'N_files', 0);
 
 files_data.dir_content = dir([files_data.path '\*.mat']);
-% files_data.dir_content = files_data.dir_content(1:end-1);
+files_data.dir_content = files_data.dir_content(1:end-1);
 files_data.N_files = length(files_data.dir_content);
 
 sensor_data = load('plant\measurements\data\sensor_data.mat').SensorData;

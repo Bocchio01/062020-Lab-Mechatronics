@@ -20,11 +20,11 @@ dI2du = @(u) ...
 dI1du = @(u) m;
 dI2du = @(u) m;
 
-L1 = @(x) L10 + L1z * exp(-a1*x);
-L2 = @(x) L20 + L2z * exp(-a2*(H - 2*r - x));
-dL1dx = @(x) -a1*L1z * exp(-a1*x);
-dL2dx = @(x) +a2*L2z * exp(-a2*(H - 2*r - x));
-dL1ddx = @(x) +a1^2*L1z * exp(-a1*x);
-dL2ddx = @(x) +a2^2*L2z * exp(-a2*(H - 2*r - x));
+L1 = @(x) L10 + L1z * exp(-a1z*x);
+L2 = @(x) L20 + L2z * exp(-a2z*(H - 2*r - x));
+dL1dx = @(x) -a1z*L1z * exp(-a1z*x);
+dL2dx = @(x) +a2z*L2z * exp(-a2z*(H - 2*r - x));
+dL1ddx = @(x) +a1z^2*L1z * exp(-a1z*x);
+dL2ddx = @(x) +a2z^2*L2z * exp(-a2z*(H - 2*r - x));
 
 end
