@@ -3,14 +3,17 @@ function [A, B, C, D] = ABCD_lagrangian(x, u)
 % Load system parameters
 load("parameters_lagrangian.mat"); %#ok<LOAD>
 
-L1 = @(x, I) 0.02*(L10 + L1z * exp(-a1z*x) + L1I * atan(a1I * I - b1I));
-L2 = @(x, I) 0.02*(L20 + L2z * exp(-a2z*(H - 2*r - x)) + L2I * atan(a2I * I - b2I));
+L1 = @(x, I) 1/50 * (L10 + L1z * exp(-a1z*x) + L1I * atan(a1I * I - b1I));
+L2 = @(x, I) 1/50 * (L20 + L2z * exp(-a2z*(H - 2*r - x)) + L2I * atan(a2I * I - b2I));
 dL1dx = @(x) -a1z*L1z * exp(-a1z*x);
 dL2dx = @(x) +a2z*L2z * exp(-a2z*(H - 2*r - x));
 dL1ddx = @(x) +a1z^2*L1z * exp(-a1z*x);
 dL2ddx = @(x) +a2z^2*L2z * exp(-a2z*(H - 2*r - x));
 % dL1dI = @(I) a1I * I / (1 + (a1I * I - b1I)^2);
 % dL2dI = @(I) a2I * I / (1 + (a2I * I - b2I)^2);
+% dL1ddI = @(I) -a1I * I / ((1 + (a1I * I - b1I)^2)^2 * 2*(a1I * I - b1I) * a1I);
+% dL2ddI = @(I) -a2I * I / ((1 + (a2I * I - b2I)^2)^2 * 2*(a2I * I - b2I) * a2I);
+
 
 % A coefficients
 a11 = 0;

@@ -6,86 +6,69 @@ run("initial_conditions.m")
 
 % Ts = 0.005;
 
-EM_number = 2;
+%% Operating point and system matrices
 
-%% Linearized state space representation
+% Nominal condition (z0)
+[x_eq, u_eq, A, B, C, D] = controllers_design_init(z0);
+G = tf(ss(A, B, C, D));
 
-% assert(ismember(EM_number, [1 2]), 'Wrong number of electromagnets')
+% Gain scheduling conditions (z \in [0, 0.020])
+z_stars = linspace(0, 0.020, 10);
+G_gain_scheduling = tf(zeros(1, 1, length(z_stars)));
 
-switch get_param("System/Plant (G)", "LabelModeActiveChoice")
-% switch 'Literature model'
-
-    case 'Literature model'
-        [x_eq, u_eq] = operating_point_literature(z0);
-        [A, B, C, D] = ABCD_literature(x_eq, u_eq);
-
-    otherwise
-        [x_eq, u_eq] = operating_point_lagrangian(z0);
-        [A, B, C, D] = ABCD_lagrangian(x_eq, u_eq);
-
+for z_star_idx = 1:length(z_stars)
+    [x_eq_star, u_eq_star, A_star, B_star, C_star, D_star] = controllers_design_init(z_stars(z_star_idx));
+    G_gain_scheduling(:, :, z_star_idx) = tf(ss(A_star, B_star, C_star, D_star));
 end
 
-D = 0;
-B = [0 0 B(3, 1) B(4, 2)]';
 
-switch EM_number
+%% PIDs
 
-    case 1
-        A = A(1:3, 1:3);
-        B = B(1:3, 1);
-        C = C(1:3);
-        D = D(1);
-
-    case 2
-        % Do nothing, ABCD_* already consider the complete 2EM model
-
-end
-
-% system = ss(A, B, C, D)
-% disp(x_eq)
-% disp(u_eq)
-
-
-%% Transfer function of the plant (linearized)
-
-[G_numerator, G_denominator] = ss2tf(A, B, C, D, 1);
-G = tf(G_numerator, G_denominator);
-
-system = ss(A, B, C, D);
-
-
-
-%% PID
-
-% controlSystemDesigner(G);
-
-PID = pidtune(G, 'pid', 1/8 * (pi/1e-3));
+% PID classical
+K_PID_classical = pidtune(G, 'pid', 1/8 * (pi/1e-3));
 % PID = pid(-825, -3.01e+03, -56.5);
 % PID = pid(-314, -1.81e+03, -13.6);
-% PID = pid(-1.17e+03, -3.42e+03, -99.4);
+% PID = pid(-1.17e+03, -3.42e+03, -99.4); % Rosinova
+% controlSystemDesigner(G);
+
+% PID anti-windup
+K_PID_anti_windup = K_PID_classical;
+
+% PID gain scheduling
+K_PID_gain_scheduling = pidtune(G_gain_scheduling, 'pid', 1/8 * (pi/1e-3));
+
+% PID cascade
+% K_PID_cascade_z = pidtune(tf(ss(A, B, C, D)), 'pid', 1/8 * (pi/1e-3));
+% K_PID_cascade_I = pidtune(tf(ss(A, B, C, D)), 'pid', 1/8 * (pi/1e-3));
+
+% asymp(K_PID_classical * G)
+% bode(K_PID_gain_scheduling .* G_gain_scheduling)
+% [Gm,Pm,Wcg,Wcp] = margin(K_PID_gain_scheduling .* G_gain_scheduling)
 
 
-%% LQR
+%% LQs
+Q = diag([30 1e-3 1e+2]);
+R = diag(5.5);
+% [Q, R] = autoQR(A, B, C, 1000);
 
-Q = diag([30 1e-3 1e+2 1e+2]);
-R = diag([5.5 5.5]);
+% LQR classical
+K_LQR_classical = lqr(A, B, Q, R);
 
-if (EM_number == 1)
-    Q = Q(1:3, 1:3);
-    R = R(1:1, 1:1);
-end
+% LQR tracking
+K_LQR_tracking = K_LQR_classical;
 
-R = 5.5;
+% LQI classical
+Q = diag([30 1e-3 1e+2 1e+8]);
+R = diag([5.5]);
+K_LQI_classical = lqi(ss(A, B, C, D), Q, R);
 
-LQR = lqr(A, B, Q, R);
-LQR = [LQR; zeros(1, 4)];
-
-if (EM_number == 1)
-    LQR = [LQR 0; zeros(1, 4)];
-end
+% LQG classical
+% Q = diag([30 1e-3 1e+2 1e+8]);
+% R = diag([5.5]);
+% K_LQG_classical = lqg(ss(A, B, C, D), Q, R);
 
 
-%% MPC
+%% MPCs
 
 % mpcDesigner(G);
 % mpcDesigner('controllers/sessions/MPC_designer_session.mat');

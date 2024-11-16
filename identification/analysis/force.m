@@ -5,11 +5,12 @@
 %% Get number of files to be loaded
 
 files_data = struct( ...
-    'path', 'plant\measurements\data\force', ...
+    'path', 'identification\data\force', ...
     'dir_content', [], ...
     'N_files', 0);
 
-files_data.dir_content = dir([files_data.path '\*.mat']);
+files_data.dir_content = 
+;
 files_data.dir_content = files_data.dir_content(1:end-1);
 files_data.N_files = length(files_data.dir_content);
 

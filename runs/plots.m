@@ -1,5 +1,5 @@
 try
-    simout = load("runs\step\r_LQR_tracking.mat").logouts;
+    simout = load("runs\step\_LQR_tracking.mat").logouts;
 catch
     uiopen('load');
     simout = logouts;
