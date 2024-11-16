@@ -1,5 +1,4 @@
-resources/cache/*
-resources/code/*
+resources
 
 # Windows default autosave extension
 *.asv

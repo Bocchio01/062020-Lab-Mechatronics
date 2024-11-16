@@ -1,5 +1,5 @@
 try
-    simout = load("runs\_simout.mat").logouts;
+    simout = load("runs\step\r_LQR_tracking.mat").logouts;
 catch
     uiopen('load');
     simout = logouts;
@@ -76,9 +76,9 @@ grid on
 plot(time, U1)
 plot(time, U2)
 
-a = [cellstr(num2str((0:0.1:1)' * 100))]; 
-pct = char(ones(size(a, 1), 1) * '%'); 
-set(gca, 'yticklabel', [char(a), pct])
+% a = [cellstr(num2str((0:0.1:1)' * 100))]; 
+% pct = char(ones(size(a, 1), 1) * '%'); 
+% set(gca, 'yticklabel', [char(a), pct])
 
 title('Controls data')
 xlabel('Time [s]')
@@ -86,7 +86,7 @@ ylabel('PWM [%]')
 legend('U1', 'U2')
 
 
-linkaxes([position_tile velocity_tile coils_tile controls_tile], 'x')
+linkaxes([position_tile coils_tile controls_tile], 'x')
 xlim tight
 
-export_pdf_graphic(figure_plots, '/runs/tmp')
+% export_pdf_graphic(figure_plots, '/runs/tmp')
