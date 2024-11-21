@@ -9,9 +9,7 @@ files_data = struct( ...
     'dir_content', [], ...
     'N_files', 0);
 
-files_data.dir_content = 
-;
-files_data.dir_content = files_data.dir_content(1:end-1);
+files_data.dir_content = dir([files_data.path '\*.mat']);
 files_data.N_files = length(files_data.dir_content);
 
 
@@ -53,29 +51,26 @@ for file_idx = 1:files_data.N_files
 
     measurements = data(file_idx);
 
-    position_jump_idx(file_idx) = floor(find(diff(measurements.position) < -0.5e-3, 1, 'first') * 0.98);
-    position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx(file_idx)))) + 0.0012;
+    position_jump_idx(file_idx) = floor(find(diff(measurements.position) < -0.5e-3, 1, 'first') * 0.90);
+    position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx(file_idx))));
     current(file_idx) = mean(measurements.current(position_jump_idx(file_idx) + (-1:1)));
 
     sensitivity(file_idx) = sensitivity_equation(current(file_idx));
 
 end
 
-% load("plant\measurements\data\force\previous_group.mat");
-% sensitivity = sensitivity_equation(current);
-
 % Model fitting
-L1_guess = 0.017521; %[H]
-a_guess = 1 / 0.0058231; %[1/m]
-coefficients_guess = [L1_guess a_guess];
+Lz_guess = 0.017521; %[H]
+az_guess = 1 / 0.0058231; %[1/m]
+coefficients_guess = [Lz_guess az_guess];
 
 fitted_model = fitnlm( ...
-    [position], sensitivity, ...
+    position, sensitivity, ...
     @sensitivity_inductance_model, coefficients_guess, ...
     'Options', statset('TolFun', 1e-10));
 
-L1z = fitted_model.Coefficients.Estimate(1);
-a = fitted_model.Coefficients.Estimate(2);
+Lz = fitted_model.Coefficients.Estimate(1);
+az = fitted_model.Coefficients.Estimate(2);
 
 
 %% Results
@@ -84,7 +79,7 @@ fprintf([ ...
     'F(z, I) characterization (EM1):\n' ...
     '\taz:\t%d\n' ...
     '\tLz:\t%d\n' ...
-    ], a, L1z);
+    ], az, Lz);
 
 
 %% Plots
@@ -93,34 +88,34 @@ set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
 set(0, 'defaultaxesfontsize', 15);
 
-% figure_measurements = figure('Name', 'Measurements');
-% 
-% for file_idx = [1:5:17]
-% 
-%     measurements = data(file_idx);
-% 
-%     nexttile
-%     hold on
-%     grid on
-%     colororder({'r', 'k'})
-% 
-%     yyaxis left
-%     plot(measurements.position * 1000, 'r')
-%     set(gca, 'YDir', 'reverse')
-%     ylabel('Ball position [mm]')
-% 
-%     yyaxis right
-%     plot(measurements.current, 'k')
-%     ylabel('Current [A]')
-% 
-%     xline(position_jump_idx(file_idx), 'k')
-%     xlabel('Time []')
-% 
-%     xlim(position_jump_idx(file_idx) + [-50 50]);
-% 
-%     title(['Initial position z=' num2str(mean(measurements.position(1:position_jump_idx(file_idx)-50)) * 1000, '%.2f')  '[mm]'])
-% 
-% end
+figure_measurements = figure('Name', 'Measurements');
+
+for file_idx = [1:5:17]
+
+    measurements = data(file_idx);
+
+    nexttile
+    hold on
+    grid on
+    colororder({'r', 'k'})
+
+    yyaxis left
+    plot(measurements.position * 1000, 'r')
+    set(gca, 'YDir', 'reverse')
+    ylabel('Ball position [mm]')
+
+    yyaxis right
+    plot(measurements.current, 'k')
+    ylabel('Current [A]')
+
+    xline(position_jump_idx(file_idx), 'k')
+    xlabel('Time []')
+
+    xlim(position_jump_idx(file_idx) + 150 * [-1 1]);
+
+    title(['Initial position z=' num2str(mean(measurements.position(1:position_jump_idx(file_idx)-50)) * 1000, '%.2f')  '[mm]'])
+
+end
 
 % Inductance sensitivity function of distance
 figure_dLdz = figure('Name', 'Inductance sensitivity and resulting force');
@@ -128,10 +123,12 @@ nexttile
 hold on
 grid on
 
+load("parameters_lagrangian.mat", "L1z", "a1z");
+load("parameters_literature.mat", "FemP1", "FemP2");
 plot(position * 1000, -1/2*sensitivity, 'ko');
-plot(position * 1000, -1/2*sensitivity_inductance_model([L1z a], position), 'LineWidth', 1.5);
-plot(position * 1000, -2*sensitivity_inductance_model([0.017521 1/0.0058231], position), 'LineWidth', 1.5);
-% plot(position * 1000, -sensitivity_inductance_model([Lz az], position), 'LineWidth', 1.5);
+plot(position * 1000, -1/2*sensitivity_inductance_model([Lz az], position), 'LineWidth', 1.5);
+plot(position * 1000, -2*sensitivity_inductance_model([FemP1 1/FemP2], position), 'LineWidth', 1.5);
+plot(position * 1000, -sensitivity_inductance_model([L1z a1z], position), 'LineWidth', 1.5);
 
 title('Inductance sensitivity to object distance dLdx')
 xlabel('Distance [mm]')
@@ -147,10 +144,10 @@ nexttile
 
 [Z_grid, I_grid] = meshgrid(linspace(0, 0.036, 20), linspace(0, 2.5, 20));
 
-plot3(position * 1000, flip(current), force_model([L1z a], [position flip(current)]), 'k*', 'LineWidth', 3, 'DisplayName', 'Object1')
+plot3(position * 1000, flip(current), force_model([Lz az], [position flip(current)]), 'k*', 'LineWidth', 3, 'DisplayName', 'Object1')
 hold on
 grid on
-surf(Z_grid * 1000, I_grid, reshape(force_model([L1z a], [Z_grid(:), I_grid(:)]), size(Z_grid)), 'EdgeColor', 'k', 'FaceAlpha', 0.8);
+surf(Z_grid * 1000, I_grid, reshape(force_model([Lz az], [Z_grid(:), I_grid(:)]), size(Z_grid)), 'EdgeColor', 'k', 'FaceAlpha', 0.8);
 
 axis tight
 view([65 35])

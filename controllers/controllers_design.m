@@ -1,4 +1,4 @@
-clc
+% clc
 % clear variables
 close all
 
@@ -25,7 +25,7 @@ end
 %% PIDs
 
 % PID classical
-K_PID_classical = pidtune(G, 'pid', 1/8 * (pi/1e-3));
+K_PID_classical = pidtune(G, 'pid', 385); % w_c \in [20 40]
 % PID = pid(-825, -3.01e+03, -56.5);
 % PID = pid(-314, -1.81e+03, -13.6);
 % PID = pid(-1.17e+03, -3.42e+03, -99.4); % Rosinova
@@ -35,7 +35,7 @@ K_PID_classical = pidtune(G, 'pid', 1/8 * (pi/1e-3));
 K_PID_anti_windup = K_PID_classical;
 
 % PID gain scheduling
-K_PID_gain_scheduling = pidtune(G_gain_scheduling, 'pid', 1/8 * (pi/1e-3));
+K_PID_gain_scheduling = pidtune(G_gain_scheduling, 'pid', 150);
 
 % PID cascade
 % K_PID_cascade_z = pidtune(tf(ss(A, B, C, D)), 'pid', 1/8 * (pi/1e-3));
@@ -47,7 +47,7 @@ K_PID_gain_scheduling = pidtune(G_gain_scheduling, 'pid', 1/8 * (pi/1e-3));
 
 
 %% LQs
-Q = diag([30 1e-3 1e+2]);
+Q = diag([30 1e-3 1e+1]);
 R = diag(5.5);
 % [Q, R] = autoQR(A, B, C, 1000);
 
@@ -57,8 +57,8 @@ K_LQR_classical = lqr(A, B, Q, R);
 % LQR tracking
 K_LQR_tracking = K_LQR_classical;
 
-% LQI classical
-Q = diag([30 1e-3 1e+2 1e+8]);
+% LQI classical -> Works with alpha = 1
+Q = diag([30 1e-3 1e+1 1e+8]);
 R = diag([5.5]);
 K_LQI_classical = lqi(ss(A, B, C, D), Q, R);
 
@@ -72,7 +72,8 @@ K_LQI_classical = lqi(ss(A, B, C, D), Q, R);
 
 % mpcDesigner(G);
 % mpcDesigner('controllers/sessions/MPC_designer_session.mat');
-% mpcobj = mpc(G, Ts);
+% K_MPC = mpc(G, Ts);
+K_MPC = mpc1;
 
 
 %% KF

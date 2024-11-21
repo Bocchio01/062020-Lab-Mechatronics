@@ -2,7 +2,7 @@
 %
 % This project explores traditional and modern control theory techniques
 % to stabilize the position of a ferromagnetic ball suspended in a magnetic
-% field produced by two inductors.
+% field produced by two electromagnets.
 % A "Model-based design" (MBD) approach has been adopted.
 %
 % Author: Tommaso Bocchietti, Daniele Cianca, Sara Orazzo

@@ -1,6 +1,6 @@
 clc
 clear variables
-close all
+% close all
 
 %% Get number of files to be loaded
 
