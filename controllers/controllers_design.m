@@ -73,12 +73,17 @@ K_LQI_classical = lqi(ss(A, B, C, D), Q, R);
 % mpcDesigner(G);
 % mpcDesigner('controllers/sessions/MPC_designer_session.mat');
 % K_MPC = mpc(G, Ts);
-K_MPC = mpc1;
+% K_MPC = mpc1;
 
 
 %% KF
-% 
-% Q = 1e-10;
-% R = 1e-10;
-% 
-% [K_KF, L_KF, P_KF] = kalman(system, Q, R);
+
+Q = 3e-4;
+R = diag([2.98e-05]);
+
+[kalmf, L_KF, P_KF] = kalman(ss(A, B, C, D), Q, R);
+
+
+%% Luenberger observer
+
+% K_Luenberger_observer = ? 

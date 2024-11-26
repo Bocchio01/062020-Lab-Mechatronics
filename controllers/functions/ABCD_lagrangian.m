@@ -3,8 +3,8 @@ function [A, B, C, D] = ABCD_lagrangian(x, u)
 % Load system parameters
 load("parameters_lagrangian.mat"); %#ok<LOAD>
 
-L1 = @(x, I) 1/1 * (L10 + L1z * exp(-a1z*x) + L1I * atan(a1I * I - b1I));
-L2 = @(x, I) 1/1 * (L20 + L2z * exp(-a2z*(H - 2*r - x)) + L2I * atan(a2I * I - b2I));
+L1 = @(x, I) L10 + L1z * exp(-a1z*x) + L1I * atan(a1I * I - b1I);
+L2 = @(x, I) L20 + L2z * exp(-a2z*(H - 2*r - x)) + L2I * atan(a2I * I - b2I);
 dL1dx = @(x) -a1z*L1z * exp(-a1z*x);
 dL2dx = @(x) +a2z*L2z * exp(-a2z*(H - 2*r - x));
 dL1ddx = @(x) +a1z^2*L1z * exp(-a1z*x);

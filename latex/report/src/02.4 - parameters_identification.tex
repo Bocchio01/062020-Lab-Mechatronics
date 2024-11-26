@@ -7,6 +7,7 @@ To do so, different tests type will be performed, such as:
 
 \begin{enumerate}
     \item Direct measurement: measure all the quantity of the system that can be directly measured or retrieved from well established literature;
+    \item Sensors characterization: create the mapping between the position of the ball and the output voltage of the infrared sensor and study the variance of all the sensors used internally in the control unit;
     \item Control to voltage: observe the relation between the control signal and the effective voltage applied to the coils;
     \item Inductances characterization: identify all the parameters needed to characterize inductances, based on the model proposed in Equation \ref{eq:model_for_inductance};
     \item Force validation: measure the force applied to the ball by the inductance in order to validate both the model and the parameters identified in the previous tests.
@@ -65,6 +66,34 @@ Also from literature, and in particular from the datasheet of the \texttt{Inteco
 \end{table}
 
 
+\subsubsection{Sensors characterization}
+\label{subsubsec:sensors_characterization}
+
+\hl{To be rewritten in a better form.}
+
+We need to create the mapping between the position of the ball and the output voltage of the infrared sensor.
+To do so, we simply create an array of points where we measure the position of the ball using a caliper and the output voltage of the infrared sensor using the data acquisition system included in the \texttt{Inteco} control unit.
+
+The obtained data is shown in Figure \ref{fig:position_to_voltage}.
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.6\textwidth]{img/MATLAB/identification/position_to_voltage.pdf}
+    \caption{Position to voltage identification}
+    \label{fig:position_to_voltage}
+\end{figure}
+
+As we can see, the relation between the position of the ball and the output voltage of the infrared sensor can be approximated as linear outside the limits of the sensor.
+
+From the data obtained, one can clearly see that for distances of the ball from the upper coil grater than $\approx 20 [mm]$, the sensor reaches its saturation limit and the output voltage is constant.
+Based on this observation, we can also impose that during simulations, the maximum distance of the ball from the upper coil is $20 [mm]$.
+
+As a second step, we also need to study the variance of all the sensors used internally in the control unit.
+We now suppose for both the infrared sensor for position and the current sensor that their model is Gaussian.
+Based on this assumption, one can compute
+
+
+
 \subsubsection{Control to voltage}
 \label{subsubsec:control_to_voltage}
 
@@ -77,7 +106,7 @@ In Figure \ref{fig:control_to_voltage} we can observe both the measured points, 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{img/MATLAB/measurements/control_to_voltage.pdf}
+    \includegraphics[width=0.6\textwidth]{img/MATLAB/identification/control_to_voltage.pdf}
     \caption{Control to voltage identification}
     \label{fig:control_to_voltage}
 \end{figure}
@@ -154,7 +183,7 @@ In Figure \ref{fig:inductance_characterization_currents} we can see on the left 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{img/MATLAB/measurements/currents.pdf}
+    \includegraphics[width=1\textwidth]{img/MATLAB/identification/currents.pdf}
     \caption{Inductance characterization for different currents and ball positions}
     \label{fig:inductance_characterization_currents}
 \end{figure}
@@ -167,7 +196,7 @@ The obtained model fitting is shown in Figure \ref{fig:inductance_characterizati
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{img/MATLAB/measurements/inductance.pdf}
+    \includegraphics[width=0.6\textwidth]{img/MATLAB/identification/inductance.pdf}
     \caption{Inductance characterization}
     \label{fig:inductance_characterization_inductance}
 \end{figure}
@@ -245,7 +274,7 @@ By identifying the current at which the ball starts to levitate (i.e. the ball s
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{img/MATLAB/measurements/currents_for_force.pdf}
+    \includegraphics[width=1\textwidth]{img/MATLAB/identification/currents_for_force.pdf}
     \caption{Position of the ball and current in the first coil around the levitation point (marked by vertical black line)}
     \label{fig:levitation_current}
 \end{figure}
@@ -255,9 +284,16 @@ On the right side figure, a complete characterization of the electromagnetic for
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{img/MATLAB/measurements/force.pdf}
+    \includegraphics[width=1\textwidth]{img/MATLAB/identification/force.pdf}
     \caption{Dynamic inductance characteristics and electromagnet force}
     \label{fig:dynamic_inductance_characteristics}
 \end{figure}
 
-As we can see,
+The left-hand side of Figure \ref{fig:dynamic_inductance_characteristics} shows a comparison between the measured data (black circles), their fitting (red line), the sensitivity of the inductance coming from the model (blue line) and the sensitivity of the inductance resulting from the literature parameters (green line).
+Notice that the curve coming from the literature parameters has been doubled given the different model used for the electromagnetic force in the literature (see Equation \ref{eq:simplified_equations_of_motion_final}).
+
+Data shows great accuracy in almost the entire range of the ball position, with a slight discrepancy in the lower part of the range.
+This discrepancy is probably due to poor measurement quality because of high noise ratio given by the infrared sensor.
+
+The right-hand side of Figure \ref{fig:dynamic_inductance_characteristics} shows the electromagnetic force generated by the first coil as a function of both the ball position and the current circulating in the coil.
+One can notice that the force has an exponential behavior with respect to the ball position and a quadratic behavior with respect to the current.

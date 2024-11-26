@@ -1,26 +1,56 @@
 \subsection{Model Linearization}
 \label{subsec:model_linearization}
 
-\hl{We need to write how the operating point vector has been computed}
-
 The model derived in the previous subsection is highly non-linear.
 In order to begin able to apply linear control techniques, it is necessary to linearize the model around a given operating point.
 
-From now on, we will suppose the operating point as:
+\subsubsection{Operating Point Computation}
+\label{subsubsec:operating_point_computation}
+
+The operating point is the set of values of the state and input variables around which the linearization is performed.
+
+Given the set of Equations \ref{eq:reduced_equations_of_motion_final}, the operating point can be computed by setting the time derivatives to zero, set at least 2 of the state variables or input variables to constant values and solve the system of equations.
+Based on the physical meaning of the state and input variables, it's reasonable to set the position of the ball $z$ and the current in the lower electromagnet $I_2$ to constant values.
+By doing so, all the other state and input variables can be computed by solving the following set of equations:
 
 \begin{equation}
     \mathbf{x}_{op} =
     \begin{bmatrix}
-        z_{op}     \\
-        v_{op} = 0 \\
-        I_{1op}    \\
-        I_{2op}    \\
-        U_{1op}    \\
-        U_{2op}
+        z_{op}  \\
+        v_{op}  \\
+        I_{1op} \\
+        I_{2op}
     \end{bmatrix}
+    =
+    \begin{cases}
+        z_{star}                                                                                       \\
+        0                                                                                              \\
+        \sqrt{ -(2m g + \frac{\partial L_2}{\partial z} I_{2op}^2) / \frac{\partial L_1}{\partial z} } \\
+        I_{2star}
+    \end{cases}
 \end{equation}
 
-By doing so, the linearized model can be obtained by performing a Taylor expansion around the operating point up to the first order terms of Equations \ref{eq:reduced_equations_of_motion_final} or Equations \ref{eq:simplified_equations_of_motion_final}.
+\begin{equation}
+    \mathbf{u}_{op} =
+    \begin{bmatrix}
+        U_{1op} \\
+        U_{2op}
+    \end{bmatrix}
+    =
+    \begin{cases}
+        \max{\left[0, R_{10} \left( I_{1op} - I_{1min} \right) / k_1 \right]} \\
+        \max{\left[0, R_{20} \left( I_{2op} - I_{2min} \right) / k_2 \right]}
+    \end{cases}
+\end{equation}
+
+Where $z_{star}$ is the desired position of the ball and $I_{2star}$ is the desired current in the lower electromagnet.
+As we can see, once those values are set, all the other states and inputs can be computed uniquely.
+
+
+\subsubsection{Linearized Model Derivation}
+\label{subsubsec:linearized_model_derivation}
+
+Based on the operating point computed in the previous subsection, the linearized model can be obtained by performing a Taylor expansion around the operating point up to the first order terms of Equations \ref{eq:reduced_equations_of_motion_final} or Equations \ref{eq:simplified_equations_of_motion_final}.
 
 Before performing the linearization, we briefly recall the general form of a Taylor expansion of a function $f(\mathbf{x})$ around a point $\mathbf{x}_{op}$:
 

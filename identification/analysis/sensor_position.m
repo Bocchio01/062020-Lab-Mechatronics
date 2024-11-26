@@ -10,16 +10,23 @@ sensor_data = load('sensor_data.mat').SensorData;
 
 %% Plots
 
+reset(0)
+set(0, 'DefaultFigureNumberTitle', 'off');
+set(0, 'DefaultFigureWindowStyle', 'docked');
+set(0, 'DefaultAxesFontSize', 15);
+
 figure('Name', 'Sensor to position')
-nexttile
+tile = nexttile;
 hold on
 grid on
 
-plot(inteco_sensor_data.Sensor_V, inteco_sensor_data.Distance_mm);
-plot(sensor_data.Sensor_V, sensor_data.Distance_mm);
-plot(sensor_data.Sensor_V - 0.65, sensor_data.Distance_mm);
+plot(sensor_data.Distance_mm, sensor_data.Sensor_V);
+plot(inteco_sensor_data.Distance_mm, inteco_sensor_data.Sensor_V);
 
 title('Optical sensor characterization')
-xlabel('Voltage [V]')
-ylabel('Ball position [mm]')
-legend('Inteco', 'Our', 'Corrected')
+xlabel('Ball position [mm]')
+ylabel('Voltage [V]')
+legend('Experimental data', 'Inteco manual')
+
+export_pdf_graphic(tile, '/identification/sensor_position')
+
