@@ -47,8 +47,7 @@ mean_vector = zeros(files_data.N_files, 1);
 variance_vector = zeros(files_data.N_files, 1);
 standard_deviation_vector = zeros(files_data.N_files, 1);
 covariance_vector = zeros(files_data.N_files, 1);
-Hpsd_vector = cell(files_data.N_files, 1);
-Hmss_vector = cell(files_data.N_files, 1);
+psd_vector = cell(files_data.N_files, 1);
 
 for file_idx = 1:files_data.N_files
 
@@ -58,16 +57,19 @@ for file_idx = 1:files_data.N_files
 
     [variance_vector(file_idx), mean_vector(file_idx)] = var(measurements);
     covariance_vector(file_idx) = cov(measurements);
-    Hpsd_vector{file_idx} = dspdata.psd(measurements);
-    Hmss_vector{file_idx} = dspdata.msspectrum( ...
-        periodogram((measurements- mean_vector(file_idx)), [], [], Fs), ...
-        'Fs', Fs, ...
-        'spectrumtype', 'onesided');
+    psd_vector{file_idx} = pwelch(measurements);
     
 end
 
 standard_deviation_vector(:) = sqrt(variance_vector);
 
+
+%% Results
+
+fprintf([ ...
+    'Sensor noise characterization (%s):\n' ...
+    '\tCovariance:\t%d\n' ...
+    ], sensor_considered, mean(covariance_vector));
 
 
 %% Plots
@@ -133,19 +135,11 @@ switch sensor_considered
 end
 
 
-figure('Name', 'Mean-square spectrum')
-hold on
-grid on
-
-for file_idx = 1:files_data.N_files
-    plot(Hmss_vector{file_idx})
-end
-
-
 figure('Name', 'Power Spectral Density')
 hold on
 grid on
+yscale log
 
 for file_idx = 1:files_data.N_files
-    plot(Hpsd_vector{file_idx})
+    plot(psd_vector{file_idx})
 end

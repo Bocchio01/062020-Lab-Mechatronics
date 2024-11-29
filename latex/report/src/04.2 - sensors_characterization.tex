@@ -1,0 +1,25 @@
+\subsection{Sensors characterization}
+\label{subsec:sensors_characterization}
+
+\hl{To be rewritten in a better form.}
+
+We need to create the mapping between the position of the ball and the output voltage of the infrared sensor.
+To do so, we simply create an array of points where we measure the position of the ball using a caliper and the output voltage of the infrared sensor using the data acquisition system included in the \texttt{Inteco} control unit.
+
+The obtained data is shown in Figure \ref{fig:position_to_voltage}.
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.6\textwidth]{img/MATLAB/identification/position_to_voltage.pdf}
+    \caption{Position to voltage identification}
+    \label{fig:position_to_voltage}
+\end{figure}
+
+As we can see, the relation between the position of the ball and the output voltage of the infrared sensor can be approximated as linear outside the limits of the sensor.
+
+From the data obtained, one can clearly see that for distances of the ball from the upper coil grater than $\approx 20 [mm]$, the sensor reaches its saturation limit and the output voltage is constant.
+Based on this observation, we can also impose that during simulations, the maximum distance of the ball from the upper coil is $20 [mm]$.
+
+As a second step, we also need to study the variance of all the sensors used internally in the control unit.
+We now suppose for both the infrared sensor for position and the current sensor that their model is Gaussian.
+Based on this assumption, one can compute

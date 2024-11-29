@@ -14,10 +14,10 @@ The work has been splitted into two main phases:
 \paragraph{Report structure}
 
 This report covers all the aspects of the laboratory experience, from the theoretical background to the practical implementation of the control algorithms.
-In particular, in Section \ref{sec:magnetic_levitation_system} the system is described in detail, a model is derived and the parameters are identified.
-In Section \ref{sec:single_coil_control} a set of \acrshort{siso} controllers are designed to work on a reduced model of the system, where only one coil is active.
-On the other hand, in Section \ref{sec:double_coil_control} a set of \acrshort{miso} controllers are designed to work on the full model of the system, where both coils are actively used to control the position of the magnet.
-In Section \ref{sec:control_techniques_comparison} the performances of the different controllers are compared, and finally in Section \ref{sec:conclusions} some conclusions are drawn.
+In particular, in Section \ref{sec:magnetic_levitation_system} a brief introduction to the \acrshort{mls} is given, along with some considerations about the physical phenomena involved.
+In Section \ref{sec:modelling} the model of the system is derived and some considerations about stability and controllability are made, while in Section \ref{sec:identification} the parameters of the model are identified through experimental data or collected from the datasheet of the components.
+In Section \ref{sec:estimators_filters_design} some estimators and filters are designed to reduce noise and improve the performances of the controllers designed in Section \ref{sec:controllers_design}.
+Finally, in Section \ref{sec:conclusions} some conclusions about the work done and possible future developments are drawn.
 
 \paragraph{Tools}
 

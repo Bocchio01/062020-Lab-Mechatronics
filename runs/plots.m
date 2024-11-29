@@ -22,7 +22,7 @@ set(0, 'DefaultFigureWindowStyle', 'docked');
 set(0, 'defaultaxesfontsize', 15);
 
 figure_plots = figure('Name', 'Results analysis');
-t = tiledlayout(3, 1);
+t = tiledlayout(4, 1);
 
 
 % Position data
@@ -31,7 +31,7 @@ hold on
 grid on
 
 plot(time, z * 1000, 'LineWidth', 1)
-plot(time, ref * 1000, 'k--', 'LineWidth', 1)
+plot(time, ref * 1000, '-', 'LineWidth', 1, 'Color', '#D95319')
 
 set(gca, 'YDir', 'reverse')
 
@@ -42,16 +42,16 @@ legend('Ball position', 'Reference position')
 
 
 % Velocity data
-% velocity_tile = nexttile;
-% hold on
-% grid on
-% 
-% plot(time, v * 1000)
-% 
-% title('Velocity data')
-% xlabel('Time [s]')
-% ylabel('Velocity [mm/s]')
-% legend('Ball velocity')
+velocity_tile = nexttile;
+hold on
+grid on
+
+plot(time, v * 1000)
+
+title('Velocity data')
+xlabel('Time [s]')
+ylabel('Velocity [mm/s]')
+legend('Ball velocity')
 
 
 % Coils data

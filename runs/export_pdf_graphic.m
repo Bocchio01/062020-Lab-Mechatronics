@@ -5,7 +5,7 @@ if (nargin == 1)
 end
 
 filename = ['latex/report/img/MATLAB' path '.pdf'];
-exportgraphics(tile, filename, 'ContentType', 'vector');
+% exportgraphics(tile, filename, 'ContentType', 'vector');
 
 end
 

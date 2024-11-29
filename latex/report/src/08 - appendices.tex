@@ -1,0 +1,56 @@
+
+
+\section{Literature model}
+\label{sec:literature_model}
+
+In the literature, the model of the \acrshort{mls} system is often further simplified by considering empirical values associated with the inductances and resistances of the coils.
+In particular, from the \texttt{Inteco} manual, the following set of equations is reported:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} = v                                                  \\
+        \dot{v} = m^{-1} \left(-F_{em1} + F_{em2} + m g  \right)     \\
+        \dot{I_1} = \frac{1}{f(z)} \left(- I_1 + ki U_1 + ci \right) \\
+        \dot{I_2} = \frac{1}{f(h - 2r - z)} \left(- I_2 + ki U_2 + ci \right)
+    \end{cases}
+    \label{eq:simplified_equations_of_motion_final}
+\end{equation}
+
+Where $f(x)$ is an empirical function that takes into account the variation of the inductances due to the presence of the ball in the magnetic field and has the following form:
+
+\begin{equation}
+    f(z) = \frac{f_{IP1}}{f_{IP2}} e^{\left(-\frac{z}{f_{IP2}}\right)}
+\end{equation}
+
+While $F_{em1}$ and $F_{em2}$ are the electromagnetic forces acting on the ball and have the following form:
+
+\begin{equation}
+    \begin{cases}
+        F_{em1} & = \frac{F_{emP1}}{F_{emP2}} e^{-\frac{z}{F_{emP2}}}  I_1^2          \\
+        F_{em2} & = \frac{F_{emP1}}{F_{emP2}} e^{-\frac{h - 2r - z}{F_{emP2}}}  I_2^2
+    \end{cases}
+\end{equation}
+
+
+Also from literature, and in particular from the datasheet of the \texttt{Inteco} control unit, we can retrieve the following values about the literature model proposed in Equation \ref{eq:simplified_equations_of_motion_final}:
+
+\begin{table}[H]
+
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Parameter} & \textbf{Value}         & \textbf{Units} \\
+        \hline
+        $F_{emP1}$         & $1.7521 \cdot 10^{-2}$ & $H$            \\
+        $F_{emP2}$         & $5.8231 \cdot 10^{-3}$ & $m$            \\
+        $f_{iP1}$          & $1.4142 \cdot 10^{-4}$ & $m \cdot s$    \\
+        $f_{iP2}$          & $4.5626 \cdot 10^{-3}$ & $m$            \\
+        $c_i$              & $0.0243$               & $A$            \\
+        $k_i$              & $2.5165$               & $A$            \\
+        \hline
+    \end{tabular}
+
+    \caption{Literature parameters}
+    \label{tab:literature_parameters}
+
+\end{table}

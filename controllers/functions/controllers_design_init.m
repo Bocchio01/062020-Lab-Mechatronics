@@ -4,8 +4,7 @@ if (nargin == 1)
     nDOF = 1;
 end
 
-% switch get_param("System/Plant (G)", "LabelModeActiveChoice")
-switch 50
+switch get_param("System/Plant (G)", "LabelModeActiveChoice")
     case 'Literature model'
         [x_eq, u_eq] = operating_point_literature(z_star);
         [A, B, C, D] = ABCD_literature(x_eq, u_eq);
@@ -13,23 +12,20 @@ switch 50
     otherwise
         [x_eq, u_eq] = operating_point_lagrangian(z_star);
         [A, B, C, D] = ABCD_lagrangian(x_eq, u_eq);
-
 end
 
 switch nDOF
-
     case 1
         A = A(1:3, 1:3);
         B = B(1:3, 1);
-        C = C(1:3);
-        D = D(1);
+        C = C(1, 1:3);
+        D = D(1, 1);
 
         x_eq = x_eq(1:3);
         u_eq(2) = 0;
 
     case 2
         % Do nothing, ABCD_* already consider the complete 2EM model
-
 end
 
 end

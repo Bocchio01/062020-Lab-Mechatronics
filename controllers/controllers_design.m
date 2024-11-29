@@ -4,8 +4,6 @@ close all
 
 run("initial_conditions.m")
 
-% Ts = 0.005;
-
 %% Operating point and system matrices
 
 % Nominal condition (z0)
@@ -49,7 +47,6 @@ K_PID_gain_scheduling = pidtune(G_gain_scheduling, 'pid', 150);
 %% LQs
 Q = diag([30 1e-3 1e+1]);
 R = diag(5.5);
-% [Q, R] = autoQR(A, B, C, 1000);
 
 % LQR classical
 K_LQR_classical = lqr(A, B, Q, R);
@@ -57,8 +54,8 @@ K_LQR_classical = lqr(A, B, Q, R);
 % LQR tracking
 K_LQR_tracking = K_LQR_classical;
 
-% LQI classical -> Works with alpha = 1
-Q = diag([30 1e-3 1e+1 1e+8]);
+% LQI classical
+Q = diag([30 1e-3 1e+1 1e+7]);
 R = diag([5.5]);
 K_LQI_classical = lqi(ss(A, B, C, D), Q, R);
 
@@ -73,17 +70,3 @@ K_LQI_classical = lqi(ss(A, B, C, D), Q, R);
 % mpcDesigner(G);
 % mpcDesigner('controllers/sessions/MPC_designer_session.mat');
 % K_MPC = mpc(G, Ts);
-% K_MPC = mpc1;
-
-
-%% KF
-
-Q = 3e-4;
-R = diag([2.98e-05]);
-
-[kalmf, L_KF, P_KF] = kalman(ss(A, B, C, D), Q, R);
-
-
-%% Luenberger observer
-
-% K_Luenberger_observer = ? 

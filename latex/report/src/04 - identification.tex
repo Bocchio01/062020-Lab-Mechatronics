@@ -1,0 +1,22 @@
+\section{Identification}
+\label{sec:identification}
+
+In order to control the system, we need to identify its parameters.
+
+To do so, different tests type will be performed, such as:
+
+\begin{enumerate}
+    \item Direct measurement: measure all the quantity of the system that can be directly measured or retrieved from well established literature;
+    \item Sensors characterization: create the mapping between the position of the ball and the output voltage of the infrared sensor and study the variance of all the sensors used internally in the control unit;
+    \item Control to voltage: observe the relation between the control signal and the effective voltage applied to the coils;
+    \item Inductances characterization: identify all the parameters needed to characterize inductances, based on the model proposed in Equation \ref{eq:model_for_inductance};
+    \item Force validation: measure the force applied to the ball by the inductance in order to validate both the model and the parameters identified in the previous tests.
+\end{enumerate}
+
+Except for the first test, all the others will be performed leveraging the data acquisition system included in the \texttt{Inteco} control unit.
+
+\input{src/04.1 - direct_measurement.tex}
+\input{src/04.2 - sensors_characterization.tex}
+\input{src/04.3 - control_to_voltage.tex}
+\input{src/04.4 - inductances_characterization.tex}
+\input{src/04.5 - force_validation.tex}
