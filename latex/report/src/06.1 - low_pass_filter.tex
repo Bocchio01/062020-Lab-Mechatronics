@@ -1,0 +1,52 @@
+\subsection{Low Pass Filter}
+\label{sec:low_pass_filter}
+
+\hl{To be checked. Not sure about the correctness of the calculations and the estimation of the natural frequency of the system.}
+
+The low pass filter is a filter that allows the low frequency components of a signal to pass through, while attenuating the high frequency components.
+By correctly choosing the cut-off frequency of the filter, it's possible to remove the noise from the signal, while preserving the useful information.
+
+The transfer function of a first order low pass filter is given by:
+
+\begin{equation}
+    G(s) = \frac{1}{\tau s + 1}
+\end{equation}
+
+Where $\tau$ is the time constant of the filter, and it's related to the cut-off frequency $\omega_c$ by the relation $\tau = \frac{1}{\omega_c}$.
+
+\paragraph{Filter on position}
+
+From the \texttt{Inteco} manual, we have understood that the vertical velocity of the ball is computed via numerical discretization of the position.
+This also means that the noise present in the position measurement is amplified by the differentiation process.
+To reduce this noise, we design a low pass filter to be applied to the position measurements before the differentiation.
+
+In order to estimate the cut-off frequency of the filter, one can either perform a spectral decomposition of the signal to obtain the maximum frequency present in the signal, or estimate (via experiments on the real system) the natural frequency of the system and choose a cut-off frequency accordingly.
+
+From preliminary tests, we have observed the ball reaches maximum speeds of around $v_{max} \approx 0.3 m/s$.
+Therefore, we can roughly the period of the ball to be around $T_p = 2 \frac{(h-2r)}{v_{max}} \approx 0.245s$.
+From this, we can estimate the natural frequency of the system to be:
+
+\begin{equation}
+    \omega_n = \frac{2\pi}{T_p} \approx 25 rad/s
+\end{equation}
+
+As rule of thumb, we could choose the cut-off frequency to be one decade after the natural frequency, i.e. $\omega_c = 10 \omega_n \approx 250 rad/s$.
+
+However, we know that the smaller the cut-off frequency, the better the noise attenuation.
+On the other hand, the smaller the cut-off frequency, the larger the phase lag introduced by the filter.
+
+As a compromise between noise attenuation and phase lag, we choose the cut-off frequency to be $\omega_c = 200 rad/s$.
+
+By doing so, we obtain the time constant of the filter to be $\tau = \frac{1}{200} = 5 ms$ and a corresponding phase delay introduced by the filter of:
+
+\begin{equation}
+    \phi = -\arctan{(\omega_n \tau)} = -\arctan{(25 \cdot 5 \cdot 10^{-3})} \approx -7.1^{\circ}
+\end{equation}
+
+
+\paragraph{Filter on current}
+
+The current measurement is also affected by noise.
+However, based on experiments, we have observed that even a slight delay in the current measurement can lead to instability of the system.
+Therefore, we choose not to apply a low pass filter to the current measurements.
+

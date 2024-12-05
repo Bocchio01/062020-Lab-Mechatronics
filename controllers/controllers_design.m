@@ -23,7 +23,7 @@ end
 %% PIDs
 
 % PID classical
-K_PID_classical = pidtune(G, 'pid', 385); % w_c \in [20 40]
+K_PID_classical = pidtune(G, 'pid', 200); % w_c \in [20 40]
 % PID = pid(-825, -3.01e+03, -56.5);
 % PID = pid(-314, -1.81e+03, -13.6);
 % PID = pid(-1.17e+03, -3.42e+03, -99.4); % Rosinova
@@ -33,15 +33,7 @@ K_PID_classical = pidtune(G, 'pid', 385); % w_c \in [20 40]
 K_PID_anti_windup = K_PID_classical;
 
 % PID gain scheduling
-K_PID_gain_scheduling = pidtune(G_gain_scheduling, 'pid', 150);
-
-% PID cascade
-% K_PID_cascade_z = pidtune(tf(ss(A, B, C, D)), 'pid', 1/8 * (pi/1e-3));
-% K_PID_cascade_I = pidtune(tf(ss(A, B, C, D)), 'pid', 1/8 * (pi/1e-3));
-
-% asymp(K_PID_classical * G)
-% bode(K_PID_gain_scheduling .* G_gain_scheduling)
-% [Gm,Pm,Wcg,Wcp] = margin(K_PID_gain_scheduling .* G_gain_scheduling)
+K_PID_gain_scheduling = pidtune(G_gain_scheduling, 'pid', 200);
 
 
 %% LQs
@@ -56,9 +48,10 @@ K_LQR_tracking = K_LQR_classical;
 
 % LQI classical
 Q = diag([30 1e-3 1e+1 1e+7]);
-R = diag([5.5]);
+R = diag(5.5);
 K_LQI_classical = lqi(ss(A, B, C, D), Q, R);
 
+% LQG vs. (LQR + KF), any difference?
 % LQG classical
 % Q = diag([30 1e-3 1e+2 1e+8]);
 % R = diag([5.5]);

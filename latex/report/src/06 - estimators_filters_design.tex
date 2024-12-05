@@ -1,0 +1,12 @@
+\section{Filters \& Estimators Design}
+\label{sec:filters_estimators_design}
+
+In this section, we will design filters and estimators to be used in the control loop of the \acrshort{mls}.
+The main goal of these filters and estimators is to reduce the noise present in the sensors' measurements and to estimate the states of the system that are not directly measurable.
+
+In particular, we will design a low-pass filter, a Luenberger observer, a Kalman filter, and an Extended Kalman filter.
+
+\input{src/06.1 - low_pass_filter.tex}
+\input{src/06.2 - luenberger_observer.tex}
+\input{src/06.3 - kalman_filter.tex}
+\input{src/06.4 - extended_kalman_filter.tex}

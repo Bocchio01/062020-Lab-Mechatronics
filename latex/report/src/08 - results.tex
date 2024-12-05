@@ -1,0 +1,35 @@
+\section{Results}
+\label{sec:results}
+
+\begin{table}
+    \centering
+
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Test} & \textbf{Filter}        & \textbf{Controller}        & \textbf{Reference} \\
+        \hline
+        1             & Low Pass or Kalman (?) & PID anti wind-up           & [square, sine]     \\
+        2             & Low Pass or Kalman (?) & PID gain scheduling        & [square, sine]     \\
+        3             & Low Pass or Kalman (?) & LQR tracking               & [square, sine]     \\
+        4             & Low Pass or Kalman (?) & LQI                        & [square, sine]     \\
+        5             & Low Pass or Kalman (?) & MPC                        & [square, sine]     \\
+        \hline
+        6             & Luenderberger          & [PID gain scheduling, LQI] & sine               \\
+        7             & Kalman                 & [PID gain scheduling, LQI] & sine               \\
+        8             & Extended Kalman        & [PID gain scheduling, LQI] & sine               \\
+        \hline
+    \end{tabular}
+
+    \caption{Tests to be performed}
+    \label{tab:tests}
+
+\end{table}
+
+Total of 8*2 = 16 tests to be performed.
+
+First 5*2 to compare the controllers, then 3*2 to compare the estimators.
+
+
+
+Here goes all the results obtained from the different tests.
+Keeping all the results in this section will make it easier to compare the different controllers and estimators.

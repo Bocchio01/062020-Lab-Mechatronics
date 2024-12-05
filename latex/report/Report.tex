@@ -10,7 +10,6 @@
 
 \usepackage{graphicx}
 \usepackage{subcaption}
-\usepackage{pgfgantt}
 \usetikzlibrary{shapes, arrows}
 
 \usetikzlibrary{calc,patterns,angles,quotes}
@@ -46,6 +45,8 @@ pdfkeywords={Politecnico di Milano, Mechatronics, Magnetic Levitation System}
     \label{fig:Polimi_logo}
 \end{figure}
 
+\hl{We need to be consistent with the time used in the document. Present? Past? Future?}
+
 \clearpage
 \tableofcontents
 \listoffigures
@@ -66,13 +67,19 @@ pdfkeywords={Politecnico di Milano, Mechatronics, Magnetic Levitation System}
 \input{src/04 - identification.tex}
 
 \clearpage
-\input{src/05 - estimators_filters_design.tex}
+\input{src/05 - model_analysis.tex}
 
 \clearpage
-\input{src/06 - controller_design.tex}
+\input{src/06 - estimators_filters_design.tex}
 
 \clearpage
-\input{src/07 - conclusions.tex}
+\input{src/07 - controller_design.tex}
+
+\clearpage
+\input{src/08 - results.tex}
+
+\clearpage
+\input{src/09 - conclusions.tex}
 
 \clearpage
 \bibliographystyle{plain}
@@ -80,6 +87,6 @@ pdfkeywords={Politecnico di Milano, Mechatronics, Magnetic Levitation System}
 
 \clearpage
 \appendix
-\input{src/08 - appendices.tex}
+\input{src/10 - appendices.tex}
 
 \end{document}

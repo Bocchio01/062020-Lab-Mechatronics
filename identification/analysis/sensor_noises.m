@@ -2,24 +2,14 @@ clc
 clear variables
 close all
 
-%% Get number of files to be loaded
+%% Load measurements and use window to split into many data set
 
 electromagnet_idx = 1;
-sensor_considered = 'position'; 
-sensor_considered = 'current';
-file_path = 'identification\data\current_minimum';
 
-files_data = struct( ...
-    'path', file_path, ...
-    'dir_content', [], ...
-    'N_files', 0);
+measurements = load('identification\data\sensor\noises.mat').measurements;
 
-files_data.dir_content = dir([files_data.path '\' '*.mat']);
-% files_data.dir_content(10) = [];
-files_data.N_files = length(files_data.dir_content);
-
-
-%% Load data
+windows_count = 10;
+windows_length = floor(size(measurements, 2) / windows_count);
 
 data = repmat( ...
     struct( ...
@@ -30,46 +20,50 @@ data = repmat( ...
     'control', [], ...
     'voltage', []), ...
     1, ...
-    files_data.N_files);
+    windows_count);
 
-for file_idx = 1:files_data.N_files
-    data(file_idx) = load_data([files_data.path '\' files_data.dir_content(file_idx).name], electromagnet_idx);
+for windows_idx = 1:windows_count
+    
+    idxs = windows_length*(windows_idx-1)+1 : windows_length*windows_idx;
+
+    data(windows_idx).time = measurements(1, idxs)';
+    data(windows_idx).position = measurements(2, idxs)';
+    data(windows_idx).velocity = measurements(3, idxs)';
+    data(windows_idx).current = measurements(3 + electromagnet_idx, idxs)';
+    data(windows_idx).control = measurements(5 + electromagnet_idx, idxs)';
+
+    data(windows_idx).voltage = U_to_V(data(windows_idx).control);
+
 end
 
-clear file_idx
+clear idxs measurements
 
 
 %% Noise analysis
 
-Fs = 1 / 0.001;
+standard_deviation_vector = zeros(windows_count, 2);
+variance_vector = zeros(windows_count, 2);
+covariance_vector = zeros(windows_count, 2);
 
-mean_vector = zeros(files_data.N_files, 1);
-variance_vector = zeros(files_data.N_files, 1);
-standard_deviation_vector = zeros(files_data.N_files, 1);
-covariance_vector = zeros(files_data.N_files, 1);
-psd_vector = cell(files_data.N_files, 1);
+for windows_idx = 1:windows_count
 
-for file_idx = 1:files_data.N_files
-
-    measurements = ...
-        strcmp(sensor_considered, 'position') * data(file_idx).position + ...
-        strcmp(sensor_considered, 'current') * data(file_idx).current; 
-
-    [variance_vector(file_idx), mean_vector(file_idx)] = var(measurements);
-    covariance_vector(file_idx) = cov(measurements);
-    psd_vector{file_idx} = pwelch(measurements);
+    standard_deviation_vector(windows_idx, :) = std([data(windows_idx).position data(windows_idx).current]);
+    variance_vector(windows_idx, :) = [var(data(windows_idx).position) var(data(windows_idx).current)];
+    covariance_vector(windows_idx, :) = [cov(data(windows_idx).position) cov(data(windows_idx).current)];
     
 end
-
-standard_deviation_vector(:) = sqrt(variance_vector);
 
 
 %% Results
 
 fprintf([ ...
-    'Sensor noise characterization (%s):\n' ...
-    '\tCovariance:\t%d\n' ...
-    ], sensor_considered, mean(covariance_vector));
+    'Sensor noise characterization:\n' ...
+    '\tCovariance z:\t%d\n' ...
+    '\tCovariance I%d:\t%d\n' ...
+    '\tStandard deviation z:\t%d\n' ...
+    '\tStandard deviation I%d:\t%d\n' ...
+    ], mean(covariance_vector(:, 1)), electromagnet_idx, mean(covariance_vector(:, 2)), ...
+    mean(standard_deviation_vector(:, 1)), electromagnet_idx, mean(standard_deviation_vector(:, 2)));
 
 
 %% Plots
@@ -79,67 +73,63 @@ set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
 set(0, 'defaultaxesfontsize', 15);
 
-figure('Name', 'Statistical indicators')
+figure_statistical = figure('Name', 'Statistical indicators');
+tile = tiledlayout(2, 5);
 
-nexttile
+nexttile(tile, 1, [1, 4]);
 hold on
 grid on
 
-plot(mean_vector, variance_vector, 'o')
-
-title('Sensor Variance')
-switch sensor_considered
-    case 'position'
-        xlabel('Position [mm]')
-        ylabel('Variance \sigma [mm^2]')
-    case 'current'
-        xlabel('Current [A]')
-        ylabel('Variance \sigma [A^2]')
+for windows_idx = 1:windows_count
+    plot((data(windows_idx).position - mean(data(windows_idx).position)) * 1e3, '-o')
 end
 
+xlim tight
+title('Position records')
+xlabel('# []')
+ylabel('Variation [mm]')
 
-nexttile
+
+nexttile(tile, 6, [1, 4]);
 hold on
 grid on
 
-x_vector = -0.05:0.001:0.05;
-
-plot(x_vector, normpdf(x_vector, 0, mean(standard_deviation_vector)), 'k', 'LineWidth', 3)
-plot(x_vector, normpdf(x_vector, 0, standard_deviation_vector))
-
-title('Sensor Standard Deviation')
-switch sensor_considered
-    case 'position'
-        xlabel('Position [mm]')
-        ylabel('Standard Deviation [mm]')
-    case 'current'
-        xlabel('Current [A]')
-        ylabel('Standard Deviation [A]')
+for windows_idx = 1:windows_count
+    plot(data(windows_idx).current - mean(data(windows_idx).current), '-')
 end
+
+xlim tight
+title('Current records')
+xlabel('# [-]')
+ylabel('Variation [A]')
 
 
 nexttile
 hold on
 grid on
 
-plot(mean_vector, covariance_vector, 'o')
+y_vector = -0.05:0.001:0.05;
 
-title('Sensor Covariance')
-switch sensor_considered
-    case 'position'
-        xlabel('Position [mm]')
-        ylabel('Variance \sigma [mm^2]')
-    case 'current'
-        xlabel('Current [A]')
-        ylabel('Variance \sigma [A^2]')
+plot(normpdf(y_vector, 0, mean(standard_deviation_vector(:, 1))), y_vector, '--k', 'LineWidth', 2)
+for windows_idx = 1:windows_count
+    plot(normpdf(y_vector, 0, standard_deviation_vector(windows_idx, 1)), y_vector)
 end
 
+title('Noise distribution (position)')
 
-figure('Name', 'Power Spectral Density')
+nexttile
 hold on
 grid on
-yscale log
 
-for file_idx = 1:files_data.N_files
-    plot(psd_vector{file_idx})
+y_vector = -0.05:0.001:0.05;
+
+plot(normpdf(y_vector, 0, mean(standard_deviation_vector(:, 2))), y_vector, '--k', 'LineWidth', 2)
+for windows_idx = 1:windows_count
+    plot(normpdf(y_vector, 0, standard_deviation_vector(windows_idx, 2)), y_vector)
+end
+
+title('Noise distribution (current)')
+
+try %#ok<TRYNC>
+    % export_pdf_graphic(figure_statistical, '/identification/sensor_noises');
 end

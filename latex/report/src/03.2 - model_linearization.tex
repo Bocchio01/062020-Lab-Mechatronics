@@ -1,16 +1,18 @@
 \subsection{Model Linearization}
 \label{subsec:model_linearization}
 
-The model derived in the previous subsection is highly non-linear.
-In order to begin able to apply linear control techniques, it is necessary to linearize the model around a given operating point.
+The model derived in the previous subsections (Equations \ref{eq:reduced_equations_of_motion_final}) is highly non-linear.
+In order to be able to apply linear control techniques, it is necessary to linearize the model around a given operating point.
 
-\subsubsection{Operating Point Computation}
+
+
+\subsubsection{Operating point computation}
 \label{subsubsec:operating_point_computation}
 
-The operating point is the set of values of the state and input variables around which the linearization is performed.
+The operating point is the set of values of the state and input around which the linearization is performed.
 
-Given the set of Equations \ref{eq:reduced_equations_of_motion_final}, the operating point can be computed by setting the time derivatives to zero, set at least 2 of the state variables or input variables to constant values and solve the system of equations.
-Based on the physical meaning of the state and input variables, it's reasonable to set the position of the ball $z$ and the current in the lower electromagnet $I_2$ to constant values.
+Given the set of Equations \ref{eq:reduced_equations_of_motion_final}, the operating point can be computed by setting the time derivatives to zero, set at least 2 of the state variables or input variables to constant values and solve the remaining equations.
+Based on their physical meaning, it's reasonable to set the position of the ball $z$ and the current in the lower electromagnet $I_2$.
 By doing so, all the other state and input variables can be computed by solving the following set of equations:
 
 \begin{equation}
@@ -23,11 +25,12 @@ By doing so, all the other state and input variables can be computed by solving 
     \end{bmatrix}
     =
     \begin{cases}
-        z_{star}                                                                                       \\
-        0                                                                                              \\
-        \sqrt{ -(2m g + \frac{\partial L_2}{\partial z} I_{2op}^2) / \frac{\partial L_1}{\partial z} } \\
-        I_{2star}
+        z^*                                                                                                                          \\
+        0                                                                                                                            \\
+        \sqrt{ -(2m g + \frac{\partial L_2}{\partial z} \big|_{z_{op}} I_{2op}^2) / \frac{\partial L_1}{\partial z} \big|_{z_{op}} } \\
+        I_{2}^*
     \end{cases}
+    \label{eq:operating_point_states}
 \end{equation}
 
 \begin{equation}
@@ -41,13 +44,15 @@ By doing so, all the other state and input variables can be computed by solving 
         \max{\left[0, R_{10} \left( I_{1op} - I_{1min} \right) / k_1 \right]} \\
         \max{\left[0, R_{20} \left( I_{2op} - I_{2min} \right) / k_2 \right]}
     \end{cases}
+    \label{eq:operating_point_inputs}
 \end{equation}
 
-Where $z_{star}$ is the desired position of the ball and $I_{2star}$ is the desired current in the lower electromagnet.
+Where $z^*$ is the desired position of the ball and $I_{2}^*$ is the desired current in the lower electromagnet.
 As we can see, once those values are set, all the other states and inputs can be computed uniquely.
 
 
-\subsubsection{Linearized Model Derivation}
+
+\subsubsection{Linearized model derivation}
 \label{subsubsec:linearized_model_derivation}
 
 Based on the operating point computed in the previous subsection, the linearized model can be obtained by performing a Taylor expansion around the operating point up to the first order terms of Equations \ref{eq:reduced_equations_of_motion_final} or Equations \ref{eq:simplified_equations_of_motion_final}.
@@ -68,6 +73,8 @@ By applying the Taylor expansion to the non-linear model, the linearized model c
 
 Considering now the set of Equations \ref{eq:reduced_equations_of_motion_final}, the linearized model can be obtained as:
 
+\hl{Solve this formatting issue. Split the equation multiple lines?}
+\small
 \begin{equation}
     \begin{cases}
         \dot{z} - \dot{z_{op}}    & \approx 1 (v - v_{op})                  \\
@@ -88,6 +95,6 @@ Considering now the set of Equations \ref{eq:reduced_equations_of_motion_final},
     \end{cases}
     \label{eq:linearized_model}
 \end{equation}
+\normalsize
 
-Notice that in the derivation of the linearized model, another model reduction has been performed based on the same assumptions made in the previous subsection with the set of Equations \ref{eq:model_reduction_conditions}.
-
+Notice that also during the linearization process, the model has been simplified by reapplying the assumptions made in the set of Equations \ref{eq:model_reduction_conditions}.

@@ -81,9 +81,9 @@ for file_idx = 1:files_data.N_files
 
 end
 
-z = z(z~=0);
-I = I(I~=0);
-L = L(L~=0);
+% z = z(z~=0);
+% I = I(I~=0);
+% L = L(L~=0);
 
 
 %% Fitting our experimental model over the previously computed L(z, I)
@@ -98,7 +98,7 @@ LI_guess = 4e-3; %[H]
 coefficients_guess = [L0_guess az_guess Lz_guess aI_guess bI_guess LI_guess];
 
 fitted_model = fitnlm( ...
-    [z I], L, ...
+    [z(z~=0) I(I~=0)], L(L~=0), ...
     @inductance_model, coefficients_guess, ...
     'Options', statset('TolFun', 1e-10));
 
@@ -135,15 +135,15 @@ set(0, 'defaultaxesfontsize', 15);
 figure_I = figure('Name', 'Inductance analysis');
 nexttile
 
-for file_idx = 1:files_data.N_files
+for file_idx = 10:files_data.N_files
 
     measurements = data(file_idx);
 
-    for transient_idx = 1:length(find(diff(measurements.voltage) > 0.1))
+    for transient_idx = 1:2:length(find(diff(measurements.voltage) > 0.1))
 
         plot3( ...
             time{file_idx, transient_idx}, ...
-            z(file_idx + transient_idx - 1) * ones(length(time{file_idx, transient_idx}), 1) * 1000, ...
+            z(file_idx, transient_idx) * ones(length(time{file_idx, transient_idx}), 1) * 1000, ...
             current{file_idx, transient_idx}, ...
             'k');
 
@@ -152,7 +152,7 @@ for file_idx = 1:files_data.N_files
 
         % plot3( ...
         %     time{file_idx, transient_idx}, ...
-        %     z(file_idx + transient_idx - 1) * ones(200, 1) * 1000, ...
+        %     z(file_idx, transient_idx) * ones(length(time{file_idx, transient_idx}), 1) * 1000, ...
         %     current_model(L(file_idx, transient_idx), [time{file_idx, transient_idx} voltage{file_idx, transient_idx}]), ...
         %     'r')
 
@@ -166,52 +166,52 @@ title('Current dynamics experimental data')
 xlabel('Time [s]')
 ylabel('Position [mm]')
 zlabel('Current [A]')
-legend('Measured')
+% legend('Experimental')
 
 
 % % Current dynamics fitting (visualization of a single distance test)
-% nexttile
-% hold on
-% grid on
-% 
-% for file_idx = 10
-% 
-%     measurements = data(file_idx);
-% 
-%     for transient_idx = 1:length(find(diff(measurements.voltage) > 0.1))
-% 
-%         plot( ...
-%             time{file_idx, transient_idx}, ...
-%             current{file_idx, transient_idx}, ...
-%             'k');
-% 
-%         plot( ...
-%             time{file_idx, transient_idx}, ...
-%             current_model(L(file_idx + transient_idx - 1), [time{file_idx, transient_idx} voltage{file_idx, transient_idx}]), ...
-%             'r', ...
-%             'LineWidth', 2)
-% 
-%     end
-% 
-% end
-% 
-% 
-% title(['Current dynamics fitting @z=' num2str(z(file_idx, 1) * 1000) 'mm'])
-% xlabel('Time [s]')
-% ylabel('Current [A]')
-% legend('Measured', 'Fitted')
-% 
-% 
-% % Inductance modelling and fitting
-% figure_L = figure('Name', 'Inductance modelling and fitting');
-% tiledlayout(1, 2)
 nexttile
-
-plot3(z * 1000, I, L, 'k*', 'LineWidth', 3)
 hold on
 grid on
 
-[Z_grid, I_grid] = meshgrid(linspace(0, max(z), 30), linspace(0, max(I), 30));
+for file_idx = 13
+
+    measurements = data(file_idx);
+
+    for transient_idx = 1:length(find(diff(measurements.voltage) > 0.1))
+
+        plot( ...
+            time{file_idx, transient_idx}, ...
+            current{file_idx, transient_idx}, ...
+            'k');
+
+        plot( ...
+            time{file_idx, transient_idx}, ...
+            current_model(L(file_idx, transient_idx), [time{file_idx, transient_idx} voltage{file_idx, transient_idx}]), ...
+            'r', ...
+            'LineWidth', 2)
+
+    end
+
+end
+
+
+title(['Current dynamics fitting @z=' num2str(z(file_idx, 1) * 1000, '%.2f') 'mm'])
+xlabel('Time [s]')
+ylabel('Current [A]')
+legend('Experimental', 'Fitted')
+
+
+% Inductance modelling and fitting
+figure_L = figure('Name', 'Inductance modelling and fitting');
+tiledlayout(1, 2)
+nexttile
+
+plot3(z(z~=0) * 1000, I(I~=0), L(L~=0), 'k*', 'LineWidth', 3)
+hold on
+grid on
+
+[Z_grid, I_grid] = meshgrid(linspace(0, max(z, [], 'all'), 30), linspace(0, max(I, [], 'all'), 30));
 surf(Z_grid * 1000, I_grid, reshape(inductance_model([L0, az, Lz, aI, bI, LI], [Z_grid(:), I_grid(:)]), size(Z_grid)), 'EdgeColor', 'k', 'FaceAlpha', 0.8);
 
 axis padded
@@ -223,11 +223,11 @@ title('Inductance modelling L(z, I)');
 xlabel('z [mm]');
 ylabel('I [A]');
 zlabel('L [H]');
-legend('Experimental data', 'Fitted inductance model', 'Location', 'best')
+legend('Experimental', 'Location', 'best')
 
 try %#ok<TRYNC>
-    export_pdf_graphic(figure_I, '/measurements/currents');
-    export_pdf_graphic(figure_L, '/measurements/inductance');
+    export_pdf_graphic(figure_I, '/identification/currents');
+    export_pdf_graphic(figure_L, '/identification/inductance');
 end
 
 

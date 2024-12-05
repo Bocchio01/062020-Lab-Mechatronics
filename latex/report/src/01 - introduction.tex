@@ -1,22 +1,23 @@
 \section{Introduction}
 \label{sec:introduction}
 
-The aim of this laboratory experience is to precisely control the levitation of a ferromagnetic object immerse in a magnetic field.
-This kind of system is commonly referred to as a \acrfull{mls}.
+This laboratory experience focuses on the precise control of the levitation of a ferromagnetic object within a magnetic field, a setup commonly known as a \acrfull{mls}.
+The \acrshort{mls} represents a fascinating and challenging application of control theory, involving highly nonlinear dynamics and unstable equilibrium conditions.
 
-The work has been splitted into two main phases:
+The project has been structured into two main phases:
 
 \begin{itemize}
-    \item \textbf{Modelling and parameters identification}: in this phase, the system has been modelled by means of both differential equations and state space representation, and the parameters of the model have been identified through experimental data performed directly on the real system. Some preliminary consideration about stability and controllability have also been made.
-    \item \textbf{Control design}: in this phase, many different control techniques have been implemented and tested. The main goal was to compare the performances of different controllers in terms of stability, robustness and tracking capabilities.
+    \item \textbf{System modelling and identification}: in this phase, the system has been modelled by means of both differential equations and state space representation, and the parameters of the model have been identified through experimental data performed directly on the real system. Some preliminary consideration about stability and controllability has also been made.
+    \item \textbf{Filters, estimators and controllers design}: in this phase, many control techniques have been implemented and tested. The main goal was to compare the performances of different controllers in terms of stability, robustness and tracking capabilities.
 \end{itemize}
 
 \paragraph{Report structure}
 
 This report covers all the aspects of the laboratory experience, from the theoretical background to the practical implementation of the control algorithms.
-In particular, in Section \ref{sec:magnetic_levitation_system} a brief introduction to the \acrshort{mls} is given, along with some considerations about the physical phenomena involved.
-In Section \ref{sec:modelling} the model of the system is derived and some considerations about stability and controllability are made, while in Section \ref{sec:identification} the parameters of the model are identified through experimental data or collected from the datasheet of the components.
-In Section \ref{sec:estimators_filters_design} some estimators and filters are designed to reduce noise and improve the performances of the controllers designed in Section \ref{sec:controllers_design}.
+In particular, in Section \ref{sec:magnetic_levitation_system} a brief introduction to the \acrshort{mls} is given, along with some high-level overview of the physical phenomena involved.
+In Section \ref{sec:modelling} the model of the system is derived, while in Section \ref{sec:identification} the parameters of the model are identified through experimental data or collected from the datasheet.
+Section \ref{sec:model_analysis} is dedicated to the analysis of the model, focusing on stability and controllability.
+In Section \ref{sec:filters_estimators_design} some filters and estimators are designed to reduce noise and improve the performances of the controllers designed in Section \ref{sec:controllers_design}.
 Finally, in Section \ref{sec:conclusions} some conclusions about the work done and possible future developments are drawn.
 
 \paragraph{Tools}

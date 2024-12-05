@@ -1,0 +1,41 @@
+\subsection{Controllability and observability}
+\label{subsec:controllability_observability}
+
+The controllability and observability of the system are crucial aspects to consider when designing a control strategy.
+Controllability ensures that the system's state can be manipulated by the control inputs, while observability guarantees that the state can be accurately estimated from the system's outputs.
+
+The controllability matrix $\mathcal{KR}$ and observability matrix $\mathcal{KO}$ are defined as follows:
+
+\begin{equation}
+    \begin{aligned}
+        \mathcal{KR} & =
+        \begin{bmatrix}
+            B & AB & A^2B
+        \end{bmatrix}   \\
+        \mathcal{KO} & =
+        \begin{bmatrix}
+            C^T & (CA)^T & (CA^2)^T
+        \end{bmatrix}
+    \end{aligned}
+\end{equation}
+
+By computing the rank of the controllability and observability matrices, we can determine whether the system is controllable and observable.
+In particular, based on the Kalman's reachability and observability conditions, the system is controllable if and only if $\text{rank}(\mathcal{KR}) = n$ and observable if and only if $\text{rank}(\mathcal{KO}) = n$, where $n$ is the number of states in the system.
+
+An explicit computation shows that the system is both controllable and observable, given that:
+
+\begin{equation}
+    \mathcal{KR} = 10^{5}
+    \begin{bmatrix}
+        0      & 0       & -0.0178 \\
+        0      & -0.0178 & 0.6250  \\
+        0.0010 & -0.0346 & 1.2180
+    \end{bmatrix}
+    \quad
+    \mathcal{KO} = 10^{3}
+    \begin{bmatrix}
+        0.0010 & 0      & 0       \\
+        0      & 0.0010 & 0       \\
+        1.8025 & 0      & -0.0181
+    \end{bmatrix}
+\end{equation}

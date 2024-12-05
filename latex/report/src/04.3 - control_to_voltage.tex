@@ -1,12 +1,23 @@
 \subsection{Control to voltage}
 \label{subsec:control_to_voltage}
 
-As said in the previous section of mathematical modeling, we need to identify the relation between the control signal and the effective voltage applied to the coils.
-The control unit provided by \texttt{Inteco} it's programmed to receive a PWM duty cycle as input and to convert it into a voltage that is applied to the coils.
-In order to identify this relation, we simply apply many duty cycles to the control unit and measure the corresponding voltage applied to the coils using a multimeter.
+As already clarified in Section \ref{subsubsec:control_input_correction}, what we actually control is the duty cycle of the PWM signal that is applied to the coils.
+However, as we saw in Equation \ref{eq:reduced_equations_of_motion}, the model consider the effective voltage applied to the coils as input.
 
-The output of this test is a series of points that can be fitted to a linear model having an initial black zone where the control action is not effective on the voltage applied to the coils.
-In Figure \ref{fig:control_to_voltage} we can observe both the measured points, the linear fitting and the effective voltage applied considering the black zone.
+In order to use the control signal as input to the model, we need to identify the parameters of the relation between the control signal and the effective voltage applied to the coils which has already been discussed in Equation \ref{eq:voltage_duty_cycle_relation}.
+
+The experimental procedure to identify this relation can be summarized in the following steps:
+
+\begin{enumerate}
+    \item Connect the control unit to the coils and to the power supply.
+    \item Connect the multimeter to the coils and set it to measure the voltage.
+    \item Set the control unit to a specific duty cycle.
+    \item Measure the voltage applied to the coils.
+    \item Repeat steps 3 and 4 for many duty cycles.
+\end{enumerate}
+
+The output of this test is a series of points that can be fitted to \ref{eq:voltage_duty_cycle_relation} in order to identify the parameters of the relation.
+In Figure \ref{fig:control_to_voltage} we can observe both the measured points, the linear fitting and the effective voltage applied considering also the initial black zone.
 
 \begin{figure}[H]
     \centering
@@ -15,19 +26,10 @@ In Figure \ref{fig:control_to_voltage} we can observe both the measured points, 
     \label{fig:control_to_voltage}
 \end{figure}
 
-As we can see, the linear model for the relation $V_* = f(U) = f(\text{PWM})$ is a good approximation outside the initial black zone control.
-Because of this, we can consider the following control to voltage relation:
+As we can see, the linear model for the relation $V = f(U) = f(\text{PWM})$ is a good approximation outside the initial black zone control.
 
-\begin{equation}
-    V_* = \begin{cases}
-        V_{*min}    & \text{if } U < U_{min}    \\
-        k_* U + c_* & \text{if } U \geq U_{min}
-    \end{cases}
-\end{equation}
-
-Where $V_{*min}$ is the minimum voltage applied to the coils when the control signal is zero, $u_{min}$ is the minimum control signal that is effective on the voltage applied to the coils, $k_*$ is the slope of the linear model and $c_*$ is the offset of the linear model.
-
-The values of the parameters are shown in Table \ref{tab:control_to_voltage_parameters}.
+The values of the parameters for the Equation \ref{eq:voltage_duty_cycle_relation} are shown in Table \ref{tab:control_to_voltage_parameters}.
+One might refer to Section \ref{subsubsec:control_input_correction} for an explanation of the parameters.
 
 \begin{table}[H]
 
@@ -36,10 +38,10 @@ The values of the parameters are shown in Table \ref{tab:control_to_voltage_para
         \hline
         \textbf{Parameter} & \textbf{Value}            & \textbf{Units} \\
         \hline
-        $V_{*min}$         & $4.300000 \cdot 10^{-2}$  & $V$            \\
+        $V_{min}$          & $4.300000 \cdot 10^{-2}$  & $V$            \\
         $U_{min}$          & $5.179276$                & $\%$           \\
-        $k_*$              & $1.165800 \cdot 10^{1}$   & $V/\%$         \\
-        $c_*$              & $-5.608000 \cdot 10^{-1}$ & $V$            \\
+        $k$                & $1.165800 \cdot 10^{1}$   & $V/\%$         \\
+        $c$                & $-5.608000 \cdot 10^{-1}$ & $V$            \\
         \hline
     \end{tabular}
 

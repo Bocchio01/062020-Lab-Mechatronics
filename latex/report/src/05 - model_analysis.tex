@@ -1,0 +1,68 @@
+\section{Model Analysis}
+\label{sec:model_analysis}
+
+Given the model derived in Section \ref{sec:modelling} and the parameters identified in Section \ref{sec:identification}, we can now proceed with the analysis of the system.
+
+As we have already discussed, the governing equations of the \acrshort{mls} are strongly non-linear.
+In order to analyze the stability of the system, we linearize the model around the operating point and derive the state-space representation of the linearized model as already discussed in Section \ref{subsec:single_coil_configuration}.
+
+For the successive analysis, we consider the following operating point:
+
+\begin{equation}
+    \mathbf{x}_{op} =
+    \begin{bmatrix}
+        z_{op} \\
+        v_{op} \\
+        I_{1op}
+    \end{bmatrix}
+    =
+    \begin{cases}
+        z^* =  10 \cdot 10^{-3} \\
+        v^* = 0                 \\
+        \sqrt{ -(2m g) / \frac{\partial L_1}{\partial z} \big|_{z_{op}} } \approx 1.087
+    \end{cases}
+\end{equation}
+
+\begin{equation}
+    \mathbf{u}_{op} =
+    \begin{bmatrix}
+        U_{1op}
+    \end{bmatrix}
+    =
+    \begin{cases}
+        \max{\left[0, R_{10} \left( I_{1op} - I_{1min} \right) / k_1 \right]} \approx 0.380
+    \end{cases}
+\end{equation}
+
+At these conditions, the system matrices $A$, $B$, $C$ and $D$ are given as follows:
+
+\begin{equation}
+    A =
+    \begin{bmatrix}
+        0      & 1 & 0      \\
+        1802   & 0 & -18.06 \\
+        -47.29 & 0 & -35.19
+    \end{bmatrix}
+    \quad
+    B =
+    \begin{bmatrix}
+        0 \\
+        0 \\
+        98.37
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+    C =
+    \begin{bmatrix}
+        1 & 0 & 0
+    \end{bmatrix}
+    \quad
+    D =
+    \begin{bmatrix}
+        0
+    \end{bmatrix}
+\end{equation}
+
+\input{src/05.1 - controllability_observability.tex}
+\input{src/05.2 - open_loop_stability.tex}

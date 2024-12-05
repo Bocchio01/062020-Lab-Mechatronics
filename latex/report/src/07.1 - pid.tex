@@ -1,0 +1,30 @@
+\subsection{PID Controllers}
+\label{subsec:pid_controllers}
+
+The Proportional-Integral-Derivative (PID) controller is a simple controller that uses the error signal, its history and derivative to compute the control signal.
+It is a widely used controller in industry due to its simplicity and effectiveness in many applications.
+
+The PID controller is defined by the following equation:
+
+\begin{equation}
+    u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau)dt + K_d \frac{de(t)}{dt} = K_p \left(e(t) + \frac{1}{T_i} \int_{0}^{t} e(\tau)dt + T_d \frac{de(t)}{dt}\right)
+\end{equation}
+
+Where $K_p$, $K_i$ and $K_d$ are the proportional, integral and derivative gains, respectively.
+$T_i$ and $T_d$ instead are the integral and derivative time constants, respectively.
+
+
+\subsubsection{PID classic}
+\label{subsubsec:pid_classic}
+
+In its simplest form, the PID is a linear controller whose three gains are tuned based on the linearization of the system.
+
+
+
+\subsubsection{PID with Anti-Windup correction}
+\label{subsubsec:pid_anti_windup}
+
+
+
+\subsubsection{PID with gain scheduling}
+\label{subsubsec:pid_gain_scheduling}

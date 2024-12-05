@@ -40,7 +40,8 @@ clear file_idx
 
 g = 9.81; %[m/s^2]
 m = 61.57e-3; %[Kg]
-sensitivity_equation = @(current) -2*m*g ./ current.^2;
+% sensitivity_equation = @(current) -2*m*g ./ current.^2;
+sensitivity_equation = @(current) -m*g ./ current.^2;
 
 position_jump_idx = zeros(files_data.N_files, 1);
 position = zeros(files_data.N_files, 1);
@@ -51,7 +52,9 @@ for file_idx = 1:files_data.N_files
 
     measurements = data(file_idx);
 
-    position_jump_idx(file_idx) = floor(find(diff(measurements.position) < -0.5e-3, 1, 'first') * 0.90);
+    % perc = 0.05 * (measurements.position(1) - ) + 0.90;
+
+    position_jump_idx(file_idx) = floor(find(diff(measurements.position) < -0.5e-3, 1, 'first') - 60);
     position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx(file_idx))));
     current(file_idx) = mean(measurements.current(position_jump_idx(file_idx) + (-1:1)));
 
@@ -90,7 +93,7 @@ set(0, 'defaultaxesfontsize', 15);
 
 figure_measurements = figure('Name', 'Measurements');
 
-for file_idx = [1:5:17]
+for file_idx = files_data.N_files:-5:1
 
     measurements = data(file_idx);
 
@@ -103,15 +106,17 @@ for file_idx = [1:5:17]
     plot(measurements.position * 1000, 'r')
     set(gca, 'YDir', 'reverse')
     ylabel('Ball position [mm]')
+    ylim padded
 
     yyaxis right
     plot(measurements.current, 'k')
     ylabel('Current [A]')
+    ylim padded
 
-    xline(position_jump_idx(file_idx), 'k')
-    xlabel('Time []')
+    xline(position_jump_idx(file_idx) + 40, '--k', 'LineWidth', 2, 'Label', 'Levitation')
+    xlabel('# [-]')
 
-    xlim(position_jump_idx(file_idx) + 150 * [-1 1]);
+    xlim(position_jump_idx(file_idx) + 40 + 150 * [-1 1]);
 
     title(['Initial position z=' num2str(mean(measurements.position(1:position_jump_idx(file_idx)-50)) * 1000, '%.2f')  '[mm]'])
 
@@ -125,24 +130,23 @@ grid on
 
 load("parameters_lagrangian.mat", "L1z", "a1z");
 load("parameters_literature.mat", "FemP1", "FemP2");
-plot(position * 1000, -1/2*sensitivity, 'ko');
-plot(position * 1000, -1/2*sensitivity_inductance_model([Lz az], position), 'LineWidth', 1.5);
-plot(position * 1000, -2*sensitivity_inductance_model([FemP1 1/FemP2], position), 'LineWidth', 1.5);
+plot(position * 1000, -sensitivity, 'ko');
+plot(position * 1000, -sensitivity_inductance_model([Lz az], position), 'LineWidth', 1.5);
+% plot(position * 1000, -2*sensitivity_inductance_model([FemP1 1/FemP2], position), 'LineWidth', 1.5);
 plot(position * 1000, -sensitivity_inductance_model([L1z a1z], position), 'LineWidth', 1.5);
 
-title('Inductance sensitivity to object distance dLdx')
-xlabel('Distance [mm]')
-ylabel('dL/dx [H/m]')
-legend('Measured data (halved)', ...
-    'Fitted model', ...
-    'Rosinova (doubled)', ...
-    'From L(z, I) characterization')
+title('Inductance sensitivity to object distance')
+xlabel('Ball position [mm]')
+ylabel('dL/dz [H/m]')
+legend('Experimental', ...
+    'Fitted', ...
+    'Based on L(z, I) identification')
 
 
 % Inductance sensitivity function of distance and current
 nexttile
 
-[Z_grid, I_grid] = meshgrid(linspace(0, 0.036, 20), linspace(0, 2.5, 20));
+[Z_grid, I_grid] = meshgrid(linspace(0, 0.030, 20), linspace(0, 2.5, 20));
 
 plot3(position * 1000, flip(current), force_model([Lz az], [position flip(current)]), 'k*', 'LineWidth', 3, 'DisplayName', 'Object1')
 hold on
@@ -158,11 +162,11 @@ title('Electromagnetic force F(z, I)');
 xlabel('z [mm]');
 ylabel('I [A]');
 zlabel('F [N]');
-legend('Experimental data', 'Fitted force model', 'Location', 'best')
+legend('Experimental', 'Location', 'best')
 
 try %#ok<TRYNC>
-    export_pdf_graphic(figure_measurements, '/measurements/currents_for_force');
-    export_pdf_graphic(figure_dLdz, '/measurements/force');
+    % export_pdf_graphic(figure_measurements, '/identification/currents_for_force');
+    % export_pdf_graphic(figure_dLdz, '/identification/force');
 end
 
 %% Functions

@@ -1,0 +1,24 @@
+\section{Controllers Design}
+\label{sec:controllers_design}
+
+\hl{We need to state clearly that we are not using the lower electromagnets for control purposes.}
+
+In this section, we move onto the design of the controllers that will be used to control the system.
+
+As we have clarified in the previous modelling section (Section \ref{sec:modelling}), the system is highly nonlinear with respect to both position and current, and we control it by acting on the input PWM signal.
+
+In the following, we will present three main families of controllers that have been adopted for the control of the system:
+
+\begin{itemize}
+    \item \textbf{PID Controllers}: a simple controller that uses the error signal, its history and derivative to compute the control signal (Section \ref{subsec:pid_controllers})
+    \item \textbf{LQR Controllers}: a controller that minimizes a quadratic cost function to compute the control signal (Section \ref{subsec:lq_controllers})
+    \item \textbf{MPC Controllers}: a controller that predicts the future evolution of the system and computes the control signal by minimizing a cost function (Section \ref{subsec:mpc_controllers})
+\end{itemize}
+
+For each of these controllers, we will briefly present their theoretical background and the design choices that have been made.
+
+Results and comparisons between the different controllers will be presented in the next section (Section \ref{sec:results}).
+
+\input{src/07.1 - pid.tex}
+\input{src/07.2 - lq.tex}
+\input{src/07.3 - mpc.tex}

@@ -14,7 +14,7 @@ A generic nonlinear system can be represented in the state space form as:
     \end{aligned}
 \end{equation}
 
-Where $\mathbf{x}$ is the state vector and $\mathbf{u}$ is the input vector.
+Where $\mathbf{x}$ is the state vector and $\mathbf{u}$ is the input vector, while $f$ and $g$ are generic functions that describe the system dynamics and the output equations, respectively.
 
 Similarly to what has been done in the previous subsection, we can perform a linearization of the system around an operating point to obtain the linearized state space representation in the form of:
 
@@ -26,11 +26,11 @@ Similarly to what has been done in the previous subsection, we can perform a lin
 \end{equation}
 
 Where $\delta\mathbf{x}$ and $\delta\mathbf{u}$ are the deviations of the state and input vectors from the operating point, respectively.
-While the matrices $A$, $B$, $C$ and $D$ are the Jacobian matrices with respect to the state and input vectors evaluated at the operating point.
+Instead, $A$, $B$, $C$ and $D$ are the Jacobian matrices with respect to the state and input vectors evaluated at the operating point.
 
-\paragraph{MagLev System State Space Representation}
+\paragraph{MLS state space representation}
 
-Given the linearized model derived in the previous subsection, we can define the state vector $\mathbf{x}$ and the input vector $\mathbf{u}$ as:
+Given the linearized model derived in the previous subsection (Equation \ref{eq:linearized_model}), we can define the state vector $\mathbf{x}$ and the input vector $\mathbf{u}$ as:
 
 \begin{equation}
     \mathbf{x} = \begin{bmatrix}
@@ -46,7 +46,7 @@ Given the linearized model derived in the previous subsection, we can define the
     \end{bmatrix}
 \end{equation}
 
-Once the state and input vectors have been defined, the linearized state space representation can be obtained by leveraging the linearized model derived in the previous subsection.
+Once the state and input vectors have been defined, the linearized state space representation can be obtained by leveraging the linearized model derived previously.
 The matrices $A$, $B$, $C$ and $D$ are then defined as:
 
 \begin{equation}
@@ -76,7 +76,7 @@ The matrices $A$, $B$, $C$ and $D$ are then defined as:
     \end{aligned}
 \end{equation}
 
-By leveraging the linearization of the model derived in the previous subsection and reported in Equation \ref{eq:linearized_model}, the elements of the matrices $A$, $B$, $C$ and $D$ can be computed as:
+Based on Equation \ref{eq:linearized_model}, the elements of the matrices $A$, $B$, $C$ and $D$ can be computed as:
 
 \begin{equation}
     \begin{aligned}
@@ -90,6 +90,9 @@ By leveraging the linearization of the model derived in the previous subsection 
         b_{31} & = \left(L_1^{-1} k_1 \right) \big|_{(\mathbf{x}_{op}, \mathbf{u}_{op})}                                                                                                                  \\
         b_{42} & = \left(L_2^{-1} k_2 \right) \big|_{(\mathbf{x}_{op}, \mathbf{u}_{op})}
     \end{aligned}
+    \label{eq:state_space_matrices}
 \end{equation}
+
+\hl{Is the output equation correct? Because in the end we want to control z, but in output from the MagLev we receive all the states\dots}
 
 
