@@ -57,4 +57,4 @@ R20 = 4.17; %[ohm]
 
 %% Updating the .mat file
 
-save('plant\parameters\parameters_lagrangian.mat')
+save('identification\parameters\parameters_lagrangian.mat')

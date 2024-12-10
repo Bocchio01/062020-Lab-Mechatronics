@@ -226,8 +226,8 @@ zlabel('L [H]');
 legend('Experimental', 'Location', 'best')
 
 try %#ok<TRYNC>
-    export_pdf_graphic(figure_I, '/identification/currents');
-    export_pdf_graphic(figure_L, '/identification/inductance');
+    % export_pdf_graphic(figure_I, '/identification/currents');
+    % export_pdf_graphic(figure_L, '/identification/inductance');
 end
 
 

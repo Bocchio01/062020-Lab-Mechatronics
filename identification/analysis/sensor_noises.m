@@ -1,12 +1,12 @@
 clc
 clear variables
-close all
+% close all
 
 %% Load measurements and use window to split into many data set
 
 electromagnet_idx = 1;
 
-measurements = load('identification\data\sensor\noises.mat').measurements;
+measurements = load('identification\data\sensor\_last.mat').measurements;
 
 windows_count = 10;
 windows_length = floor(size(measurements, 2) / windows_count);
@@ -41,15 +41,15 @@ clear idxs measurements
 
 %% Noise analysis
 
-standard_deviation_vector = zeros(windows_count, 2);
-variance_vector = zeros(windows_count, 2);
-covariance_vector = zeros(windows_count, 2);
+standard_deviation_vector = zeros(windows_count, 3);
+variance_vector = zeros(windows_count, 3);
+covariance_vector = zeros(windows_count, 3);
 
 for windows_idx = 1:windows_count
 
-    standard_deviation_vector(windows_idx, :) = std([data(windows_idx).position data(windows_idx).current]);
-    variance_vector(windows_idx, :) = [var(data(windows_idx).position) var(data(windows_idx).current)];
-    covariance_vector(windows_idx, :) = [cov(data(windows_idx).position) cov(data(windows_idx).current)];
+    standard_deviation_vector(windows_idx, :) = std([data(windows_idx).position data(windows_idx).velocity data(windows_idx).current]);
+    variance_vector(windows_idx, :) = [var(data(windows_idx).position) var(data(windows_idx).velocity) var(data(windows_idx).current)];
+    covariance_vector(windows_idx, :) = [cov(data(windows_idx).position) cov(data(windows_idx).velocity) cov(data(windows_idx).current)];
     
 end
 
@@ -59,11 +59,13 @@ end
 fprintf([ ...
     'Sensor noise characterization:\n' ...
     '\tCovariance z:\t%d\n' ...
+    '\tCovariance v:\t%d\n' ...
     '\tCovariance I%d:\t%d\n' ...
     '\tStandard deviation z:\t%d\n' ...
+    '\tStandard deviation v:\t%d\n' ...
     '\tStandard deviation I%d:\t%d\n' ...
-    ], mean(covariance_vector(:, 1)), electromagnet_idx, mean(covariance_vector(:, 2)), ...
-    mean(standard_deviation_vector(:, 1)), electromagnet_idx, mean(standard_deviation_vector(:, 2)));
+    ], mean(covariance_vector(:, 1)), mean(covariance_vector(:, 2)), electromagnet_idx, mean(covariance_vector(:, 3)), ...
+    mean(standard_deviation_vector(:, 1)),  mean(standard_deviation_vector(:, 2)), electromagnet_idx, mean(standard_deviation_vector(:, 3)));
 
 
 %% Plots
@@ -81,12 +83,12 @@ hold on
 grid on
 
 for windows_idx = 1:windows_count
-    plot((data(windows_idx).position - mean(data(windows_idx).position)) * 1e3, '-o')
+    plot((data(windows_idx).position - mean(data(windows_idx).position)) * 1e3, '-')
 end
 
 xlim tight
 title('Position records')
-xlabel('# []')
+xlabel('# [-]')
 ylabel('Variation [mm]')
 
 
@@ -108,7 +110,7 @@ nexttile
 hold on
 grid on
 
-y_vector = -0.05:0.001:0.05;
+y_vector = linspace(-0.0001, 0.0001, 1000);
 
 plot(normpdf(y_vector, 0, mean(standard_deviation_vector(:, 1))), y_vector, '--k', 'LineWidth', 2)
 for windows_idx = 1:windows_count
@@ -121,7 +123,7 @@ nexttile
 hold on
 grid on
 
-y_vector = -0.05:0.001:0.05;
+y_vector = linspace(-0.025, 0.025, 1000);
 
 plot(normpdf(y_vector, 0, mean(standard_deviation_vector(:, 2))), y_vector, '--k', 'LineWidth', 2)
 for windows_idx = 1:windows_count

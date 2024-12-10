@@ -25,4 +25,4 @@ FemP2 = 5.8231e-03; %[m]
 
 %% Updating the .mat file
 
-save('plant\parameters\parameters_literature.mat')
+save('identification\parameters\parameters_literature.mat')
