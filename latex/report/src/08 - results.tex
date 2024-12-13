@@ -1,32 +1,15 @@
 \section{Results}
 \label{sec:results}
 
-\begin{table}[H]
-    \centering
+To thoroughly assess the performance of the controllers and estimators \& filters, several reference signals were designed to evaluate different aspects of system dynamics, including transient response, steady-state behavior, adaptability, and robustness.
 
-    \begin{tabular}{|c|c|c|c|}
-        \hline
-        \textbf{Test} & \textbf{Filter} & \textbf{Controller} & \textbf{Reference}                              \\
-        \hline
-        1             & Kalman          & PID anti wind-up    & [step, multistep, stairs, slow sine, fast sine] \\
-        2             & Kalman          & PID gain scheduling & [step, multistep, stairs, slow sine, fast sine] \\
-        3             & All filters     & LQR tracking        & [step, multistep, stairs, slow sine, fast sine] \\
-        4             & Kalman          & LQI                 & [step, multistep, stairs, slow sine, fast sine] \\
-        5             & Kalman          & MPC                 & [step, multistep, stairs, slow sine, fast sine] \\
-        \hline
-        6             & Luenderberger   & [LQR tracking]      & fast sine                                       \\
-        7             & Kalman          & [LQR tracking]      & fast sine                                       \\
-        8             & Extended Kalman & [LQR tracking]      & fast sine                                       \\
-        \hline
-    \end{tabular}
+In the following sections, we propose:
 
-    \caption{Performed tests}
-    \label{tab:tests}
+\begin{itemize}
+    \item \textbf{Controllers comparison}: a comparison between PIDs, LQs and MPC controllers as designed in Section \ref{sec:controllers_design}. Results are obtained using Kalman filters to estimate and/or filter the system's state.
+    \item \textbf{Filters comparison}: a comparison between the filters designed in Section \ref{sec:filters_estimators_design}. Results are obtained using an LQR tracking controller to evaluate the observer's ability to track the system's state during continuous oscillatory motion.
+\end{itemize}
 
-\end{table}
-
-\input{src/08.1 - references.tex}
-\input{src/08.2 - plot_multistep.tex}
-\input{src/08.3 - plot_sinusoidal.tex}
-\input{src/08.4 - plot_filters.tex}
+\input{src/08.1 - controllers_comparison.tex}
+\input{src/08.2 - comparison_filters.tex}
 

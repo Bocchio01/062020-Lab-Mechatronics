@@ -8,7 +8,7 @@ load("parameters_lagrangian.mat", "L1z", "a1z", "m", "g");
 
 F = @(z, I) abs(-1/2 * a1z * L1z * exp(-a1z * z) .* I.^2);
 
-z_vector = linspace(0, 0.022, 50);
+z_vector = linspace(0, 0.025, 50);
 I_vector = linspace(0, 2.66, 50);
 
 [Z_grid, I_grid] = meshgrid(z_vector, I_vector);
@@ -18,16 +18,23 @@ M = contourc(z_vector, I_vector, force_field, [m*g m*g]);
 
 %% Results
 
-fprintf('Maximum reachable distance:\t%d [mm]\n', max(M(1, :) * 1e3))
+fprintf('Maximum reachable distance:\t%d [mm]\n', max(M(1, 2:end) * 1e3))
 
 
 %% Plots
+
+reset(0)
+set(0, 'DefaultFigureNumberTitle', 'off');
+set(0, 'DefaultFigureWindowStyle', 'docked');
+set(0, 'DefaultLineLineWidth', 1.2);
+set(0, 'defaultaxesfontsize', 12);
 
 figure('Name', 'Levitation region analysis')
 hold on
 grid on
 set(gca, 'layer', 'top')
-set(gca().XAxis, 'TickValues', 0:2:22, 'MinorTick', 'on', 'MinorTickValues', 0:2:100);
+set(gca().XAxis, 'TickValues', 0:1:23, 'MinorTick', 'on', 'MinorTickValues', 0:2:100);
+set(gca().YAxis, 'TickValues', 0:0.2:3, 'MinorTick', 'on', 'MinorTickValues', 0:2:100);
 
 s = pcolor(z_vector * 1000, I_vector, F(Z_grid, I_grid));
 s.FaceColor = 'interp';
@@ -40,7 +47,7 @@ cb = colorbar();
 ylabel(cb, 'F (N)')
 
 xlim([0 ceil(max(M(1, 2:end) * 1e3))])
-ylim([floor(min(M(2, 2:end) * 1e1))*1e-1 2.5])
+ylim([floor(min(M(2, 2:end) * 1e1))*1e-1 max(M(2, 2:end))])
 title('Levitation region')
 xlabel('z [mm]')
 ylabel('I [A]')

@@ -9,7 +9,7 @@ run("initial_conditions.m")
 %% Operating point and system matrices
 
 % Nominal condition (z0)
-[x_eq, u_eq, A, B, C, D] = controllers_design_init(0.012);
+[x_eq, u_eq, A, B, C, D] = controllers_design_init(z0);
 G = tf(ss(A, B, C, D));
 
 % Gain scheduling conditions (z \in [0.050, 0.020])

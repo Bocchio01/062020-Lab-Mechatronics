@@ -3,36 +3,35 @@
 
 The Kalman Filter is a powerful algorithm used for estimating the state of a dynamic system from a series of noisy measurements.
 It is widely used in control systems, robotics, signal processing, and navigation due to its ability to provide real-time, optimal state estimates by considering system dynamics and measurement noise.
-
-The filter operates in two main steps: the prediction step, which estimates the current state based on the system model, and the update step, which refines this estimate using new measurement data.
-
+One of the key strengths of the Kalman Filter is the ability to provide smooth state estimates without introducing delays.
 
 Mathematically, the filter assumes a linear system model of the form:
 
 \begin{equation}
     \begin{aligned}
-        \dot{x} & = A x + B u + w \\
+        \dot{x} & = A x + B u + G w \\
         y       & = C x + D u + v
     \end{aligned}
 \end{equation}
 
-Where $x$ is the state vector, $u$ is the control input, $y$ is the measurement, $A$ is the state transition matrix, $B$ is the control input matrix, $C$ is the observation matrix, and $w$ and $v$ are process and measurement noise, respectively.
-Among the assumptions of the Kalman filter, both the process and measurement noise are assumed to be zero-mean Gaussian white noise with known covariances $Q$ and $R$.
+Where $x$ is the state vector, $u$ is the control input, $y$ is the measurement, $A$, $B$, $C$ and $D$ are the system matrices, $G$ is the input noise matrix, and $w$ and $v$ are process and white measurement noise, respectively.
+Among the assumptions of the Kalman filter, both the process and measurement noise are assumed to be zero-mean Gaussian white noise with known covariance $Q$ and $R$.
 
-One of the key strengths of the Kalman Filter is its ability to provide smooth state estimates, even in the presence of high measurement noise, without introducing delays.
-This makes it critical for real-time applications such as tracking, navigation (e.g., GPS), and autonomous systems.
-Additionally, it assumes the noise covariances $Q = \text{Cov}(w_k)$ and $R = \text{Cov}(v_k)$ are known, which helps in calculating the Kalman gain:
+Supposing that the system is observable, coviances $Q$ and $R$ are known, one can compute the Kalman gain as:
 
 \begin{equation}
-    K = P^- H^T (H P^- H^T + R)^{-1}
+    L = P C^T (C P C^T + R)^{-1}
     \label{eq:kalman_gain}
 \end{equation}
 
-Where $P_k^-$ is the predicted estimate covariance.
+Where $P$ is the solution to the algebraic Riccati equation:
 
-Once the Kalman gain is calculated, the filter proceeds to the update step, where it corrects the predicted state estimate based on the measurement.
-To do so, the same structure seen already in the Luenberger observer is used (Equation \ref{eq:observer_dynamics}), but with the Kalman gain instead of the observer gain.
-This reads:
+\begin{equation}
+    A P + P A^T - P C^T (C P C^T + R)^{-1} C P + Q = 0
+\end{equation}
+
+The Kalman gain is then used to correct the predicted state estimate based on the measurement.
+The corrected state estimate is given by:
 
 \begin{equation}
     \begin{cases}
@@ -41,28 +40,41 @@ This reads:
     \end{cases}
 \end{equation}
 
-
 \paragraph{Design}
 
 As we have already seen in the Luenberger observer design, the poles of the observer are given by the eigenvalues of the matrix $A - KC$, and the observer is stable if the poles are placed in the left half plane of the complex plane.
-The Kalman gain $K$ can be computed using Equation \ref{eq:kalman_gain}.
+The Kalman gain $K$ can be computed using Equation \ref{eq:kalman_gain}, considering as $Q$ and $R$ the following matrices:
+
+\begin{equation}
+    Q = \begin{bmatrix}
+        10 & 0  \\
+        0  & 10
+    \end{bmatrix}
+    \quad
+    R = \begin{matrix}
+        7.21 \cdot 10^{-10} & 0                  \\
+        0                   & 4.21 \cdot 10^{-5}
+    \end{matrix}
+\end{equation}
 
 By doing so, we obtain the following $K$ matrix:
 
 \begin{equation}
-    K = \begin{bmatrix}
-        487.97    & -0.016
-        119069.39 & -15.35
-        -911.73   & 453.21
+    K \approx \begin{bmatrix}
+        487    & -0  \\
+        119069 & -15 \\
+        -911   & 453
     \end{bmatrix}
     \label{eq:kalman_gain_matrix}
 \end{equation}
 
+The eigenvalues of the matrix $A - KC$ are given by:
+
 \begin{equation}
-    eig(A - L C) =
+    eig(A - K C) =
     \begin{bmatrix}
-        -243.94 + 240.82i
-        -243.94 - 240.82i
+        -243.94 + 240.82i \\
+        -243.94 - 240.82i \\
         -488.87 + 0i
     \end{bmatrix}
     \label{eq:K_kalman}

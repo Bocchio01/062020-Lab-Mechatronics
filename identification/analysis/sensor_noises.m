@@ -132,7 +132,7 @@ for windows_idx = 1:windows_count
     plot(normpdf(y_vector, 0, standard_deviation_vector(windows_idx, 1)), y_vector)
 end
 
-title('Noise distribution (position)')
+title('Data distribution')
 
 ax = ancestor(gca, 'axes');
 ax.YAxis.Exponent = 0;
@@ -164,7 +164,7 @@ for windows_idx = 1:windows_count
     plot(normpdf(y_vector, 0, standard_deviation_vector(windows_idx, 3)), y_vector)
 end
 
-title('Noise distribution (current)')
+title('Data distribution')
 
 try %#ok<TRYNC>
     export_pdf_graphic(figure_statistical, '/identification/sensor_noises');

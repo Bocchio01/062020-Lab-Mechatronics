@@ -58,11 +58,11 @@ tiles = tiledlayout(2, 2);
 
 
 PID_simout = load('results\multisteps_stairs\PID_gain_scheduling - KF.mat').logouts;
-LQR_simout = load('results\multisteps_stairs\LQR_tracking - low_pass.mat').logouts;
+LQR_simout = load('results\multisteps_stairs\LQR_tracking - KF.mat').logouts;
 time = PID_simout(1, :)';
 ref = PID_simout(2, :)';
-PID_simout = filter((1/500) * ones(1, 500), 1, PID_simout, [], 2);
-LQR_simout = filter((1/500) * ones(1, 500), 1, LQR_simout, [], 2);
+PID_simout = filter((1/50) * ones(1, 50), 1, PID_simout, [], 2);
+LQR_simout = filter((1/50) * ones(1, 50), 1, LQR_simout, [], 2);
 PID_z = PID_simout(3, :)';
 PID_I1 = PID_simout(5, :)';
 LQR_z = LQR_simout(3, :)';
@@ -73,8 +73,8 @@ position_tile = nexttile(tiles, 1);
 hold on
 grid on
 
-plot(time, PID_z * 1000, 'DisplayName', 'PID gain-scheduling (filtered)')
-plot(time, LQR_z * 1000, 'DisplayName', 'LQR tracking (filtered)')
+plot(time, PID_z * 1000, 'DisplayName', 'Test 1 (filtered)')
+plot(time, LQR_z * 1000, 'DisplayName', 'Test 2 (filtered)')
 
 ylim([0.9*min(ref) 1.1*max(ref)]*1000)
 set(gca, 'YDir', 'reverse')
@@ -92,15 +92,15 @@ coils_tile = nexttile(tiles, 3);
 hold on
 grid on
 
-plot(time, PID_I1, 'DisplayName', 'PID gain-scheduling (filtered)')
-plot(time, LQR_I1, 'DisplayName', 'LQR tracking (filtered)')
+plot(time, PID_I1, 'DisplayName', 'Test 1 (filtered)')
+plot(time, LQR_I1, 'DisplayName', 'Test 2 (filtered)')
 
 ylim([0.75 1.25])
 
 title('Coils data')
 xlabel('Time [s]')
 ylabel('Current [A]')
-legend()
+legend('Location', 'best')
 
 linkaxes([position_tile coils_tile], 'x')
 xlim([2.5 15])
@@ -112,17 +112,17 @@ grid on
 
 load("parameters_lagrangian.mat", "L1z", "a1z");
 plot(position * 1000, I_op, 'ok', 'DisplayName', 'Experimental')
-plot(position * 1000, I_op_model([Lz az], position), 'LineWidth', 1.5, 'DisplayName', 'Interpolated');
-plot(position * 1000, I_op_model([3.438228e-02 1.837302e+02], position), 'LineWidth', 1.5, 'DisplayName', 'Identified');
+plot(position * 1000, I_op_model([Lz az], position), 'LineWidth', 2, 'DisplayName', 'Interpolated');
+plot(position * 1000, I_op_model([3.438228e-02 1.837302e+02], position), 'LineWidth', 2, 'DisplayName', 'Identified');
 
 axis padded
 title('Operating point analysis')
 xlabel('z_{op} [mm]')
 ylabel('I1_{op} [A]')
-legend()
+legend('Location', 'best')
 
 try %#ok<TRYNC>
-    % export_pdf_graphic(gcf, '/identification/operating_point_analysis');
+    export_pdf_graphic(gcf, '/identification/operating_point_analysis');
 end
 
 

@@ -1,11 +1,11 @@
-\subsection{Active levitation}
+\subsection{Active levitation (parameters validation)}
 \label{subsec:active_levitation}
 
 \textit{
     For the sake of identification, we ignore here for a moment the description of the controller used to perform the active control on the ball position given that in Section \ref{subsubsec:pid_anti_windup} we will describe the controller in detail.
 }
 
-The final step of the identification process is to perform an active levitation test to check that the electromagnetic force predicted by the coefficients retrieved in Section \ref{subsec:inductances_characterization} and Section \ref{subsec:force_validation} is accurate.
+The final step of the identification process is to perform an active levitation test to check that the electromagnetic force predicted by the coefficients retrieved in Section \ref{subsec:inductances_characterization} and Section \ref{subsec:force_analysis} is accurate.
 This test is crucial to validate the overall model and to obtain the final values of the coefficients.
 
 The active levitation test consists of applying a control signal to the coils to maintain the ball at a fixed position.
@@ -30,11 +30,11 @@ Instead, in the right-hand side of Figure \ref{fig:active_levitation}, the exper
 \end{figure}
 
 As we can see, the curve based on the parameters of Table \ref{tab:inductance_characterization_parameters} doesn't fit the experimental data as expected.
-The gap between the identified and the theoretical curve, might found its origin in the assumption of neglecting the term $\frac{\partial L}{\partial I} I$ in Equation \ref{eq:voltage_in_rl_circuit} when fitting the current dynamics in Section \ref{subsec:inductances_characterization} or due to poor identification of the levitation point in case of the procedure followed in Section \ref{subsec:force_validation}.
+The gap between the identified and the theoretical curve, might found its origin in the assumption of neglecting the term $\frac{\partial L}{\partial I} I$ in Equation \ref{eq:voltage_in_rl_circuit} when fitting the current dynamics in Section \ref{subsec:inductances_characterization} or due to poor identification of the levitation point in case of the procedure followed in Section \ref{subsec:force_analysis}.
 
 In any case, given the large distance between the theoretical curve and the experimental data, we decided to discard the previously identified parameters and to re-identify them using the data obtained from the active levitation test which is considered more reliable.
 
-The final values of the parameters are shown in Table \ref{tab:active_levitation_parameters}.
+The final values of the parameters are shown in Table \ref{tab:final_inductance_characterization_parameters}.
 
 \begin{table}[H]
     \centering
@@ -57,7 +57,7 @@ The final values of the parameters are shown in Table \ref{tab:active_levitation
 \end{table}
 
 Notice that with respect to the values presented in Table \ref{tab:inductance_characterization_parameters}, only $a_z$ and $L_z$ have been directly obtained from the active levitation test.
-All the others have been re-identified by keeping fixed the values of $a_z$ and $L_z$ and by re-fitting the model to the experimental data of currents dynamics as already described in Section \ref{subsec:inductances_characterization}.
+All the others have been re-identified by keeping fixed the values of $a_z$ and $L_z$ and by re-fitting the inductance model to the experimental data of currents dynamics as already described in Section \ref{subsec:inductances_characterization}.
 
 
 

@@ -11,7 +11,6 @@ The PID controller is defined by the following equation:
 \end{equation}
 
 Where $K_p$, $K_i$ and $K_d$ are the proportional, integral and derivative gains, respectively, $e(t)$ is the error signal, and $T_i$ and $T_d$ instead are the integral and derivative time constants, respectively.
-The classical PID (Section \ref{subsubsec:pid_classic})
 
 
 
@@ -29,7 +28,6 @@ $T_i$ and $T_d$ were kept constant while changing $K_p$.
 The gain parameters used to build the transfer function are reported below:
 
 \begin{equation}
-    \centering
     K_p = -150 \quad K_i = -450 \quad K_d = -6.82
 \end{equation}
 
@@ -60,7 +58,7 @@ The Anti-windup variation of the PID is introduced in order to avoid the windup 
 The integrator windup occurs when the actuator saturates and the integration part makes the error signal to increase.
 This causes the degradation of the rise time of the step response, and possibly leading to higher overshoot.
 
-The basing idea to avoid these issues is to apply a conditional integration.
+The basic idea to avoid these issues is to apply a conditional integration.
 The controller output is thus compared with the limits, and whenever there is some indication that saturation causes error accumulation, the integrator in PID controller is turned off.
 
 \paragraph{Step Response}
@@ -71,7 +69,7 @@ The analytical procedure is the same as for the classical PID, and thus the cont
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{./img/MATLAB/results/step_PID_anti_windup_star.pdf}
+    \includegraphics[width=1\linewidth]{./img/MATLAB/results/step_PID_anti_windup_KF.pdf}
     \caption{Step Response (PID anti-windup)}
     \label{fig:pid_anti_windup_step_response}
 \end{figure}
@@ -128,7 +126,7 @@ The efficiency of the response of the system state to a reference step input is 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{./img/MATLAB/results/step_PID_gain_scheduling_star.pdf}
+    \includegraphics[width=1\linewidth]{./img/MATLAB/results/step_PID_gain_scheduling_KF.pdf}
     \caption{Step Response (PID gain scheduling)}
     \label{fig:pid_gain_scheduling_step_response}
 \end{figure}
