@@ -1,5 +1,5 @@
-clc
-clear variables
+% clc
+% clear variables
 % close all
 
 %% Get number of files to be loaded
@@ -103,8 +103,8 @@ fitted_model = fitnlm( ...
     'Options', statset('TolFun', 1e-10));
 
 L0 = fitted_model.Coefficients.Estimate(1);
-az = fitted_model.Coefficients.Estimate(2);
-Lz = fitted_model.Coefficients.Estimate(3);
+az = 1.585423e+02; %fitted_model.Coefficients.Estimate(2);
+Lz = 4.044743e-02; %fitted_model.Coefficients.Estimate(3);
 aI = fitted_model.Coefficients.Estimate(4);
 bI = fitted_model.Coefficients.Estimate(5);
 LI = fitted_model.Coefficients.Estimate(6);
@@ -258,8 +258,8 @@ z = x(:, 1);
 I = x(:, 2);
 
 L0 = b(1);
-az = b(2);
-Lz = b(3);
+az = 1.585423e+02; %b(2);
+Lz = 4.044743e-02; %b(3);
 aI = b(4);
 bI = b(5);
 LI = b(6);

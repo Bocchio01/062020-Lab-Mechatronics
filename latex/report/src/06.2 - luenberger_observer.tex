@@ -25,10 +25,21 @@ The observer gain $L$ can be computed using the Ackermann formula, which is a ge
 Given that there are no restrictions (except for being in the left-hand side of the complex plane) for the position of the poles, we choose by chance the followings:
 
 \begin{equation}
-    eig(A-LC) = \begin{bmatrix}
-        ?? \\
-        ?? \\
-        ??
+    eig(A-LC) =
+    \begin{bmatrix}
+        -500 \\
+        -400 \\
+        -400
     \end{bmatrix}
     \label{eq:luenberger_observer_poles}
+\end{equation}
+
+\begin{equation}
+    L =
+    \begin{bmatrix}
+        900.00    & 0      \\
+        201555.32 & -20.63 \\
+        0         & 364.44
+    \end{bmatrix}
+    \label{eq:L_luemberg}
 \end{equation}

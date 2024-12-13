@@ -11,7 +11,8 @@ The parameter identification process is divided into the following steps:
     \item \textbf{Sensor characterization}: map the relationship between the ball's position and the output voltage of the infrared sensor. Additionally, statistically analyze the output of the sensors used internally to estimate the system state.
     \item \textbf{Control-to-voltage dependency}: examine the relationship between the control signal and the resulting applied voltage to the coils ($V = V(U)$).
     \item \textbf{Inductance characterization}: determine parameters for inductances based on the model described in Equations \ref{eq:model_for_inductance}. This involves analyzing the system's electrical response under various conditions.
-    \item \textbf{Force validation}: measure the electromagnetic force applied to the ball to validate both the identified parameters and the overall model's accuracy.
+    \item \textbf{Force validation}: measure the electromagnetic force applied to the ball to validate both the identified parameters and the overall model's accuracy;
+    \item \textbf{Active levitation}: a preliminary active controlled levitation test to further refine the identified parameters.
 \end{enumerate}
 
 Except for direct measurements, all tests are performed using the data acquisition capabilities of the \texttt{Inteco} control unit itself.
@@ -26,3 +27,4 @@ In all subsequent tests, parameters are identified using measurements from the u
 \input{src/04.3 - control_to_voltage.tex}
 \input{src/04.4 - inductances_characterization.tex}
 \input{src/04.5 - force_validation.tex}
+\input{src/04.6 - active_levitation.tex}

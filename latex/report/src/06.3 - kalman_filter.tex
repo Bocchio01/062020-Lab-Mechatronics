@@ -1,18 +1,6 @@
 \subsection{Kalman Filter}
 \label{sec:kalman_filter}
 
-% The Kalman filter is a powerful tool used to estimate, predict and filter the states of a linear dynamic system.
-
-% The Kalman filter is based on the following assumptions:
-
-% \begin{itemize}
-%     \item The system is linear.
-%     \item The system is subject to Gaussian noise.
-%     \item The noise is white and has a known covariance.
-% \end{itemize}
-
-% When the above assumptions are valid, we can use the Kalman filter algorithm to compute the optimal observer gain matrix $K$ that allows to estimate the states of the system.
-
 The Kalman Filter is a powerful algorithm used for estimating the state of a dynamic system from a series of noisy measurements.
 It is widely used in control systems, robotics, signal processing, and navigation due to its ability to provide real-time, optimal state estimates by considering system dynamics and measurement noise.
 
@@ -63,10 +51,21 @@ By doing so, we obtain the following $K$ matrix:
 
 \begin{equation}
     K = \begin{bmatrix}
-        ?? \\
-        ?? \\
-        ??
+        487.97    & -0.016
+        119069.39 & -15.35
+        -911.73   & 453.21
     \end{bmatrix}
     \label{eq:kalman_gain_matrix}
 \end{equation}
+
+\begin{equation}
+    eig(A - L C) =
+    \begin{bmatrix}
+        -243.94 + 240.82i
+        -243.94 - 240.82i
+        -488.87 + 0i
+    \end{bmatrix}
+    \label{eq:K_kalman}
+\end{equation}
+
 

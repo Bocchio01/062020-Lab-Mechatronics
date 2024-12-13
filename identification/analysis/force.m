@@ -38,8 +38,7 @@ clear file_idx
 % Knowing the initial position, and computing the current when the ball
 % starts moving, we automatically get dL(x)/dx
 
-g = 9.81; %[m/s^2]
-m = 61.57e-3; %[Kg]
+load("parameters_lagrangian.mat", "g", "m");
 % sensitivity_equation = @(current) -2*m*g ./ current.^2;
 sensitivity_equation = @(current) -m*g ./ current.^2;
 
@@ -51,8 +50,6 @@ sensitivity = zeros(files_data.N_files, 1);
 for file_idx = 1:files_data.N_files
 
     measurements = data(file_idx);
-
-    % perc = 0.05 * (measurements.position(1) - ) + 0.90;
 
     position_jump_idx(file_idx) = floor(find(diff(measurements.position) < -0.5e-3, 1, 'first') - 60);
     position(file_idx) = mean(measurements.position(1:floor(0.7 * position_jump_idx(file_idx))));
@@ -86,6 +83,7 @@ fprintf([ ...
 
 
 %% Plots
+
 reset(0)
 set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
@@ -122,35 +120,35 @@ for file_idx = files_data.N_files:-5:1
 
 end
 
+
 % Inductance sensitivity function of distance
 figure_dLdz = figure('Name', 'Inductance sensitivity and resulting force');
 nexttile
 hold on
 grid on
 
-load("parameters_lagrangian.mat", "L1z", "a1z");
+load("parameters_lagrangian.mat", "L1z", "a1z")
 load("parameters_literature.mat", "FemP1", "FemP2");
-plot(position * 1000, -sensitivity, 'ko');
-plot(position * 1000, -sensitivity_inductance_model([Lz az], position), 'LineWidth', 1.5);
-% plot(position * 1000, -2*sensitivity_inductance_model([FemP1 1/FemP2], position), 'LineWidth', 1.5);
-plot(position * 1000, -sensitivity_inductance_model([L1z a1z], position), 'LineWidth', 1.5);
+plot(position * 1000, -sensitivity, 'ko', 'DisplayName', 'Experimental data');
+plot(position * 1000, -sensitivity_inductance_model([Lz az], position), 'LineWidth', 1.5, 'DisplayName', 'Experimental interpolation');
+plot(position * 1000, -sensitivity_inductance_model([0.0343822800000000 183.730200000000], position), 'LineWidth', 1.5, 'DisplayName', 'Based on L(z, I) identification');
+plot(position * 1000, -sensitivity_inductance_model([L1z a1z], position), 'LineWidth', 1.5, 'DisplayName', 'Based on operating point analysis');
+% plot(position * 1000, -2*sensitivity_inductance_model([FemP1 1/FemP2], position), 'LineWidth', 1.5, 'DisplayName', 'Literature');
+% plot(position * 1000, -sensitivity_inductance_model([0.0404474296969937 158.542264748131], position), 'LineWidth', 1.5, 'DisplayName', 'From OP');
 
 title('Inductance sensitivity to object distance')
 xlabel('Ball position [mm]')
 ylabel('dL/dz [H/m]')
-legend('Experimental', ...
-    'Fitted', ...
-    'Based on L(z, I) identification')
+legend('Location', 'best')
 
 
 % Inductance sensitivity function of distance and current
 nexttile
-
-[Z_grid, I_grid] = meshgrid(linspace(0, 0.030, 20), linspace(0, 2.5, 20));
-
-plot3(position * 1000, flip(current), force_model([Lz az], [position flip(current)]), 'k*', 'LineWidth', 3, 'DisplayName', 'Object1')
 hold on
 grid on
+
+[Z_grid, I_grid] = meshgrid(linspace(0, 0.030, 20), linspace(0, 2.5, 20));
+plot3(position * 1000, flip(current), force_model([Lz az], [position flip(current)]), 'k*', 'LineWidth', 3)
 surf(Z_grid * 1000, I_grid, reshape(force_model([Lz az], [Z_grid(:), I_grid(:)]), size(Z_grid)), 'EdgeColor', 'k', 'FaceAlpha', 0.8);
 
 axis tight
@@ -158,16 +156,18 @@ view([65 35])
 colormap(jet(64));
 colorbar
 
-title('Electromagnetic force F(z, I)');
-xlabel('z [mm]');
-ylabel('I [A]');
-zlabel('F [N]');
+title('Electromagnetic force F(z, I)')
+xlabel('z [mm]')
+ylabel('I [A]')
+zlabel('F [N]')
 legend('Experimental', 'Location', 'best')
 
 try %#ok<TRYNC>
     % export_pdf_graphic(figure_measurements, '/identification/currents_for_force');
     % export_pdf_graphic(figure_dLdz, '/identification/force');
 end
+
+
 
 %% Functions
 

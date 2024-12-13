@@ -10,21 +10,126 @@ The PID controller is defined by the following equation:
     u(t) = K_p e(t) + K_i \int_{0}^{t} e(\tau)dt + K_d \frac{de(t)}{dt} = K_p \left(e(t) + \frac{1}{T_i} \int_{0}^{t} e(\tau)dt + T_d \frac{de(t)}{dt}\right)
 \end{equation}
 
-Where $K_p$, $K_i$ and $K_d$ are the proportional, integral and derivative gains, respectively.
-$T_i$ and $T_d$ instead are the integral and derivative time constants, respectively.
+Where $K_p$, $K_i$ and $K_d$ are the proportional, integral and derivative gains, respectively, $e(t)$ is the error signal, and $T_i$ and $T_d$ instead are the integral and derivative time constants, respectively.
+The classical PID (Section \ref{subsubsec:pid_classic})
 
 
-\subsubsection{PID classic}
+
+\subsubsection{PID classical}
 \label{subsubsec:pid_classic}
 
 In its simplest form, the PID is a linear controller whose three gains are tuned based on the linearization of the system.
+The controller gains are briefly described as follows: the proportional term $K_p$ provides an output proportional to the current error $e(t)$ and it helps to reduce it; the integral contribution $K_i$ accumulates the error over time to address any residual offset (steady-state error) that the proportional term cannot eliminate, and eventually it ensures the system to reach the set-point; finally, the derivative $K_d$ reacts to the rate of change of the error, predicting future behavior and adding damping to the system, and eventually it reduces overshoot and improves stability by anticipating changes.
+
+\paragraph{Design}
+
+Several gain parameters have been tested to find the optimal behavior for the considered system.
+A first estimate  has been made observing the Bode diagram, whereas a better approximation of the parameters has been obtained using the Root Locus.
+$T_i$ and $T_d$ were kept constant while changing $K_p$.
+The gain parameters used to build the transfer function are reported below:
+
+\begin{equation}
+    \centering
+    K_p = -150 \quad K_i = -450 \quad K_d = -6.82
+\end{equation}
+
+\paragraph{Bode Diagram}
+
+The final plots are presented in Figure \ref{fig:pid_classical_bode}.
+Compared to Figure \ref{fig:bode_plot}, improvements on the behavior can be observed due to the application of the PID controller which tends to stabilize the system.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{./img/MATLAB/controllers/PID_classical.pdf}
+    \caption{Bode Plot, Root Locus and Step Response (PID classic)}
+    \label{fig:pid_classical_bode}
+\end{figure}
+
+Eigenvalues of the system matrix have been computed since eigenvalues with negative real parts indicate stability, as well as a positive phase margin.
+Indeed, the resulting system is overall stable.
+Nevertheless, the experimental results obtained from the physical tests were not as expected.
+A potential explanation could be that the classical PID may introduce some issues due to the integral path and the non-linearity of the system.
+We have thus considered two expansions of the classical PID that bring improvements on the control of the system, that are the anti-windup (Section \ref{subsubsec:pid_anti_windup}) and the gain scheduling (Section \ref{subsubsec:pid_gain_scheduling}).
 
 
 
 \subsubsection{PID with Anti-Windup correction}
 \label{subsubsec:pid_anti_windup}
 
+The Anti-windup variation of the PID is introduced in order to avoid the windup of the integration path when the saturation of the actuator occurs.
+The integrator windup occurs when the actuator saturates and the integration part makes the error signal to increase.
+This causes the degradation of the rise time of the step response, and possibly leading to higher overshoot.
+
+The basing idea to avoid these issues is to apply a conditional integration.
+The controller output is thus compared with the limits, and whenever there is some indication that saturation causes error accumulation, the integrator in PID controller is turned off.
+
+\paragraph{Step Response}
+
+Figure \ref{fig:pid_anti_windup_step_response} shows the response of the system state to a reference step input.
+The stability of the dynamics can be observed, specifically considering the most relevant parameters such as the position of the sphere and the current flowing through the coils.
+The analytical procedure is the same as for the classical PID, and thus the controller gains that have been used are the ones described in Section \ref{subsubsec:pid_classic}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{./img/MATLAB/results/step_PID_anti_windup_star.pdf}
+    \caption{Step Response (PID anti-windup)}
+    \label{fig:pid_anti_windup_step_response}
+\end{figure}
+
 
 
 \subsubsection{PID with gain scheduling}
 \label{subsubsec:pid_gain_scheduling}
+
+Gain scheduling is usually used for highly non-linear systems due to the ease of the implementation and its affordability.
+This method tunes PID controllers for a series of steady-state operating points of the plant.
+
+In the considered system, the space interval where the sphere moves has been divided into several points that represent our steady-state operating conditions, and the state-space system has been linearized at each operating condition.
+The set of operating conditions has to be large enough in order to get good performance everywhere, as well as the structure and the stability of the model changes when the sphere moves within the range of positions.
+As a second step, the controller gains have been tuned for each of these operating points.
+The controller develops a set of curves that gradually change the gain parameters from one operating position to another.
+In this way the sphere can move within the overall space range.
+
+\paragraph{Bode Diagram}
+
+Several curves describing the system behavior corresponding to each operating point have been plotted in order to discuss the stability conditions.
+Table \ref{tab:pid_gain_scheduling_gains} reports the gain parameters for each of the selected operating points.
+
+\begin{table}[H]
+    \centering
+
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        $z [mm]$ & $K_p$  & $K_i$   & $K_d$   \\
+        \hline
+        $5$      & $-102$ & $-306$  & $-4.64$ \\
+        $8$      & $-136$ & $-408$  & $-6.18$ \\
+        $12$     & $-183$ & $-550$  & $-8.34$ \\
+        $16$     & $-250$ & $-750$  & $-11.4$ \\
+        $20$     & $-342$ & $-1030$ & $-15.5$ \\
+        \hline
+    \end{tabular}
+
+    \caption{PID controller gains}
+    \label{tab:pid_gain_scheduling_gains}
+
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{./img/MATLAB/controllers/PID_gain_scheduling.pdf}
+    \caption{Bode plot, Root Locus and Step Response (PID gain scheduling)}
+    \label{fig:pid_gain_scheduling_bode_diagram}
+\end{figure}
+
+\paragraph{Step Response}
+
+The efficiency of the response of the system state to a reference step input is described in Figure \ref{fig:pid_gain_scheduling_step_response}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{./img/MATLAB/results/step_PID_gain_scheduling_star.pdf}
+    \caption{Step Response (PID gain scheduling)}
+    \label{fig:pid_gain_scheduling_step_response}
+\end{figure}
+

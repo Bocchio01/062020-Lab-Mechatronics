@@ -1,6 +1,6 @@
-clc
-clear variables
-close all
+% clc
+% clear variables
+% close all
 
 warning('off', 'MATLAB:print:ContentTypeImageSuggested');
 
@@ -12,18 +12,19 @@ test_labels = [
     "multisteps_stairs"
     "sinusoidal_slow"
     "sinusoidal_fast"
+    "sinusoidal_slow_linear"
     ]';
 
 controller_labels = [
     "*"
-    % "PID_classical"
+    "PID*"
+    "LQ*"
+    "MPC*"
     "PID_anti_windup"
-    "PID_cascade"
     "PID_gain_scheduling"
-    "LQR_classical"
+    "LQR_classic"
     "LQR_tracking"
     "LQI"
-    "LQG_classical"
     "MPC"
     ]';
 

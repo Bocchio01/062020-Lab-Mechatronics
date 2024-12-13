@@ -1,6 +1,7 @@
 function figure_results = plot_results(simouts)
 
 is_single_controller = size(simouts, 1) == 1;
+% is_single_controller = 0;
 
 % Plots settings
 reset(0)
@@ -97,6 +98,10 @@ end
 
 %% Loop over all simulations
 
+windowSize = 20; 
+b = (1/windowSize)*ones(1,windowSize);
+a = 1;
+
 for simout_idx = 1:size(simouts, 1)
 
     legend_name = erase(string(simouts{simout_idx, 2}), '.mat');
@@ -107,20 +112,22 @@ for simout_idx = 1:size(simouts, 1)
 
     time = simout(1, :)';
 
-    % z = simout(3, :)';
-    % v = simout(4, :)';
-    % I1 = simout(5, :)';
-    % I2 = simout(6, :)';
-    U1 = simout(7, :)';
-    % U2 = simout(8, :)';
+    % simout = filter(b, a, simout, [], 2);
 
+    U1 = simout(7, :)';
     z_hat = simout(9, :)';
     v_hat = simout(10, :)';
-    I1_hat = simout(11, :)';
-    % I2_hat = simout(12, :)';
-    % U1_hat = simout(13, :)';
-    % U2_hat = simout(14, :)';
 
+    I1_hat = simout(11, :)';
+
+    if (contains(legend_name, 'LQ'))
+        U1 = filter(b, a, U1);
+        v_hat = filter(b, a, v_hat);
+    end
+
+    if (contains(legend_name, 'MPC'))
+        v_hat = filter(b, a, v_hat);    
+    end
 
     % Position data
     nexttile(tiles, 1);
@@ -141,6 +148,7 @@ for simout_idx = 1:size(simouts, 1)
     % Controls data
     nexttile(tiles, 2 * not(is_single_controller) + 4 * (is_single_controller));
     alpha = 1 * (is_single_controller) + 0.5 * not(is_single_controller);
+    alpha = 1;
     plot(time, 100*U1, 'Color', [colorscheme(mod(simout_idx, size(colorscheme, 1)), :) alpha], 'DisplayName', legend_name)
 
 end

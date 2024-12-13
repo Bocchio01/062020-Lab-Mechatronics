@@ -36,6 +36,8 @@ for windows_idx = 1:windows_count
 
 end
 
+data(1).velocity(1) = 0;
+
 clear idxs measurements
 
 
@@ -91,8 +93,21 @@ title('Position records')
 xlabel('# [-]')
 ylabel('Variation [mm]')
 
+% nexttile(tile, 6, [1, 4]);
+% hold on
+% grid on
+% 
+% for windows_idx = 1:windows_count
+%     plot((data(windows_idx).velocity - mean(data(windows_idx).velocity)) * 1e3, '-')
+% end
+% 
+% xlim tight
+% title('Velocity records')
+% xlabel('# [-]')
+% ylabel('Variation [mm/s]')
 
-nexttile(tile, 6, [1, 4]);
+
+nexttile(tile, 11-5, [1, 4]);
 hold on
 grid on
 
@@ -119,19 +134,38 @@ end
 
 title('Noise distribution (position)')
 
+ax = ancestor(gca, 'axes');
+ax.YAxis.Exponent = 0;
+% ytickformat('%.4f');
+
+
+% nexttile
+% hold on
+% grid on
+% 
+% y_vector = linspace(-0.025, 0.025, 1000);
+% 
+% plot(normpdf(y_vector, 0, mean(standard_deviation_vector(:, 2))), y_vector, '--k', 'LineWidth', 2)
+% for windows_idx = 1:windows_count
+%     plot(normpdf(y_vector, 0, standard_deviation_vector(windows_idx, 2)), y_vector)
+% end
+% 
+% title('Noise distribution (velocity)')
+
+
 nexttile
 hold on
 grid on
 
 y_vector = linspace(-0.025, 0.025, 1000);
 
-plot(normpdf(y_vector, 0, mean(standard_deviation_vector(:, 2))), y_vector, '--k', 'LineWidth', 2)
+plot(normpdf(y_vector, 0, mean(standard_deviation_vector(:, 3))), y_vector, '--k', 'LineWidth', 2)
 for windows_idx = 1:windows_count
-    plot(normpdf(y_vector, 0, standard_deviation_vector(windows_idx, 2)), y_vector)
+    plot(normpdf(y_vector, 0, standard_deviation_vector(windows_idx, 3)), y_vector)
 end
 
 title('Noise distribution (current)')
 
 try %#ok<TRYNC>
-    % export_pdf_graphic(figure_statistical, '/identification/sensor_noises');
+    export_pdf_graphic(figure_statistical, '/identification/sensor_noises');
 end

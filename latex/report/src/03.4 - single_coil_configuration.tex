@@ -37,7 +37,7 @@ For the case of the single coil configuration, Equations \ref{eq:operating_point
     \begin{cases}
         z^* \\
         0   \\
-        \sqrt{ -(2m g) / \frac{\partial L_1}{\partial z} \big|_{z_{op}} }
+        \sqrt{ -(2m g + \frac{\partial L_2}{\partial z} \big|_{z_{op}} (\frac{V_{2min}}{R_{20}})^2) / \frac{\partial L_1}{\partial z} \big|_{z_{op}} }
     \end{cases}
     \label{eq:operating_point_states_single_coil}
 \end{equation}
@@ -49,7 +49,7 @@ For the case of the single coil configuration, Equations \ref{eq:operating_point
     \end{bmatrix}
     =
     \begin{cases}
-        \max{\left[0, R_{10} \left( I_{1op} - I_{1min} \right) / k_1 \right]}
+        \max{\left[0, (R_{10} I_{1op} - c_1) / k_1 \right]}
     \end{cases}
     \label{eq:operating_point_inputs_single_coil}
 \end{equation}
@@ -117,4 +117,4 @@ The matrices $A$, $B$, $C$ and $D$ are then defined as:
     \end{aligned}
 \end{equation}
 
-Given the unboundedness between the two coils currents, the elements of the matrices $A$, $B$, $C$ and $D$ remain exactly as already computed in Section \ref{eq:state_space_matrices}.
+Given the non-correlation between the two coils currents, the elements of the matrices $A$, $B$, $C$ and $D$ remain exactly as already computed in Section \ref{eq:state_space_matrices}.

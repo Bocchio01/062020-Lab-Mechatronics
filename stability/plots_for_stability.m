@@ -12,7 +12,7 @@ figure_stability = figure('Name', name_of_controller);
 
 
 % Bode plots of L
-subplot(2, 2, [1 3])
+subplot(2, 3, [1 4])
 if(size(L) == 1)
     % asymp(L)
     margin(L)
@@ -23,15 +23,24 @@ grid on
 
 
 % Root locus of L (not G!)
-subplot(2, 2, 2)
+subplot(2, 3, 2)
 hold on
+plot(real(current_poles), imag(current_poles), 'kx', 'Markersize', 15)
 rlocus(L)
-plot(real(current_poles), imag(current_poles), 'rx', 'Markersize', 10)
-ylim([-80 80])
+legend('Current poles')
+
+% Root locus of L (not G!)
+subplot(2, 3, 3)
+hold on
+plot(real(current_poles), imag(current_poles), 'kx', 'Markersize', 15)
+rlocus(L)
+xlim([-22 12])
+ylim([-20 20])
+legend('Current poles')
 
 
 % Step of the feedback (closed) loop (L/(1+L))
-subplot(2, 2, 4)
+subplot(2, 3, [5 6])
 step(feedback(L, 1))
 grid on
 
