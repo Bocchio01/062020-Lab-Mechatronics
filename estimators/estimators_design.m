@@ -2,7 +2,7 @@
 % clear variables
 % close all
 
-run("initial_conditions.m")
+% run("initial_conditions.m")
 
 %% Operating point and system matrices
 
@@ -15,7 +15,7 @@ D = zeros(2, 1);
 %% LO
 
 L_LO = place(A', C', [-500  -400  -400])';
-eig(A - L_LO * C)
+% eig(A - L_LO * C)
 
 
 %% KF
@@ -30,7 +30,7 @@ sysKF.InputName = {'U', 'w1', 'w3'};
 sysKF.OutputName = {'z', 'I'};
     
 [kalmf, L_KF, P_KF] = kalman(sysKF, Q_KF, R_KF);
-eig(A - L_KF * C)
+% eig(A - L_KF * C)
 
 
 %% EKF

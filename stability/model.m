@@ -30,4 +30,8 @@ disp(['System Bandwidth: ' num2str(bandwidth(L)) ' rad/s']);
 
 %% Plots
 
-figure_no_controller = plots_for_stability(1, G, 'No controller');
+figure
+asymp(L);
+export_pdf_graphic(gcf, '/analysis/bode_adj');
+
+% figure_no_controller = plots_for_stability(1, G, 'No controller');

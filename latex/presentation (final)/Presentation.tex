@@ -4,8 +4,20 @@
 \usepackage{booktabs}
 \usepackage[scale=2]{ccicons}
 \usepackage{pgfplots}
-\usepackage{tikz}
+% \usepackage{tikz}
 \usepackage{graphics}
+
+\usepackage{float}
+% \usepackage{tikz}
+\usepackage{circuitikz}
+\usepackage{adjustbox}
+% \usepackage{titlesec}
+\usepackage{soul}
+\usepackage{csvsimple}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+
 
 \usepgfplotslibrary{dateplot}
 \pdfstringdefDisableCommands{\def\translate#1{#1}}
@@ -22,7 +34,6 @@
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
 \title{Modelling and control of a Magnetic Levitation System}
-% \subtitle{Mid-project presentation}
 % \date{\today}
 \date{December 19, 2024}
 \author{Tommaso Bocchietti 10740309 \\ Daniele Cianca 10764733 \\ Sara Orazzo 10995845}
@@ -58,15 +69,14 @@
 
 \end{frame}
 
-\input{src/00 - project_objectives.tex}
 \input{src/01 - introduction.tex}
 \input{src/02 - modelling.tex}
 \input{src/03 - identification.tex}
-% \input{src/04 - model_analysis.tex}
-% \input{src/05 - estimators_filters_design.tex}
-% \input{src/06 - controllers_design.tex}
-% \input{src/07 - results.tex}
-% \input{src/08 - conclusions.tex}
+\input{src/04 - model_analysis.tex}
+\input{src/05 - estimators_filters_design.tex}
+\input{src/06 - controllers_design.tex}
+\input{src/07 - results.tex}
+\input{src/08 - conclusions.tex}
 
 \appendix
 

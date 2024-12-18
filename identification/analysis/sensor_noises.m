@@ -49,7 +49,7 @@ covariance_vector = zeros(windows_count, 3);
 
 for windows_idx = 1:windows_count
 
-    standard_deviation_vector(windows_idx, :) = std([data(windows_idx).position data(windows_idx).velocity data(windows_idx).current]);
+    standard_deviation_vector(windows_idx, :) = std([data(windows_idx).position*1e3 data(windows_idx).velocity data(windows_idx).current]);
     variance_vector(windows_idx, :) = [var(data(windows_idx).position) var(data(windows_idx).velocity) var(data(windows_idx).current)];
     covariance_vector(windows_idx, :) = [cov(data(windows_idx).position) cov(data(windows_idx).velocity) cov(data(windows_idx).current)];
     
@@ -125,7 +125,7 @@ nexttile
 hold on
 grid on
 
-y_vector = linspace(-0.0001, 0.0001, 1000);
+y_vector = linspace(-0.0001, 0.0001, 1000) * 1e3;
 
 plot(normpdf(y_vector, 0, mean(standard_deviation_vector(:, 1))), y_vector, '--k', 'LineWidth', 2)
 for windows_idx = 1:windows_count
@@ -133,10 +133,6 @@ for windows_idx = 1:windows_count
 end
 
 title('Data distribution')
-
-ax = ancestor(gca, 'axes');
-ax.YAxis.Exponent = 0;
-% ytickformat('%.4f');
 
 
 % nexttile
@@ -167,5 +163,5 @@ end
 title('Data distribution')
 
 try %#ok<TRYNC>
-    export_pdf_graphic(figure_statistical, '/identification/sensor_noises');
+    % export_pdf_graphic(figure_statistical, '/identification/sensor_noises_2');
 end

@@ -3,6 +3,9 @@
 % close all
 
 plot_analysis = 1;
+reset(0)
+set(0, 'DefaultFigureNumberTitle', 'off');
+set(0, 'DefaultFigureWindowStyle', 'docked');
 
 run("initial_conditions.m")
 
@@ -12,7 +15,7 @@ run("initial_conditions.m")
 [x_eq, u_eq, A, B, C, D] = controllers_design_init(z0);
 G = tf(ss(A, B, C, D));
 
-% Gain scheduling conditions (z \in [0.050, 0.020])
+% % Gain scheduling conditions (z \in [0.050, 0.020])
 z_stars = linspace(0.005, 0.020, 5);
 G_gain_scheduling = tf(zeros(1, 1, length(z_stars)));
 
@@ -25,22 +28,41 @@ end
 %% PIDs
 
 kp0 = -150;
-
 kp = kp0;
 Ti0 = 1 / 3;
 Td0 = 1 / 22;
 
+% % 12/12/2024 10:22 (1)
+% kp0 = -60;
+% kp = kp0;
+% Ti0 = 1 / 3;
+% Td0 = 1.2 / 22;
+% 
+% % 12/12/2024 10:22 (2)
+% kp0 = -60;
+% kp = kp0;
+% Ti0 = 1 / 3;
+% Td0 = 0.8 / 22;
+% 
+% % 12/12/2024 10:22 (3)
+% kp0 = -60;
+% kp = kp0;
+% Ti0 = 1 / 3;
+% Td0 = 0.1 / 22;
+
 % PID classical
-K_PID_classical = pid(kp, kp / Ti0, kp * Td0); % Should be good at 0.010
+% K_PID_classical = pid(kp, kp / Ti0, kp * Td0); % Should be good at 0.010
 
 % K_PID_classical = pid(-200, -240, -16); % Should be good at 0.020
 % K_PID_classical = pid(-100, -120, -15); % Good at 0.001
 % K_PID_classical = pid(-50, -60, -3); % Good at 0.005
 
+K_PID_classical = pid(-150, -4000, -8); % Pilat 2009
+
 % PID anti-windup
 K_PID_anti_windup = K_PID_classical;
 
-% PID gain scheduling
+% % PID gain scheduling
 kp = zeros(length(z_stars), 1);
 Tp = zeros(length(z_stars), 1);
 K_PID_gain_scheduling = pid;
@@ -52,13 +74,18 @@ end
 
 if plot_analysis
 
+    figure
+    L = series(K_PID_anti_windup, G);
+    nyquist(L)
+    grid on
+    ylim([-5 5])
     figure_PID_classical = plots_for_stability(K_PID_classical, G, 'PID classical');
-    figure_PID_gain_scheduling = plots_for_stability(K_PID_gain_scheduling, G_gain_scheduling, 'PID gain-scheduling');
+    % figure_PID_gain_scheduling = plots_for_stability(K_PID_gain_scheduling, G_gain_scheduling, 'PID gain-scheduling');
 
-    try %#ok<TRYNC>
-        export_pdf_graphic(figure_PID_classical, '/controllers/PID_classical');
-        export_pdf_graphic(figure_PID_gain_scheduling, '/controllers/PID_gain_scheduling');
-    end
+    % try %#ok<TRYNC>
+    %     % export_pdf_graphic(figure_PID_classical, '/controllers/PID_classical');
+    %     % export_pdf_graphic(figure_PID_gain_scheduling, '/controllers/PID_gain_scheduling');
+    % end
 
 end
 
