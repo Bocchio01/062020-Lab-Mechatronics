@@ -1,0 +1,99 @@
+\subsection{Model Linearization}
+\label{subsec:model_linearization}
+
+The model derived in the previous subsections (Equations \ref{eq:reduced_equations_of_motion_final}) is highly non-linear.
+In order to be able to apply linear control techniques, it is necessary to linearize the model around a given operating point.
+
+
+
+\subsubsection{Operating point computation}
+\label{subsubsec:operating_point_computation}
+
+The operating point is the set of values of the state and input around which the linearization is performed.
+
+Given the set of Equations \ref{eq:reduced_equations_of_motion_final}, the operating point can be computed by setting the time derivatives to zero, set at least 2 of the state variables or input variables to constant values and solve the remaining equations.
+Based on their physical meaning, it's reasonable to set the position of the ball $z$ and the current in the lower electromagnet $I_2$.
+By doing so, all the other state and input variables can be computed by solving the following set of equations:
+
+\begin{equation}
+    \mathbf{x}_{op} =
+    \begin{bmatrix}
+        z_{op}  \\
+        v_{op}  \\
+        I_{1op} \\
+        I_{2op}
+    \end{bmatrix}
+    =
+    \begin{cases}
+        z^*                                                                                                                          \\
+        0                                                                                                                            \\
+        \sqrt{ -(2m g + \frac{\partial L_2}{\partial z} \big|_{z_{op}} I_{2op}^2) / \frac{\partial L_1}{\partial z} \big|_{z_{op}} } \\
+        I_{2}^*
+    \end{cases}
+    \label{eq:operating_point_states}
+\end{equation}
+
+\begin{equation}
+    \mathbf{u}_{op} =
+    \begin{bmatrix}
+        U_{1op} \\
+        U_{2op}
+    \end{bmatrix}
+    =
+    \begin{cases}
+        \max{\left[0, R_{10} \left( I_{1op} - I_{1min} \right) / k_1 \right]} \\
+        \max{\left[0, R_{20} \left( I_{2op} - I_{2min} \right) / k_2 \right]}
+    \end{cases}
+    \label{eq:operating_point_inputs}
+\end{equation}
+
+Where $z^*$ is the desired position of the ball and $I_{2}^*$ is the desired current in the lower electromagnet.
+As we can see, once those values are set, all the other states and inputs can be computed uniquely.
+
+
+
+\subsubsection{Linearized model derivation}
+\label{subsubsec:linearized_model_derivation}
+
+Based on the operating point computed in the previous subsection, the linearized model can be obtained by performing a Taylor expansion around the operating point up to the first order terms of Equations \ref{eq:reduced_equations_of_motion_final}.
+
+Before performing the linearization, we briefly recall the general form of a Taylor expansion of a function $f(\mathbf{x})$ around a point $\mathbf{x}_{op}$:
+
+\begin{equation}
+    f(\mathbf{x}) \approx f(\mathbf{x}_{op}) + \nabla f(\mathbf{x}_{op}) \cdot (\mathbf{x} - \mathbf{x}_{op})
+\end{equation}
+
+Where $\nabla f(\mathbf{x}_{op})$ is the gradient of $f(\mathbf{x})$ evaluated at $\mathbf{x}_{op}$.
+
+By applying the Taylor expansion to the non-linear model, the linearized model can be obtained as:
+
+\begin{equation}
+    \mathbf{f}(\mathbf{x}) - \mathbf{f}(\mathbf{x}_{op})\approx \frac{\partial \mathbf{f}}{\partial \mathbf{x}} \Bigg|_{\mathbf{x}_{op}} \cdot (\mathbf{x} - \mathbf{x}_{op})
+\end{equation}
+
+Considering now the set of Equations \ref{eq:reduced_equations_of_motion_final}, the linearized model can be obtained as:
+
+\small
+\begin{equation}
+    \begin{cases}
+        \dot{z} - \dot{z_{op}}    & \approx 1 (v - v_{op})                  \\
+        \dot{v} - \dot{v_{op}}    & \approx m^{-1} \left(
+        \frac{1}{2} \frac{\partial^2 L_1}{\partial z^2} \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) I_{1op}^2 +
+        \frac{1}{2} \frac{\partial^2 L_2}{\partial z^2} \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) I_{2op}^2 +
+        \frac{\partial L_1}{\partial z} \Bigg|_{\mathbf{x}_{op}} I_{1op} (I_1 - I_{1op}) +
+        \frac{\partial L_2}{\partial z} \Bigg|_{\mathbf{x}_{op}} I_{2op} (I_2 - I_{2op})
+        \right)                                                             \\
+        \dot{I_1} - \dot{I_{1op}} & \approx
+        \left(- L_1^{-2} \frac{\partial L_1}{\partial z} \left(- R_1 I_1 + k_1 U_1 + c_1 \right) \right) \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) +
+        \left(- L_1^{-1} R_1 \right) \Bigg|_{\mathbf{x}_{op}} (I_1 - I_{1op}) +
+        \left(L_1^{-1} k_1 \right) \Bigg|_{\mathbf{x}_{op}} (U_1 - U_{1op}) \\
+        \dot{I_2} - \dot{I_{2op}} & \approx
+        \left(- L_2^{-2} \frac{\partial L_2}{\partial z} \left(- R_2 I_2 + k_2 U_2 + c_2 \right) \right) \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) +
+        \left(- L_2^{-1} R_2 \right) \Bigg|_{\mathbf{x}_{op}} (I_2 - I_{2op}) +
+        \left(L_2^{-1} k_2 \right) \Bigg|_{\mathbf{x}_{op}} (U_2 - U_{2op})
+    \end{cases}
+    \label{eq:linearized_model}
+\end{equation}
+\normalsize
+
+Notice that also during the linearization process, the model has been simplified by reapplying the assumptions made in the set of Equations \ref{eq:model_reduction_conditions}.

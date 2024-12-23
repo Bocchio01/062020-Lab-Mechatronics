@@ -1,0 +1,28 @@
+\section{Conclusions}
+\label{sec:conclusions}
+
+In this study, we have presented the modeling and control strategies for a Magnetic Levitation System (MLS), which represents an intriguing and highly challenging application of control theory.
+The MLS system is characterized by highly nonlinear dynamics and unstable equilibrium conditions, making it a suitable test bed for advanced control techniques.
+The system consists of two electromagnets, a ferromagnetic sphere, and a control unit, with the primary objective being the levitation of the sphere at a precise height by regulating the current in the electromagnets.
+
+Initially, a comprehensive model of the system was derived, capturing the key dynamics involved in the interaction between the electromagnets and the sphere.
+After deriving the model, the system parameters were identified, and various filtering and estimation techniques were implemented to estimate the state of the system based on available input and output signals.
+The filters employed in this study included the Luenberger observer, a low-pass filter, the standard Kalman filter (KF), and the Extended Kalman filter (EKF).
+Through a thorough comparative analysis of these filtering methods, it was determined that the standard Kalman filter offered the most efficient performance.
+The Kalman filter excelled in noise reduction, particularly in the velocity signal, which is critical for achieving precise trajectory tracking and ensuring the accuracy and quality of the control signal.
+The reduction in noise not only enhanced the overall performance of the system's output but also ensured smoother and more reliable control actions.
+
+Once the filtering techniques were implemented, several control strategies were developed and tested to regulate the position of the levitating ball, with the overarching goal of ensuring both precise and stable control.
+The controllers that were evaluated include the PID controller with anti-windup, the PID controller with gain scheduling, Linear Quadratic Regulator (LQR) tracking, Linear Quadratic Integral (LQI) control, and Model Predictive Control (MPC).
+The performance of each of these controllers was assessed in terms of their ability to stabilize the system and enable accurate tracking of the desired position of the levitating ball.
+The results demonstrated that all the controllers are able to control the sphere, although they exhibited varying levels of performance.
+
+Among the tested controllers, the LQI controller emerged as the most effective.
+% It exhibited superior performance in terms of both accuracy and stability.
+The LQI controller not only achieved accurate control of the ball's position but also provided a clean control signal with minimal oscillations and overshoot, contributing to the overall robustness and reliability of the system.
+This characteristic is particularly important for ensuring smooth and efficient operation, avoiding undesirable system behavior such as excessive vibrations or instability.
+
+The successful modeling, estimation, and control of the Magnetic Levitation System in this study demonstrate the effectiveness of the proposed approach and the various controllers tested.
+The results are promising, offering a solid foundation for further exploration and refinement of the techniques employed.
+Future research could focus on the development of even more advanced control strategies, such as Feedback Linearization or Backstepping controllers, which have the potential to further enhance the performance of the system, especially under more dynamic and challenging conditions.
+These advanced techniques could provide additional benefits, such as improved system robustness and adaptability, and might offer better performance in handling larger disturbances, non-linearities, and uncertainties.

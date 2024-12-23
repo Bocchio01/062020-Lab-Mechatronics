@@ -1,0 +1,120 @@
+\subsection{Single Coil Configuration}
+\label{subsec:single_coil_configuration}
+
+In this section, we will present the model of the \acrshort{mls} system when only the upper coil is used for control purposes.
+This configuration is the one that will be used in the rest of the document and the laboratory activities.
+The choice has been taken in order to deal with a simpler SISO system, which is easier to control and analyze.
+
+In the following, starting from Equation \ref{eq:reduced_equations_of_motion_final}, we will at derive the reduced model, linearize it and represent it in state-space form.
+
+\paragraph{Reduced Equations of Motion}
+
+At first, if we consider energizing only the upper coil, we can simply remove the terms related to the lower coil from the equations of motion.
+Based on Equation \ref{eq:reduced_equations_of_motion_final}, we can write the following equations:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} = v                                                                             \\
+        \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + m g  \right) \\
+        \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + (k_1 U_1 + c_1) \right)
+    \end{cases}
+    \label{eq:equations_of_motion_single_coil}
+\end{equation}
+
+\paragraph{Linearization}
+
+As already discussed in Section \ref{subsec:model_linearization}, we can linearize via Taylor expansion the equations of motion around one of its operating points.
+For the case of the single coil configuration, Equations \ref{eq:operating_point_states} and \ref{eq:operating_point_inputs} reduce to:
+
+\begin{equation}
+    \mathbf{x}_{op} =
+    \begin{bmatrix}
+        z_{op} \\
+        v_{op} \\
+        I_{1op}
+    \end{bmatrix}
+    =
+    \begin{cases}
+        z^* \\
+        0   \\
+        \sqrt{ -(2m g + \frac{\partial L_2}{\partial z} \big|_{z_{op}} (\frac{V_{2min}}{R_{20}})^2) / \frac{\partial L_1}{\partial z} \big|_{z_{op}} }
+    \end{cases}
+    \label{eq:operating_point_states_single_coil}
+\end{equation}
+
+\begin{equation}
+    \mathbf{u}_{op} =
+    \begin{bmatrix}
+        U_{1op}
+    \end{bmatrix}
+    =
+    \begin{cases}
+        \max{\left[0, (R_{10} I_{1op} - c_1) / k_1 \right]}
+    \end{cases}
+    \label{eq:operating_point_inputs_single_coil}
+\end{equation}
+
+By performing the Taylor expansion of Equations \ref{eq:equations_of_motion_single_coil} around the operating point, we obtain the following linearized model:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} - \dot{z_{op}}    & \approx 1 (v - v_{op}) \\
+        \dot{v} - \dot{v_{op}}    & \approx m^{-1} \left(
+        \frac{1}{2} \frac{\partial^2 L_1}{\partial z^2} \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) I_{1op}^2 +
+        \frac{\partial L_1}{\partial z} \Bigg|_{\mathbf{x}_{op}} I_{1op} (I_1 - I_{1op})
+        \right)                                            \\
+        \dot{I_1} - \dot{I_{1op}} & \approx
+        \left(- L_1^{-2} \frac{\partial L_1}{\partial z} \left(- R_1 I_1 + k_1 U_1 + c_1 \right) \right) \Bigg|_{\mathbf{x}_{op}} (z - z_{op}) +
+        \left(- L_1^{-1} R_1 \right) \Bigg|_{\mathbf{x}_{op}} (I_1 - I_{1op}) +
+        \left(L_1^{-1} k_1 \right) \Bigg|_{\mathbf{x}_{op}} (U_1 - U_{1op})
+    \end{cases}
+    \label{eq:linearized_model_single_coil}
+\end{equation}
+
+\paragraph{State-Space Representation}
+
+Finally, we can represent the linearized model in state-space form.
+Given the reduction of the system to a SISO one, we need to redefine the state vector $\mathbf{x}$ and the input vector $\mathbf{u}$ as follows:
+
+\begin{equation}
+    \mathbf{x} = \begin{bmatrix}
+        z \\
+        v \\
+        I_1
+    \end{bmatrix}
+    \quad
+    \mathbf{u} = \begin{bmatrix}
+        U_1
+    \end{bmatrix}
+\end{equation}
+
+
+Once the state and input vectors have been defined, the linearized state-space representation can be obtained by leveraging the linearized model derived previously.
+The matrices $A$, $B$, $C$ and $D$ are then defined as:
+
+\begin{equation}
+    \begin{aligned}
+        A & = \frac{\partial f}{\partial \mathbf{x}} \Bigg|_{(\mathbf{x}_{op}, \mathbf{u}_{op})}
+        = \begin{bmatrix}
+              0      & 1 & 0      \\
+              a_{21} & 0 & a_{23} \\
+              a_{31} & 0 & a_{33} \\
+          \end{bmatrix}                                                                    \\
+        B & = \frac{\partial f}{\partial \mathbf{u}} \Bigg|_{(\mathbf{x}_{op}, \mathbf{u}_{op})}
+        = \begin{bmatrix}
+              0 \\
+              0 \\
+              b_{31}
+          \end{bmatrix}                                                                         \\
+        C & = \frac{\partial g}{\partial \mathbf{x}} \Bigg|_{(\mathbf{x}_{op}, \mathbf{u}_{op})}
+        = \begin{bmatrix}
+              1 & 0 & 0
+          \end{bmatrix}                                                                         \\
+        D & = \frac{\partial g}{\partial \mathbf{u}} \Bigg|_{(\mathbf{x}_{op}, \mathbf{u}_{op})}
+        = \begin{bmatrix}
+              0
+          \end{bmatrix}
+    \end{aligned}
+\end{equation}
+
+Given the non-correlation between the two coils currents, the elements of the matrices $A$, $B$, $C$ and $D$ remain exactly as already computed in Section \ref{eq:state_space_matrices}.

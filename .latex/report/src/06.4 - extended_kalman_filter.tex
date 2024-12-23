@@ -1,0 +1,26 @@
+\subsection{Extended Kalman Filter}
+\label{subsec:extended_kalman_filter}
+
+The extended Kalman filter (EKF) is the nonlinear version of the Kalman filter which linearizes about an estimate of the current mean and covariance.
+Same assumptions done for the Kalman filter hold for the EKF, expect for the linearity of the system model.
+
+The extended Kalman filter is a recursive state estimator for nonlinear systems.
+It recomputes on the fly (online) the system matrices based on the current state estimate.
+Once the system matrices are recomputed, the Kalman gain is computed again based on Equation \ref{eq:kalman_gain}, where now $P$ is the solution to the Riccati equation:
+
+\begin{equation}
+    \dot{P} = A P + P A^T - P C^T (C P C^T + R)^{-1} C P + Q
+    \label{eq:riccati_equation}
+\end{equation}
+
+Notice that, unlike its linear counterpart, the extended Kalman filter it's not inherently an optimal estimator.
+It only becomes optimal in cases where both the measurement model and the state transition model are linear, as under those conditions, the EKF effectively reduces to the standard Kalman filter.
+
+Furthermore, if the initial state estimate is inaccurate or if the process is poorly modeled, the EKF may diverge rapidly because of the inherent approximations introduced by its linearization approach.
+
+Another challenge associated with the EKF is that its estimated covariance matrix often underrepresents the true covariance matrix.
+This underestimation can lead to statistical inconsistency unless corrective measures are applied, such as the introduction of "stabilizing noise."
+
+\paragraph{Design}
+
+The design of the EKF is similar to the Kalman filter with the key difference that the gain matrix $K_k$ is computed online at each time step $t_k$ based on the current state estimate $\hat{x}_k$.

@@ -2,7 +2,7 @@
 % clear variables
 % close all
 
-% run("initial_conditions.m")
+run("initial_conditions.m")
 
 %% Operating point and system matrices
 

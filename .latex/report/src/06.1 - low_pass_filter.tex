@@ -1,0 +1,41 @@
+\subsection{Low Pass Filter}
+\label{sec:low_pass_filter}
+
+The low pass filter is a filter that allows the low frequency components of a signal to pass through, while attenuating the high frequency components.
+By correctly choosing the cut-off frequency of the filter, it's possible to remove the noise from the signal, while preserving the useful information.
+
+The transfer function of a first order low pass filter is given by:
+
+\begin{equation}
+    G(s) = \frac{1}{\tau s + 1}
+\end{equation}
+
+Where $\tau$ is the time constant of the filter, and it's related to the cut-off frequency $\omega_c$ by the relation $\tau = \frac{1}{\omega_c}$.
+
+\paragraph{Filter on position}
+
+From the \texttt{Inteco} manual, we have understood that the vertical velocity of the ball is computed via numerical discretization of the position.
+This also means that the noise present in the position measurement is amplified by the differentiation process.
+To reduce this noise, we design a low pass filter to be applied to the position measurements before the differentiation.
+
+From the Bode plot of Figure \ref{fig:bode_plot}, we can observe that the bandwidth of system (computed as the frequency at which a reduction of $3dB$ happens) is around:
+
+\begin{equation}
+    \omega_n = \frac{2\pi}{T_p} \approx 20 rad/s
+\end{equation}
+
+As rule of thumb, we choose the cut-off frequency of the filter to be one decade after the natural frequency of the system, i.e. $\omega_c = 10 \omega_n \approx 200 rad/s$.
+
+By doing so, we obtain the time constant of the filter to be $\tau = \frac{1}{200} = 5 ms$ and a corresponding phase delay of:
+
+\begin{equation}
+    \phi = -\arctan{(\omega_n \tau)} = -\arctan{(20 \cdot 5 \cdot 10^{-3})} \approx -5.7^{\circ}
+\end{equation}
+
+
+\paragraph{Filter on current}
+
+The current measurement is also affected by noise.
+However, based on experiments, we have observed that even a slight delay in the current measurement can lead to instability of the system.
+Therefore, we choose not to apply a low pass filter to the current measurements.
+

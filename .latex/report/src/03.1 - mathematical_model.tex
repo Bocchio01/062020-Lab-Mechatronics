@@ -1,0 +1,224 @@
+\subsection{Mathematical model}
+\label{subsec:mathematical_model}
+
+We can now proceed with the derivation of the equations that govern the system.
+
+At first, we can recall the energy conservation principle stating that the sum of the kinetic, potential, and dissipated energy of the system is equivalent to the work done by the external forces acting on it.
+
+
+
+\subsubsection{Lagrangian formulation}
+\label{subsubsec:lagrangian_formulation}
+
+Thanks to Lagrange's equation we encapsulate the energy conservation principle by writing the following:
+
+\begin{equation}
+    \frac{d}{dt} \left( \frac{\partial \mathcal{T}}{\partial \dot{\mathbf{u}}} \right) - \frac{\partial \mathcal{T}}{\partial \mathbf{u}} + \frac{\partial \mathcal{D}}{\partial \dot{\mathbf{u}}} + \frac{\partial \mathcal{U}}{\partial \mathbf{u}} = \mathcal{Q}
+    \label{eq:lagrange_equation}
+\end{equation}
+
+Where $\mathbf{u}$ is the generalized coordinates of the system, $\mathbf{T}$ is the kinetic energy, $\mathbf{D}$ is the dissipated one, $\mathbf{U}$ is the potential energy, and $\mathbf{Q}$ is the generalized input to the system.
+
+At first, we can give a definition of all the energetic terms included in Equation \ref{eq:lagrange_equation} for the \acrshort{mls} system.
+Notice that with respect to traditional purely mechanical systems, we also have to consider the stored energy in the coils as inductors, the dissipation due to the resistance of the coils, and the potential energy given by the external power supply.
+
+By doing so, we can write the kinetic energy of the system as:
+
+\begin{equation}
+    \mathcal{T} = \frac{1}{2} m \dot{z}^2 + \frac{1}{2} L_1(z, \dot{q_1}, T_1) \dot{q_1}^2 + \frac{1}{2} L_2(z, \dot{q_2}, T_2) \dot{q_2}^2
+    \label{eq:kinetic_energy}
+\end{equation}
+
+Where $m$ is the mass of the ball, $L_1$ and $L_2$ are the inductances of the coils, and $q_1$ and $q_2$ are the charges stored in the coils.
+It follows that $\dot{q_1}$ and $\dot{q_2}$ are the currents flowing through the coils.
+
+The dissipated energy of the system can be written as:
+
+\begin{equation}
+    \mathcal{D} = \int_{\dot{z}(\cdot)} \frac{1}{2} C_d A \rho \dot{z}^2 d\dot{z} + \int_{\dot{q_1}(\cdot)} R_1(\dot{q_1}, T_1) \dot{q_1} d\dot{q_1} + \int_{\dot{q_2}(\cdot)} R_2(\dot{q_2}, T_2) \dot{q_2} d\dot{q_2}
+    \label{eq:dissipated_energy}
+\end{equation}
+
+Where $C_d$ is the drag coefficient for a generic spherical object, $A$ is the cross-sectional area of the ball, and $\rho$ is the density of air.
+
+Instead, the potential energy of the system can be written as:
+
+\begin{equation}
+    \mathcal{U} = -m g z - q_1 V_1 - q_2 V_2
+    \label{eq:potential_energy}
+\end{equation}
+
+Where $V_1$ and $V_2$ are the voltages applied to the coils.
+
+Finally, the generalized input to the system can be evaluated as:
+
+\begin{equation}
+    \mathcal{Q} = 0
+    \label{eq:generalized_input}
+\end{equation}
+
+For convenience, we have chosen to consider both the external power supplied and the gravitational force as potential energy terms and not as generalized inputs.
+Notice also the minus sign in the gravitational potential energy term, which is due to the fact that the gravitational force tends to increase the potential energy with respect to the chosen reference frame (positive downwards, see Figure \ref{fig:system_model}).
+
+
+
+\subsubsection{Electrical components model}
+\label{subsubsec:electrical_components_model}
+
+Before proceeding, it's necessary to explicitly state the dependence of the inductance and resistance terms on the generalized coordinates of the system.
+
+We can assume that, in first approximation, the sensitivity of both the electrical components to the temperature of the coils is negligible.
+This is strong and possibly incorrect assumption, but it allows us to simplify the model and focus on the main dynamics of the system.
+
+\paragraph{Resistance model}
+
+For what regards the resistance terms, we can assume that the resistance of the coils is constant and so does not depend on neither the current flowing through them nor the temperature of the coils.
+Under these assumptions, we can write the resistance terms as:
+
+\begin{equation}
+    \begin{aligned}
+        R_1 & = R_1(\dot{q_1}, T_1) = R_{10} \\
+        R_2 & = R_2(\dot{q_2}, T_2) = R_{20}
+    \end{aligned}
+    \label{eq:model_for_resistance}
+\end{equation}
+
+Where $R_{*0}$ are the resistances of the coils measured at ambient temperature with negligible current flowing through them.
+
+\paragraph{Inductance model}
+
+Considering the inductance terms, we will again neglect the dependence on the coil's temperature, but we will take into account the variation of the inductance due to the presence of the ball in the magnetic field (principal source of nonlinearity in the system) and also the dependence over the current flowing through the coils.
+For the assumption stated above, we will model the inductance terms as:
+
+\begin{equation}
+    \begin{aligned}
+        L_1 & = L_1(z, \dot{q_1}, T_1) = L_{10} + L_{1z} e^{-a_{1z} z} + L_{1I} * \arctan(a_{1I} I_{1} - b_{1I})            \\
+        L_2 & = L_2(z, \dot{q_2}, T_2) = L_{20} + L_{2z} e^{-a_{2z} (h - 2r - z)} + L_{2I} * \arctan(a_{2I} I_{2} - b_{2I})
+    \end{aligned}
+    \label{eq:model_for_inductance}
+\end{equation}
+
+Where $L_{*0}$ are the nominal inductances values.
+Instead, $L_{*z}$, $a_{*z}$ and $L_{*I}$, $a_{*I}$, $b_{*I}$ are coefficients that take into account the variation of the inductance due to the presence of the ball in the magnetic field and the current flowing through the coils, respectively.
+
+It has to be noted that this model was suggested by a careful analysis of experimental data and is not directly based on theoretical considerations.
+Some previous models of inductance can also be found in the literature, but they are often too complex and not suitable for control purposes.
+
+
+
+\subsubsection{Equations of motion}
+\label{subsubsec:equations_of_motion}
+
+Considering the assumptions made in both the resistance and inductance models (Equations \ref{eq:model_for_resistance}, \ref{eq:model_for_inductance}) to neglect their dependence on the temperature of the coils, we can see that the generalized coordinates are $z$, $q_1$, and $q_2$, and so the vector of generalized coordinates is $\mathbf{u} = [z, q_1, q_2]^T$.
+
+Once $\mathbf{u}$ has been identified, the procedure to derive the equations of motion is straightforward.
+Based on Equation \ref{eq:lagrange_equation}, we can write the following system of equations:
+
+\begin{equation}
+    \begin{cases}
+        \frac{d}{dt} \left( \frac{\partial \mathcal{T}}{\partial \dot{z}} \right) - \frac{\partial \mathcal{T}}{\partial z} + \frac{\partial \mathcal{D}}{\partial \dot{z}} + \frac{\partial \mathcal{U}}{\partial z} = \mathcal{Q}         \\
+        \frac{d}{dt} \left( \frac{\partial \mathcal{T}}{\partial \dot{q_1}} \right) - \frac{\partial \mathcal{T}}{\partial q_1} + \frac{\partial \mathcal{D}}{\partial \dot{q_1}} + \frac{\partial \mathcal{U}}{\partial q_1} = \mathcal{Q} \\
+        \frac{d}{dt} \left( \frac{\partial \mathcal{T}}{\partial \dot{q_2}} \right) - \frac{\partial \mathcal{T}}{\partial q_2} + \frac{\partial \mathcal{D}}{\partial \dot{q_2}} + \frac{\partial \mathcal{U}}{\partial q_2} = \mathcal{Q}
+    \end{cases}
+\end{equation}
+
+By substituting the energetic terms obtained in Equations \ref{eq:kinetic_energy}, \ref{eq:dissipated_energy}, \ref{eq:potential_energy}, \ref{eq:generalized_input} into the set of equations above, we obtain the following equations of motion:
+
+\begin{equation}
+    \begin{cases}
+        m \ddot{z} - \frac{1}{2} \frac{\partial L_1}{\partial z} \dot{q_1}^2 - \frac{1}{2} \frac{\partial L_2}{\partial z} \dot{q_2}^2 + \frac{1}{2} C_d A \rho \dot{z} |\dot{z}| - m g = 0                                                                                                                                                                                                            \\
+        \frac{1}{2} \left( \frac{\partial^2 L_1}{\partial \dot{q_1} \partial z} \dot{z} + \frac{\partial^2 L_1}{\partial \dot{q_1}^2} \ddot{q_1} \right) \dot{q_1}^2 + \frac{\partial L_1}{\partial \dot{q_1}} \dot{q_1} \ddot{q_1} + \left( \frac{\partial L_1}{\partial z} \dot{z} + \frac{\partial L_1}{\partial \dot{q_1}} \ddot{q_1} \right) \dot{q_1} + L_1 \ddot{q_1} + R_1 \dot{q_1} - V_1 = 0 \\
+        \frac{1}{2} \left( \frac{\partial^2 L_2}{\partial \dot{q_2} \partial z} \dot{z} + \frac{\partial^2 L_2}{\partial \dot{q_2}^2} \ddot{q_2} \right) \dot{q_2}^2 + \frac{\partial L_2}{\partial \dot{q_2}} \dot{q_2} \ddot{q_2} + \left( \frac{\partial L_2}{\partial z} \dot{z} + \frac{\partial L_2}{\partial \dot{q_2}} \ddot{q_2} \right) \dot{q_2} + L_2 \ddot{q_2} + R_2 \dot{q_2} - V_2 = 0 \\
+    \end{cases}
+\end{equation}
+
+For convenience, we can replace time derivatives of charges leveraging the definition of current as the time derivative of the charge.
+Moreover, we can group the terms in the equations above so to move derivatives with respect to the generalized coordinates on the left-hand side of the equations.
+Finally, we also transform the second order differential equations into first order differential equations by introducing a fourth equation and considering the ball velocity $v$ as a state variable.
+By doing so, we obtain the following set of equations:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} = v                                                                                                                                                                                                                                                                                       \\
+        \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 - \frac{1}{2} C_d A \rho \dot{z} |\dot{z}| + m g  \right)                                                                                                            \\
+
+        \dot{I_1} = \left( \frac{1}{2} \frac{\partial^2 L_1}{\partial I_1^2} I_1^2 + 2\frac{\partial L_1}{\partial I_1} I_1 + L_1 \right)^{-1} \left( -\frac{1}{2} \frac{\partial^2 L_1}{\partial I_1 \partial z} \dot{z} I_1^2 - \frac{\partial L_1}{\partial z} \dot{z} I_1 - R_1 I_1 + V_1 \right) = 0 \\
+        \dot{I_2} = \left( \frac{1}{2} \frac{\partial^2 L_2}{\partial I_2^2} I_2^2 + 2\frac{\partial L_2}{\partial I_2} I_2 + L_2 \right)^{-1} \left( -\frac{1}{2} \frac{\partial^2 L_2}{\partial I_2 \partial z} \dot{z} I_2^2 - \frac{\partial L_2}{\partial z} \dot{z} I_2 - R_2 I_2 + V_2 \right) = 0
+    \end{cases}
+    \label{eq:equations_of_motion_full}
+\end{equation}
+
+The set of equations above represents the complete mathematical model of the \acrshort{mls} system.
+% One can notice that the equations are both nonlinear and coupled, making the system hard to analyze and control.
+
+
+
+\subsubsection{Model reduction}
+\label{subsubsec:model_reduction}
+
+In order to simplify the model and make it more suitable for control purposes, we can make some assumptions that allow us to reduce the complexity of the system without losing its main dynamics.
+
+Based also on the experimental data collected during the parameters' identification phase (Section \ref{sec:identification}), we can state that the sensitivity of the inductance terms to the current flowing through the coils is negligible around the operating point.
+Moreover, also the velocity of the ball will always be small, and so every term that is linearly dependent on it can be neglected.
+Based on these assumptions, we can impose the following conditions to the system:
+
+\begin{equation}
+    \begin{cases}
+        \frac{\partial L_*}{\partial I_*}     & \approx 0 \\
+        \frac{\partial^2 L_*}{\partial I_*^2} & \approx 0 \\
+        \dot{z}                               & \approx 0
+    \end{cases}
+    \label{eq:model_reduction_conditions}
+\end{equation}
+
+Equations of motion \ref{eq:equations_of_motion_full} consequently simplify to:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} = v                                                                                                                                 \\
+        \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 + m g  \right) \\
+        \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + V_1 \right)                                                                                          \\
+        \dot{I_2} = L_2^{-1} \left(- R_2 I_2 + V_2 \right)
+    \end{cases}
+    \label{eq:reduced_equations_of_motion}
+\end{equation}
+
+
+
+\subsubsection{Control input correction}
+\label{subsubsec:control_input_correction}
+
+A final important remark has to be made about the input given to the system.
+
+So far, in all the equations above, we have considered the input to the system as the voltage applied to the coils.
+However, the actual input to the system is the duty cycle of the PWM\footnote{Pulse-Width Modulation} signal that drives the coils.
+
+Ideally, the relationship between the duty cycle and the voltage applied to the coils is a direct proportionality, but in practice, a linear approximation must be made.
+One can easily see that by simply connecting the power supply to the coils, a minimum voltage will be applied and a certain amount of current will flow through.
+In the following, we will refer to this current and voltage as $I_{*min}$ and $V_{*min}$ respectively.
+In the context of control purposes, these zones where it's not possible to have a direct control over the applied voltage are called \textit{black zones}.
+
+Under these considerations, one can rewrite the voltages applied to the coils $V_{*}$ as a function of the duty cycle $U_{*}$ as a piece wise linear function:
+
+\begin{equation}
+    V_{*} =
+    \begin{cases}
+        k_{*} U_{*} + c_{*} & \text{if } U_{*} \geq U_{*min} \\
+        V_{*min}            & \text{if } U_{*} < U_{*min}
+    \end{cases}
+    \label{eq:voltage_duty_cycle_relation}
+\end{equation}
+
+Where $k_{*}$ and $c_{*}$ are the slope and the intercept of the linear relation, respectively, and $U_{*min}$ is the minimum duty cycle that allows to move outside the black zone and have a direct control over the voltage applied to the coils.
+
+By substituting the voltages in the set of Equations \ref{eq:reduced_equations_of_motion}, we obtain the final set of equations that govern the system:
+
+\begin{equation}
+    \begin{cases}
+        \dot{z} = v                                                                                                                                 \\
+        \dot{v} = m^{-1} \left(\frac{1}{2} \frac{\partial L_1}{\partial z} I_1^2 + \frac{1}{2} \frac{\partial L_2}{\partial z} I_2^2 + m g  \right) \\
+        \dot{I_1} = L_1^{-1} \left(- R_1 I_1 + (k_1 U_1 + c_1) \right)                                                                              \\
+        \dot{I_2} = L_2^{-1} \left(- R_2 I_2 + (k_2 U_2 + c_2) \right)
+    \end{cases}
+    \label{eq:reduced_equations_of_motion_final}
+\end{equation}
